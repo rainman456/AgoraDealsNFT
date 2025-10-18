@@ -12,4 +12,7 @@ pub struct Coupon {
     pub is_redeemed: bool,
     pub redeemed_at: i64,
     pub created_at: i64,
+      #[max_len(200)]
+    pub metadata_uri: String,  // IPFS or Arweave link
+    pub mint: Option<Pubkey>,  // SPL Token mint address
 }

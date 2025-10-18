@@ -12,4 +12,8 @@ pub struct Merchant {
     pub total_coupons_redeemed: u64,
     pub is_active: bool,
     pub created_at: i64,
+
+     // Geographic data
+    pub location: Location,
+    pub has_physical_location: bool,
 }

@@ -15,4 +15,10 @@ pub struct Promotion {
     pub price: u64,
     pub is_active: bool,
     pub created_at: i64,
+
+     // Geographic data
+    pub location: Location,
+    pub geo_cell_id: u64,       // For spatial indexing
+    pub radius_meters: u32,     // Service radius (0 = online only)
+    pub is_location_based: bool,
 }

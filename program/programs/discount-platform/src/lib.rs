@@ -8,14 +8,15 @@ pub mod events;
 pub mod instructions;
 
 use accounts::*;
+use errors::*;
 use instructions::*;
 
 #[program]
-pub mod discount_platform {
+pub mod my_program {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        instructions::initialize::initialize(ctx)
+        instructions::initialize::handler(ctx)
     }
 
     pub fn register_merchant(
@@ -23,7 +24,7 @@ pub mod discount_platform {
         name: String,
         category: String,
     ) -> Result<()> {
-        instructions::register_merchant::register_merchant(ctx, name, category)
+        instructions::register_merchant::handler(ctx, name, category)
     }
 
     pub fn create_coupon_promotion(
@@ -35,7 +36,7 @@ pub mod discount_platform {
         description: String,
         price: u64,
     ) -> Result<()> {
-        instructions::create_promotion::create_coupon_promotion(
+        instructions::create_coupon_promotion::handler(
             ctx,
             discount_percentage,
             max_supply,
@@ -47,26 +48,26 @@ pub mod discount_platform {
     }
 
     pub fn mint_coupon(ctx: Context<MintCoupon>, coupon_id: u64) -> Result<()> {
-        instructions::mint_coupon::mint_coupon(ctx, coupon_id)
+        instructions::mint_coupon::handler(ctx, coupon_id)
     }
 
     pub fn transfer_coupon(ctx: Context<TransferCoupon>) -> Result<()> {
-        instructions::transfer_coupon::transfer_coupon(ctx)
+        instructions::transfer_coupon::handler(ctx)
     }
 
     pub fn redeem_coupon(ctx: Context<RedeemCoupon>) -> Result<()> {
-        instructions::redeem_coupon::redeem_coupon(ctx)
+        instructions::redeem_coupon::handler(ctx)
     }
 
     pub fn list_coupon_for_sale(ctx: Context<ListCouponForSale>, price: u64) -> Result<()> {
-        instructions::list_for_sale::list_coupon_for_sale(ctx, price)
+        instructions::list_coupon_for_sale::handler(ctx, price)
     }
 
     pub fn buy_listed_coupon(ctx: Context<BuyListedCoupon>) -> Result<()> {
-        instructions::buy_listing::buy_listed_coupon(ctx)
+        instructions::buy_listed_coupon::handler(ctx)
     }
 
     pub fn cancel_listing(ctx: Context<CancelListing>) -> Result<()> {
-        instructions::list_for_sale::cancel_listing(ctx)
+        instructions::cancel_listing::handler(ctx)
     }
 }
