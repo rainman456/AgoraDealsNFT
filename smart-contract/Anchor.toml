@@ -1,0 +1,22 @@
+[toolchain]
+package_manager = "yarn"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+discount_platform = "kCBLrJxrFgB7yf8R8tMKZmsyaRDRq8YmdJSG9yjrSNe"
+
+[programs.devnet]
+discount_platform = "kCBLrJxrFgB7yf8R8tMKZmsyaRDRq8YmdJSG9yjrSNe"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "/root/.config/solana/id.json"
+
+[scripts]
+test = "cargo test"

@@ -1,0 +1,72 @@
+use anchor_lang::prelude::*;
+
+declare_id!("kCBLrJxrFgB7yf8R8tMKZmsyaRDRq8YmdJSG9yjrSNe");
+
+pub mod accounts;
+pub mod errors;
+pub mod events;
+pub mod instructions;
+
+use accounts::*;
+use instructions::*;
+
+#[program]
+pub mod discount_platform {
+    use super::*;
+
+    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+        instructions::initialize::initialize(ctx)
+    }
+
+    pub fn register_merchant(
+        ctx: Context<RegisterMerchant>,
+        name: String,
+        category: String,
+    ) -> Result<()> {
+        instructions::register_merchant::register_merchant(ctx, name, category)
+    }
+
+    pub fn create_coupon_promotion(
+        ctx: Context<CreateCouponPromotion>,
+        discount_percentage: u8,
+        max_supply: u32,
+        expiry_timestamp: i64,
+        category: String,
+        description: String,
+        price: u64,
+    ) -> Result<()> {
+        instructions::create_promotion::create_coupon_promotion(
+            ctx,
+            discount_percentage,
+            max_supply,
+            expiry_timestamp,
+            category,
+            description,
+            price,
+        )
+    }
+
+    pub fn mint_coupon(ctx: Context<MintCoupon>, coupon_id: u64) -> Result<()> {
+        instructions::mint_coupon::mint_coupon(ctx, coupon_id)
+    }
+
+    pub fn transfer_coupon(ctx: Context<TransferCoupon>) -> Result<()> {
+        instructions::transfer_coupon::transfer_coupon(ctx)
+    }
+
+    pub fn redeem_coupon(ctx: Context<RedeemCoupon>) -> Result<()> {
+        instructions::redeem_coupon::redeem_coupon(ctx)
+    }
+
+    pub fn list_coupon_for_sale(ctx: Context<ListCouponForSale>, price: u64) -> Result<()> {
+        instructions::list_for_sale::list_coupon_for_sale(ctx, price)
+    }
+
+    pub fn buy_listed_coupon(ctx: Context<BuyListedCoupon>) -> Result<()> {
+        instructions::buy_listing::buy_listed_coupon(ctx)
+    }
+
+    pub fn cancel_listing(ctx: Context<CancelListing>) -> Result<()> {
+        instructions::list_for_sale::cancel_listing(ctx)
+    }
+}
