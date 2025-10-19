@@ -3,7 +3,7 @@ use crate::accounts::Coupon;
 use crate::errors::CouponError;
 use crate::events::CouponTransferred;
 
-pub fn transfer_coupon(ctx: Context<TransferCoupon>) -> Result<()> {
+pub fn handler(ctx: Context<TransferCoupon>) -> Result<()> {
     let coupon = &mut ctx.accounts.coupon;
     require!(!coupon.is_redeemed, CouponError::CouponAlreadyRedeemed);
     require!(coupon.expiry_timestamp > Clock::get()?.unix_timestamp, CouponError::CouponExpired);
@@ -16,6 +16,7 @@ pub fn transfer_coupon(ctx: Context<TransferCoupon>) -> Result<()> {
 
     emit!(CouponTransferred {
         coupon: coupon.key(),
+        nft_mint: coupon.mint.unwrap_or(Pubkey::default()),
         from: old_owner,
         to: coupon.owner,
         timestamp: Clock::get()?.unix_timestamp,

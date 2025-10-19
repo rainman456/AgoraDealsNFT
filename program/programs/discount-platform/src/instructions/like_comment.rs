@@ -1,21 +1,7 @@
-
-pub fn handler(ctx: Context<LikeComment>) -> Result<()> {
-    let comment = &mut ctx.accounts.comment;
-    let like = &mut ctx.accounts.comment_like;
-    
-    like.user = ctx.accounts.user.key();
-    like.comment = comment.key();
-    like.created_at = Clock::get()?.unix_timestamp;
-    
-    comment.likes += 1;
-    
-    emit!(CommentLiked {
-        comment: comment.key(),
-        user: like.user,
-    });
-    
-    Ok(())
-}
+use anchor_lang::prelude::*;
+use crate::accounts::{Comment, CommentLike};
+use crate::errors::CouponError;
+use crate::events::CommentLiked;
 
 #[derive(Accounts)]
 pub struct LikeComment<'info> {
@@ -34,4 +20,22 @@ pub struct LikeComment<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
     pub system_program: Program<'info, System>,
+}
+
+pub fn handler(ctx: Context<LikeComment>) -> Result<()> {
+    let comment = &mut ctx.accounts.comment;
+    let like = &mut ctx.accounts.comment_like;
+    
+    like.user = ctx.accounts.user.key();
+    like.comment = comment.key();
+    like.created_at = Clock::get()?.unix_timestamp;
+    
+    comment.likes += 1;
+    
+    emit!(CommentLiked {
+        comment: comment.key(),
+        user: like.user,
+    });
+    
+    Ok(())
 }

@@ -1,7 +1,8 @@
+// src/instructions/register_merchant.rs
 use anchor_lang::prelude::*;
-use crate::accounts::*;
-use crate::errors::*;
-use crate::events::*;
+use crate::accounts::{Merchant, Marketplace, Location};
+use crate::errors::CouponError;
+use crate::events::MerchantRegistered;
 
 pub fn handler(
     ctx: Context<RegisterMerchant>,
@@ -30,6 +31,13 @@ pub fn handler(
         merchant.location = Location::from_coords(lat, lon);
         merchant.has_physical_location = true;
     } else {
+        merchant.location = Location {
+            latitude: 0,
+            longitude: 0,
+            region_code: 0,
+            country_code: 0,
+            city_hash: 0,
+        };
         merchant.has_physical_location = false;
     }
 
@@ -38,10 +46,9 @@ pub fn handler(
 
     emit!(MerchantRegistered {
         merchant: merchant.key(),
+        authority: merchant.authority,
         name,
         category,
-        latitude,
-        longitude,
         timestamp: merchant.created_at,
     });
 

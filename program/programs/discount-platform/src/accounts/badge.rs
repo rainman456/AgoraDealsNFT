@@ -1,3 +1,5 @@
+// src/accounts/badge.rs
+use anchor_lang::prelude::*;
 
 #[account]
 #[derive(InitSpace)]
@@ -7,12 +9,12 @@ pub struct UserReputation {
     pub total_redemptions: u32,
     pub total_ratings_given: u32,
     pub total_comments: u32,
-    pub reputation_score: u64,     // Calculated score
+    pub reputation_score: u64,
     pub tier: ReputationTier,
-    pub badges_earned: Vec<BadgeType>, // Use u8 array with max length
+    #[max_len(10)]
+    pub badges_earned: Vec<BadgeType>,
     pub joined_at: i64,
 }
-
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq)]
 pub enum ReputationTier {
@@ -32,7 +34,6 @@ pub enum BadgeType {
     EarlyAdopter = 4,
     MerchantPartner = 5,
     CommunityModerator = 6,
-    // Add more...
 }
 
 #[account]
@@ -40,9 +41,9 @@ pub enum BadgeType {
 pub struct BadgeNFT {
     pub user: Pubkey,
     pub badge_type: BadgeType,
-    pub mint: Pubkey,              // SPL Token mint
-    pub metadata: Pubkey,          // Metaplex metadata account
+    pub mint: Pubkey,
+    pub metadata: Pubkey,
     pub earned_at: i64,
     #[max_len(200)]
-    pub metadata_uri: String,      // IPFS link to badge image
+    pub metadata_uri: String,
 }

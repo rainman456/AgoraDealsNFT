@@ -4,7 +4,7 @@ use crate::accounts::{Coupon, Listing, Marketplace};
 use crate::errors::CouponError;
 use crate::events::CouponSold;
 
-pub fn buy_listed_coupon(ctx: Context<BuyListedCoupon>) -> Result<()> {
+pub fn handler(ctx: Context<BuyListedCoupon>) -> Result<()> {
     let listing = &mut ctx.accounts.listing;
     require!(listing.is_active, CouponError::ListingInactive);
 
@@ -43,11 +43,11 @@ pub fn buy_listed_coupon(ctx: Context<BuyListedCoupon>) -> Result<()> {
     emit!(CouponSold {
         listing: listing.key(),
         coupon: coupon.key(),
+        nft_mint: coupon.mint.unwrap_or(Pubkey::default()),
         seller: listing.seller,
         buyer: ctx.accounts.buyer.key(),
         price: listing.price,
         marketplace_fee,
-        timestamp: Clock::get()?.unix_timestamp,
     });
 
     // Update coupon owner and deactivate listing

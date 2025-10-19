@@ -1,3 +1,6 @@
+// src/accounts/comment.rs
+use anchor_lang::prelude::*;
+
 #[account]
 #[derive(InitSpace)]
 pub struct Comment {
@@ -8,7 +11,7 @@ pub struct Comment {
     pub created_at: i64,
     pub likes: u32,
     pub is_merchant_reply: bool,
-    pub parent_comment: Option<Pubkey>, // For threaded replies
+    pub parent_comment: Option<Pubkey>,
 }
 
 #[account]

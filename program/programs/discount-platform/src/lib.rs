@@ -1,18 +1,17 @@
+// src/lib.rs
 use anchor_lang::prelude::*;
+
+pub mod accounts;
+pub mod instructions;
+pub mod errors;
+pub mod events;
+
+use instructions::*;
 
 declare_id!("kCBLrJxrFgB7yf8R8tMKZmsyaRDRq8YmdJSG9yjrSNe");
 
-pub mod accounts;
-pub mod errors;
-pub mod events;
-pub mod instructions;
-
-use accounts::*;
-use errors::*;
-use instructions::*;
-
 #[program]
-pub mod my_program {
+pub mod discount_platform {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
@@ -23,8 +22,10 @@ pub mod my_program {
         ctx: Context<RegisterMerchant>,
         name: String,
         category: String,
+        latitude: Option<f64>,
+        longitude: Option<f64>,
     ) -> Result<()> {
-        instructions::register_merchant::handler(ctx, name, category)
+        instructions::register_merchant::handler(ctx, name, category, latitude, longitude)
     }
 
     pub fn create_coupon_promotion(
@@ -67,7 +68,45 @@ pub mod my_program {
         instructions::buy_listed_coupon::handler(ctx)
     }
 
-    pub fn cancel_listing(ctx: Context<CancelListing>) -> Result<()> {
-        instructions::cancel_listing::handler(ctx)
+    pub fn add_comment(ctx: Context<AddComment>, content: String, parent_comment: Option<Pubkey>) -> Result<()> {
+        instructions::add_comment::handler(ctx, content, parent_comment)
+    }
+
+    pub fn like_comment(ctx: Context<LikeComment>) -> Result<()> {
+        instructions::like_comment::handler(ctx)
+    }
+
+    pub fn rate_promotion(ctx: Context<RatePromotion>, stars: u8) -> Result<()> {
+        instructions::rate_promotion::handler(ctx, stars)
+    }
+
+    pub fn update_external_deal(
+        ctx: Context<UpdateExternalDeal>,
+        external_id: String,
+        title: String,
+        description: String,
+        original_price: u64,
+        discounted_price: u64,
+        category: String,
+        image_url: String,
+        affiliate_url: String,
+        expiry_timestamp: i64,
+    ) -> Result<()> {
+        instructions::update_external_deal::handler(
+            ctx,
+            external_id,
+            title,
+            description,
+            original_price,
+            discounted_price,
+            category,
+            image_url,
+            affiliate_url,
+            expiry_timestamp,
+        )
+    }
+
+    pub fn mint_badge(ctx: Context<MintBadge>, badge_type: BadgeType) -> Result<()> {
+        instructions::mint_badge::handler(ctx, badge_type)
     }
 }

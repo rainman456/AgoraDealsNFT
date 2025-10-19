@@ -3,7 +3,7 @@ use crate::accounts::{Coupon, Listing};
 use crate::errors::CouponError;
 use crate::events::{CouponListed, ListingCancelled};
 
-pub fn list_coupon_for_sale(
+pub fn handler(
     ctx: Context<ListCouponForSale>,
     price: u64,
 ) -> Result<()> {
@@ -24,9 +24,9 @@ pub fn list_coupon_for_sale(
     emit!(CouponListed {
         listing: listing.key(),
         coupon: listing.coupon,
+        nft_mint: coupon.mint.unwrap_or(Pubkey::default()),
         seller: listing.seller,
         price,
-        timestamp: listing.created_at,
     });
 
     Ok(())
