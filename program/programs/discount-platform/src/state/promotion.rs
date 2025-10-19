@@ -1,4 +1,6 @@
+// src/state/promotion.rs
 use anchor_lang::prelude::*;
+use super::Location;
 
 #[account]
 #[derive(InitSpace)]
@@ -16,9 +18,9 @@ pub struct Promotion {
     pub is_active: bool,
     pub created_at: i64,
 
-     // Geographic data
+    // Geographic data
     pub location: Location,
-    pub geo_cell_id: u64,       // For spatial indexing
-    pub radius_meters: u32,     // Service radius (0 = online only)
+    pub geo_cell_id: u64,
+    pub radius_meters: u32,
     pub is_location_based: bool,
 }

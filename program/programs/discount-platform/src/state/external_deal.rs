@@ -1,4 +1,4 @@
-// src/accounts/external_deal.rs
+// src/state/external_deal.rs
 use anchor_lang::prelude::*;
 
 #[account]
@@ -34,6 +34,11 @@ pub enum DealSource {
     Shopify,
     Amazon,
     Custom,
+}
+
+// Implement Space trait manually for enum
+impl anchor_lang::Space for DealSource {
+    const INIT_SPACE: usize = 1;
 }
 
 #[account]

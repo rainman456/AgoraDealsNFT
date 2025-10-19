@@ -1,4 +1,6 @@
+// src/state/merchant.rs
 use anchor_lang::prelude::*;
+use super::Location;
 
 #[account]
 #[derive(InitSpace)]
@@ -13,7 +15,7 @@ pub struct Merchant {
     pub is_active: bool,
     pub created_at: i64,
 
-     // Geographic data
+    // Geographic data
     pub location: Location,
     pub has_physical_location: bool,
 }

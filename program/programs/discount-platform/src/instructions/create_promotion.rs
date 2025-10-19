@@ -1,12 +1,15 @@
+// src/instructions/create_promotion.rs
 use anchor_lang::prelude::*;
-use crate::{accounts::Promotion, errors::CouponError, events::PromotionCreated};
+use crate::state::{Promotion, Merchant};
+use crate::errors::CouponError;
+use crate::events::PromotionCreated;
 
 #[derive(Accounts)]
 pub struct CreateCouponPromotion<'info> {
     #[account(
         init,
         payer = authority,
-        space = Promotion::INIT_SPACE,
+        space = 8 + Promotion::INIT_SPACE,
         seeds = [b"promotion", merchant.key().as_ref(), &merchant.total_coupons_created.to_le_bytes()],
         bump
     )]
@@ -46,6 +49,18 @@ pub fn handler(
     promotion.price = price;
     promotion.is_active = true;
     promotion.created_at = Clock::get()?.unix_timestamp;
+    
+    // Initialize location data (default to no location)
+    promotion.location = crate::state::Location {
+        latitude: 0,
+        longitude: 0,
+        region_code: 0,
+        country_code: 0,
+        city_hash: 0,
+    };
+    promotion.geo_cell_id = 0;
+    promotion.radius_meters = 0;
+    promotion.is_location_based = false;
 
     emit!(PromotionCreated {
         promotion: promotion.key(),
