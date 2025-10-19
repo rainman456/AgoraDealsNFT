@@ -4,7 +4,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount, mint_to, MintTo};
 use anchor_spl::associated_token::AssociatedToken;
 use mpl_token_metadata::instructions::CreateV1CpiBuilder;
 use mpl_token_metadata::types::{TokenStandard, PrintSupply};
-use crate::accounts::{Coupon, Promotion, Merchant, Marketplace};
+use crate::state::{Coupon, Promotion, Merchant, Marketplace};
 use crate::errors::CouponError;
 use crate::events::CouponMinted;
 

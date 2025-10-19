@@ -1,4 +1,4 @@
-// src/accounts/mod.rs
+// src/state/mod.rs
 pub mod marketplace;
 pub mod merchant;
 pub mod promotion;

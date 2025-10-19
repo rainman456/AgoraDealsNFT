@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::accounts::Coupon;
+use crate::state::Coupon;
 use crate::errors::CouponError;
 use crate::events::CouponTransferred;
 

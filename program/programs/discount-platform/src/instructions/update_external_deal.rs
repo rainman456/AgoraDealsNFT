@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::accounts::{ExternalDeal, DealSource};
+use crate::state::{ExternalDeal, DealSource};
 use crate::errors::CouponError;
 use crate::events::ExternalDealUpdated;
 

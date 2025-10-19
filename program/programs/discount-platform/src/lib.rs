@@ -1,12 +1,13 @@
 // src/lib.rs
 use anchor_lang::prelude::*;
 
-pub mod accounts;
+pub mod state;
 pub mod instructions;
 pub mod errors;
 pub mod events;
 
 use instructions::*;
+use state::BadgeType;
 
 declare_id!("kCBLrJxrFgB7yf8R8tMKZmsyaRDRq8YmdJSG9yjrSNe");
 

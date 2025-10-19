@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::accounts::{Rating, Promotion};
+use crate::state::{Rating, Promotion};
 use crate::errors::CouponError;
 use crate::events::PromotionRated;
 

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::{transfer, Transfer};
-use crate::accounts::{Coupon, Listing, Marketplace};
+use crate::state::{Coupon, Listing, Marketplace};
 use crate::errors::CouponError;
 use crate::events::CouponSold;
 

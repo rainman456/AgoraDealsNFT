@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
-// Re-export enums from accounts for use in events
-pub use crate::accounts::{BadgeType, DealSource};
+// Re-export enums from state for use in events
+pub use crate::state::{BadgeType, DealSource};
 
 #[event]
 pub struct MarketplaceInitialized {

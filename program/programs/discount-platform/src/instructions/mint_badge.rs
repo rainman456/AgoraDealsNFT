@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token};
 use mpl_token_metadata::instructions::CreateV1CpiBuilder;
 use mpl_token_metadata::types::{TokenStandard, PrintSupply};
-use crate::accounts::{BadgeNFT, BadgeType};
+use crate::state::{BadgeNFT, BadgeType};
 use crate::errors::CouponError;
 use crate::events::BadgeEarned;
 

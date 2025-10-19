@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::accounts::{Comment, CommentLike};
+use crate::state::{Comment, CommentLike};
 use crate::errors::CouponError;
 use crate::events::CommentLiked;
 

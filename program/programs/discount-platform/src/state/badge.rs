@@ -25,6 +25,11 @@ pub enum ReputationTier {
     Diamond,
 }
 
+// Manual Space implementation for enum
+impl anchor_lang::Space for ReputationTier {
+    const INIT_SPACE: usize = 1; // 1 byte for enum discriminant
+}
+
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq)]
 pub enum BadgeType {
     FirstPurchase = 0,
@@ -34,6 +39,11 @@ pub enum BadgeType {
     EarlyAdopter = 4,
     MerchantPartner = 5,
     CommunityModerator = 6,
+}
+
+// Manual Space implementation for enum
+impl anchor_lang::Space for BadgeType {
+    const INIT_SPACE: usize = 1; // 1 byte for enum discriminant
 }
 
 #[account]

@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::accounts::Marketplace;
+use crate::state::Marketplace;
 use crate::events::MarketplaceInitialized;
 use crate::errors::CouponError;
 

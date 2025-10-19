@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Token, TokenAccount, Mint, burn, Burn};
-use crate::accounts::{Coupon, Merchant};
+use crate::state::{Coupon, Merchant};
 use crate::errors::CouponError;
 use crate::events::CouponRedeemed;
 
