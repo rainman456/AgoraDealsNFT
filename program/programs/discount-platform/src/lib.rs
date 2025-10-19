@@ -29,7 +29,7 @@ pub mod discount_platform {
         instructions::register_merchant::handler(ctx, name, category, latitude, longitude)
     }
 
-    pub fn create_coupon_promotion(
+    pub fn create_promotion(
         ctx: Context<CreateCouponPromotion>,
         discount_percentage: u8,
         max_supply: u32,
@@ -38,7 +38,8 @@ pub mod discount_platform {
         description: String,
         price: u64,
     ) -> Result<()> {
-        instructions::create_coupon_promotion::handler(
+        // Fixed: changed from create_coupon_promotion to create_promotion
+        instructions::create_promotion::handler(
             ctx,
             discount_percentage,
             max_supply,
@@ -61,12 +62,14 @@ pub mod discount_platform {
         instructions::redeem_coupon::handler(ctx)
     }
 
-    pub fn list_coupon_for_sale(ctx: Context<ListCouponForSale>, price: u64) -> Result<()> {
-        instructions::list_coupon_for_sale::handler(ctx, price)
+    pub fn list_for_sale(ctx: Context<ListCouponForSale>, price: u64) -> Result<()> {
+        // Fixed: changed from list_coupon_for_sale to list_for_sale
+        instructions::list_for_sale::handler(ctx, price)
     }
 
-    pub fn buy_listed_coupon(ctx: Context<BuyListedCoupon>) -> Result<()> {
-        instructions::buy_listed_coupon::handler(ctx)
+    pub fn buy_listing(ctx: Context<BuyListedCoupon>) -> Result<()> {
+        // Fixed: changed from buy_listed_coupon to buy_listing
+        instructions::buy_listing::handler(ctx)
     }
 
     pub fn add_comment(ctx: Context<AddComment>, content: String, parent_comment: Option<Pubkey>) -> Result<()> {
