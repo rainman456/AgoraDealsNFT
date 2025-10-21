@@ -4,7 +4,8 @@ members = [
 ]
 resolver = "2"
 
-
+[workspace.dependencies]
+proc-macro2 = "=1.0.81"
 
 [profile.release]
 opt-level = "z"
@@ -18,3 +19,5 @@ incremental = true
 opt-level = 3
 incremental = true
 codegen-units = 1
+
+

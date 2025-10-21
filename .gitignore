@@ -8,4 +8,3 @@ test-ledger
 .yarn
 parse.py
 .log
-Cargo.lock

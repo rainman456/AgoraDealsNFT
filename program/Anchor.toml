@@ -3,9 +3,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-discount_platform = "kCBLrJxrFgB7yf8R8tMKZmsyaRDRq8YmdJSG9yjrSNe"
-
-
+discount_platform = "2mWeVCNJqNwsVbe963Nj8kdF4WfpyoEjY8erAsa7Y7Uh"
 
 [registry]
 url = "https://api.apr.dev"
@@ -14,8 +12,6 @@ url = "https://api.apr.dev"
 cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
-
 [scripts]
 #test = "cargo test"
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
-

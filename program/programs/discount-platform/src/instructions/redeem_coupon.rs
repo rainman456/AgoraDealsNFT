@@ -54,9 +54,11 @@ pub struct RedeemCoupon<'info> {
     )]
     pub coupon: Account<'info, Coupon>,
     
+    /// CHECK: SPL Token Mint
     #[account(mut)]
     pub nft_mint: Account<'info, Mint>,
     
+    /// CHECK: SPL Token Account
     #[account(
         mut,
         constraint = token_account.mint == nft_mint.key(),

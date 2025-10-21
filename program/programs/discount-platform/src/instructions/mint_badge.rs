@@ -19,6 +19,7 @@ pub struct MintBadge<'info> {
     )]
     pub badge_nft: Account<'info, BadgeNFT>,
     
+    /// CHECK: SPL Token Mint for Badge NFT
     #[account(
         init,
         payer = user,

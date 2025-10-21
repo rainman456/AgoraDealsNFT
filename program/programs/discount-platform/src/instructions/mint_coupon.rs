@@ -19,6 +19,7 @@ pub struct MintCoupon<'info> {
     )]
     pub coupon: Account<'info, Coupon>,
     
+    /// CHECK: SPL Token Mint for NFT
     #[account(
         init,
         payer = payer,
@@ -28,6 +29,7 @@ pub struct MintCoupon<'info> {
     )]
     pub nft_mint: Account<'info, Mint>,
     
+    /// CHECK: Associated Token Account for recipient
     #[account(
         init,
         payer = payer,
