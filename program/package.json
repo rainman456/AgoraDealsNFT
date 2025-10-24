@@ -1,20 +1,34 @@
 {
-  "license": "ISC",
+  "name": "discount-platform-tests",
+  "version": "1.0.0",
+  "description": "Test suite for Discount Platform Solana program",
   "scripts": {
-    "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
-    "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
+    "test": "anchor test",
+    "test:unit": "ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.test.ts",
+    "test:merchant": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_merchant.ts",
+    "test:promotion": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_promotion.ts",
+    "test:coupon": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_coupon.ts",
+    "test:marketplace": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_marketplace-listing.ts",
+    "test:rating": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_rating.ts",
+    "test:comment": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_comment.ts",
+    "test:badge": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_badge.ts",
+    "test:external": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_external-deal.ts",
+    "test:integration": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_integration.ts"
   },
   "dependencies": {
-    "@coral-xyz/anchor": "^0.31.0"
+    "@coral-xyz/anchor": "^0.31.0",
+    "@solana/spl-token": "^0.4.8",
+    "@solana/web3.js": "^1.95.0",
+    "dotenv": "^17.2.3"
   },
   "devDependencies": {
-    "chai": "^4.3.4",
-    "mocha": "^9.0.3",
-    "ts-mocha": "^10.0.0",
-    "@types/bn.js": "^5.1.0",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.0.0",
-    "typescript": "^5.7.3",
-    "prettier": "^2.6.2"
+    "@types/node": "^20.0.0",
+    "chai": "^4.3.6",
+    "mocha": "^9.2.0",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.0"
   }
 }

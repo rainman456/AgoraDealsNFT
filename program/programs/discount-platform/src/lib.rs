@@ -9,7 +9,7 @@ pub mod events;
 use instructions::*;
 use state::BadgeType;
 
-declare_id!("kCBLrJxrFgB7yf8R8tMKZmsyaRDRq8YmdJSG9yjrSNe");
+declare_id!("DC8fXCDsK7RtyBa83xPUCFBGnho8EJSD3LJyCyMFH2rr");
 
 #[program]
 pub mod discount_platform {
