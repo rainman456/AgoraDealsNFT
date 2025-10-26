@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::state::{Comment, Promotion};
+use crate::state::{Comment, Promotion, Merchant};
 use crate::errors::CouponError;
 use crate::events::CommentAdded;
 
@@ -16,6 +16,9 @@ pub struct AddComment<'info> {
     pub comment: Account<'info, Comment>,
     
     pub promotion: Account<'info, Promotion>,
+    
+    /// CHECK: Merchant account to verify if user is the merchant authority
+    pub merchant: UncheckedAccount<'info>,
     
     #[account(mut)]
     pub user: Signer<'info>,
@@ -39,8 +42,13 @@ pub fn handler(
     comment.is_merchant_reply = false;
     comment.parent_comment = parent_comment;
     
-    if ctx.accounts.promotion.merchant == ctx.accounts.user.key() {
-        comment.is_merchant_reply = true;
+    // Check if the user is the merchant authority
+    if ctx.accounts.merchant.key() == ctx.accounts.promotion.merchant {
+        let merchant_data = ctx.accounts.merchant.try_borrow_data()?;
+        let merchant = Merchant::try_deserialize(&mut &merchant_data[..])?;
+        if merchant.authority == ctx.accounts.user.key() {
+            comment.is_merchant_reply = true;
+        }
     }
     
     emit!(CommentAdded {

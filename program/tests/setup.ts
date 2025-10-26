@@ -11,6 +11,19 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 
+// Helper to convert u32 to little-endian bytes (4 bytes)
+export function u32ToLeBytes(num: number): Buffer {
+  const buffer = Buffer.alloc(4);
+  buffer.writeUInt32LE(num, 0);
+  return buffer;
+}
+
+// Helper to convert u64 to little-endian bytes (8 bytes)
+export function u64ToLeBytes(num: number | BN): Buffer {
+  const bn = typeof num === 'number' ? new BN(num) : num;
+  return bn.toArrayLike(Buffer, 'le', 8);
+}
+
 // Re-export for convenience
 export { BN, PublicKey, Keypair, LAMPORTS_PER_SOL };
 export { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID };

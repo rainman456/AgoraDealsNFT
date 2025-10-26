@@ -42,6 +42,10 @@ pub struct MintCoupon<'info> {
     #[account(mut)]
     pub metadata: UncheckedAccount<'info>,
     
+    /// CHECK: Master Edition account
+    #[account(mut)]
+    pub master_edition: UncheckedAccount<'info>,
+    
     #[account(mut)]
     pub promotion: Account<'info, Promotion>,
     
@@ -60,8 +64,14 @@ pub struct MintCoupon<'info> {
     pub authority: Signer<'info>,
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
+    
     /// CHECK: Metaplex Token Metadata Program
     pub token_metadata_program: UncheckedAccount<'info>,
+    
+    /// CHECK: Sysvar Instructions
+    #[account(address = anchor_lang::solana_program::sysvar::instructions::ID)]
+    pub sysvar_instructions: UncheckedAccount<'info>,
+    
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
 }
@@ -101,11 +111,14 @@ pub fn handler(ctx: Context<MintCoupon>, coupon_id: u64) -> Result<()> {
     // Create Metaplex metadata using new V1 builder pattern
     CreateV1CpiBuilder::new(&ctx.accounts.token_metadata_program.to_account_info())
         .metadata(&ctx.accounts.metadata.to_account_info())
+        .master_edition(Some(&ctx.accounts.master_edition.to_account_info()))
         .mint(&ctx.accounts.nft_mint.to_account_info(), true)
         .authority(&ctx.accounts.authority.to_account_info())
         .payer(&ctx.accounts.payer.to_account_info())
         .update_authority(&ctx.accounts.authority.to_account_info(), true)
         .system_program(&ctx.accounts.system_program.to_account_info())
+        .sysvar_instructions(&ctx.accounts.sysvar_instructions.to_account_info())
+        .spl_token_program(Some(&ctx.accounts.token_program.to_account_info()))
         .name("Discount Coupon".to_string())
         .symbol("DC".to_string())
         .uri(coupon.metadata_uri.clone())

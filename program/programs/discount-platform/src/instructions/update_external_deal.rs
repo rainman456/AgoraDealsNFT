@@ -32,17 +32,49 @@ pub fn handler(
     affiliate_url: String,
     expiry_timestamp: i64,
 ) -> Result<()> {
+    // Validate string lengths match the struct's max_len attributes
+    require!(
+        external_id.len() <= 100,
+        CouponError::InvalidInput
+    );
+    require!(
+        title.len() <= 200,
+        CouponError::InvalidInput
+    );
+    require!(
+        description.len() <= 500,
+        CouponError::InvalidInput
+    );
+    require!(
+        category.len() <= 50,
+        CouponError::InvalidInput
+    );
+    require!(
+        image_url.len() <= 200,
+        CouponError::InvalidInput
+    );
+    require!(
+        affiliate_url.len() <= 200,
+        CouponError::InvalidInput
+    );
+
     let deal = &mut ctx.accounts.external_deal;
     let current_time = Clock::get()?.unix_timestamp;
     
-    if deal.oracle_authority == Pubkey::default() {
+    let is_new_deal = deal.oracle_authority == Pubkey::default();
+    
+    if is_new_deal {
         deal.oracle_authority = ctx.accounts.payer.key();
         deal.source = DealSource::Skyscanner;
         deal.external_id = external_id;
         deal.verification_count = 1;
         deal.is_verified = false;
     } else {
-        require!(current_time - deal.last_updated >= 3600, CouponError::InvalidExpiry);
+        // For existing deals, check update interval (1 hour minimum)
+        require!(
+            current_time >= deal.last_updated + 3600,
+            CouponError::InvalidExpiry
+        );
         deal.verification_count += 1;
     }
     

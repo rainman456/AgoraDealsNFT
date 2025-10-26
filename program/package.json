@@ -8,12 +8,14 @@
     "test:merchant": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_merchant.ts",
     "test:promotion": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_promotion.ts",
     "test:coupon": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_coupon.ts",
-    "test:marketplace": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_marketplace-listing.ts",
+    "test:marketplace": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_marketplace_listing.ts",
+    "test:market": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_marketplace.ts",
     "test:rating": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_rating.ts",
     "test:comment": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_comment.ts",
     "test:badge": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_badge.ts",
-    "test:external": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_external-deal.ts",
-    "test:integration": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_integration.ts"
+    "test:external": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_external_deal.ts",
+    "test:integration": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_integration.ts",
+    "test:debug": "ts-mocha -p ./tsconfig.json -t 1000000 tests/debug_seed.ts"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.0",

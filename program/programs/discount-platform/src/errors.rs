@@ -40,8 +40,10 @@ pub enum CouponError {
     WrongCoupon,
     #[msg("Not listing seller")]
     NotListingSeller,
-     #[msg("Invalid coordinates")]
+    #[msg("Invalid coordinates")]
     InvalidCoordinates,
     #[msg("Location not supported")]
     LocationNotSupported,
+    #[msg("Invalid input: string exceeds maximum length")]
+    InvalidInput,
 }

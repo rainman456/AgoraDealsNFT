@@ -8,6 +8,8 @@ import {
   TestAccounts,
   getExpiryTimestamp,
   derivePDA,
+  accountExists,
+  u64ToLeBytes,
   LAMPORTS_PER_SOL,
   airdrop
 } from "./setup";
@@ -28,56 +30,69 @@ describe("Comment System", () => {
   before(async () => {
     accounts = await setupTestAccounts(program, connection);
     
-    // Initialize marketplace
-    await program.methods
-      .initialize()
-      .accounts({
-        marketplace: accounts.marketplacePDA,
-        authority: accounts.marketplaceAuthority.publicKey,
-        systemProgram: SystemProgram.programId,
-      })
-      .signers([accounts.marketplaceAuthority])
-      .rpc();
+    // Initialize marketplace only if it doesn't exist
+    const marketplaceExists = await accountExists(connection, accounts.marketplacePDA);
+    if (!marketplaceExists) {
+      await program.methods
+        .initialize()
+        .accounts({
+          marketplace: accounts.marketplacePDA,
+          authority: accounts.marketplaceAuthority.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([accounts.marketplaceAuthority])
+        .rpc();
+    }
 
-    // Register merchant
-    await program.methods
-      .registerMerchant("Test Restaurant", "restaurant", null, null)
-      .accounts({
-        merchant: accounts.merchant1PDA,
-        marketplace: accounts.marketplacePDA,
-        authority: accounts.merchant1.publicKey,
-        systemProgram: SystemProgram.programId,
-      })
-      .signers([accounts.merchant1])
-      .rpc();
+    // Register merchant only if it doesn't exist
+    const merchantExists = await accountExists(connection, accounts.merchant1PDA);
+    if (!merchantExists) {
+      await program.methods
+        .registerMerchant("Test Restaurant", "restaurant", null, null)
+        .accounts({
+          merchant: accounts.merchant1PDA,
+          marketplace: accounts.marketplacePDA,
+          authority: accounts.merchant1.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([accounts.merchant1])
+        .rpc();
+    }
 
+    // Get merchant to derive promotion PDA
+    const merchant = await program.account.merchant.fetch(accounts.merchant1PDA);
+    
     // Create promotion
     [promotionPDA] = derivePDA(
       [
         Buffer.from("promotion"),
         accounts.merchant1PDA.toBuffer(),
-        Buffer.from(new BN(0).toArray("le", 8)),
+        u64ToLeBytes(merchant.totalCouponsCreated),
       ],
       program.programId
     );
 
-    await program.methods
-      .createPromotion(
-        50,
-        100,
-        getExpiryTimestamp(30),
-        "food",
-        "Test promotion for comments",
-        new BN(5 * LAMPORTS_PER_SOL)
-      )
-      .accounts({
-        promotion: promotionPDA,
-        merchant: accounts.merchant1PDA,
-        authority: accounts.merchant1.publicKey,
-        systemProgram: SystemProgram.programId,
-      })
-      .signers([accounts.merchant1])
-      .rpc();
+    // Create promotion only if it doesn't exist
+    const promotionExists = await accountExists(connection, promotionPDA);
+    if (!promotionExists) {
+      await program.methods
+        .createPromotion(
+          50,
+          100,
+          getExpiryTimestamp(30),
+          "food",
+          "Test promotion for comments",
+          new BN(5 * LAMPORTS_PER_SOL)
+        )
+        .accounts({
+          promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
+          authority: accounts.merchant1.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([accounts.merchant1])
+        .rpc();
+    }
   });
 
   describe("Adding Comments", () => {
@@ -96,6 +111,7 @@ describe("Comment System", () => {
         .accounts({
           comment: commentPDA,
           promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
           user: accounts.user1.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -127,6 +143,7 @@ describe("Comment System", () => {
         .accounts({
           comment: replyPDA,
           promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
           user: accounts.merchant1.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -154,6 +171,7 @@ describe("Comment System", () => {
         .accounts({
           comment: user2CommentPDA,
           promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
           user: accounts.user2.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -184,6 +202,7 @@ describe("Comment System", () => {
         .accounts({
           comment: maxCommentPDA,
           promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
           user: testUser.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -213,6 +232,7 @@ describe("Comment System", () => {
           .accounts({
             comment: emptyCommentPDA,
             promotion: promotionPDA,
+            merchant: accounts.merchant1PDA,
             user: testUser.publicKey,
             systemProgram: SystemProgram.programId,
           })
@@ -245,6 +265,7 @@ describe("Comment System", () => {
           .accounts({
             comment: longCommentPDA,
             promotion: promotionPDA,
+            merchant: accounts.merchant1PDA,
             user: testUser.publicKey,
             systemProgram: SystemProgram.programId,
           })
@@ -361,6 +382,7 @@ describe("Comment System", () => {
         .accounts({
           comment: anotherCommentPDA,
           promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
           user: testUser.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -454,6 +476,7 @@ describe("Comment System", () => {
         .accounts({
           comment: testReplyPDA,
           promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
           user: testUser.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -484,6 +507,7 @@ describe("Comment System", () => {
         .accounts({
           comment: userCommentPDA,
           promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
           user: testUser.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -506,6 +530,7 @@ describe("Comment System", () => {
         .accounts({
           comment: merchantReplyPDA,
           promotion: promotionPDA,
+          merchant: accounts.merchant1PDA,
           user: accounts.merchant2.publicKey,
           systemProgram: SystemProgram.programId,
         })
