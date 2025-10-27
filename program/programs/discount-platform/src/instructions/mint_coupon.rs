@@ -4,7 +4,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount, mint_to, MintTo};
 use anchor_spl::associated_token::AssociatedToken;
 use mpl_token_metadata::instructions::CreateV1CpiBuilder;
 use mpl_token_metadata::types::{TokenStandard, PrintSupply};
-use crate::state::{Coupon, Promotion, Merchant, Marketplace};
+use crate::state::{Coupon, Promotion, Merchant, Marketplace, UserStats, BadgeType, ReputationTier};
 use crate::errors::CouponError;
 use crate::events::CouponMinted;
 
@@ -58,6 +58,15 @@ pub struct MintCoupon<'info> {
     /// CHECK: Recipient of the NFT
     pub recipient: UncheckedAccount<'info>,
     
+    #[account(
+        init_if_needed,
+        payer = payer,
+        space = 8 + UserStats::INIT_SPACE,
+        seeds = [b"user_stats", recipient.key().as_ref()],
+        bump
+    )]
+    pub user_stats: Account<'info, UserStats>,
+    
     #[account(mut)]
     pub payer: Signer<'info>,
     
@@ -82,6 +91,34 @@ pub fn handler(ctx: Context<MintCoupon>, coupon_id: u64) -> Result<()> {
     require!(promotion.current_supply < promotion.max_supply, CouponError::SupplyExhausted);
     require!(promotion.expiry_timestamp > Clock::get()?.unix_timestamp, CouponError::PromotionExpired);
 
+    let current_time = Clock::get()?.unix_timestamp;
+
+    // Initialize UserStats if first time
+    let user_stats = &mut ctx.accounts.user_stats;
+    if user_stats.user == Pubkey::default() {
+        user_stats.user = ctx.accounts.recipient.key();
+        user_stats.total_purchases = 0;
+        user_stats.total_redemptions = 0;
+        user_stats.total_ratings_given = 0;
+        user_stats.total_comments = 0;
+        user_stats.total_listings = 0;
+        user_stats.reputation_score = 0;
+        user_stats.tier = ReputationTier::Bronze;
+        user_stats.badges_earned = Vec::new();
+        user_stats.joined_at = current_time;
+        user_stats.last_activity = current_time;
+    }
+
+    // Update user stats for purchase
+    user_stats.total_purchases += 1;
+    user_stats.add_reputation(5); // 5 points per purchase
+    user_stats.last_activity = current_time;
+
+    // Check for FirstPurchase badge eligibility
+    if user_stats.total_purchases == 1 && !user_stats.has_badge(BadgeType::FirstPurchase as u8) {
+        msg!("🏆 User eligible for FirstPurchase badge! Total purchases: {}", user_stats.total_purchases);
+    }
+
     let coupon = &mut ctx.accounts.coupon;
     coupon.id = coupon_id;
     coupon.promotion = promotion.key();
@@ -91,7 +128,7 @@ pub fn handler(ctx: Context<MintCoupon>, coupon_id: u64) -> Result<()> {
     coupon.expiry_timestamp = promotion.expiry_timestamp;
     coupon.is_redeemed = false;
     coupon.redeemed_at = 0;
-    coupon.created_at = Clock::get()?.unix_timestamp;
+    coupon.created_at = current_time;
     coupon.mint = Some(ctx.accounts.nft_mint.key());
     coupon.metadata_uri = "https://example.com/metadata.json".to_string();
 
@@ -139,6 +176,9 @@ pub fn handler(ctx: Context<MintCoupon>, coupon_id: u64) -> Result<()> {
         merchant: coupon.merchant,
         discount_percentage: coupon.discount_percentage,
     });
+
+    msg!("Coupon minted! Purchases: {} | Reputation: {} | Tier: {:?}", 
+        user_stats.total_purchases, user_stats.reputation_score, user_stats.tier);
 
     Ok(())
 }

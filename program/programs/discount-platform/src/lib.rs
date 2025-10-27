@@ -72,6 +72,10 @@ pub mod discount_platform {
         instructions::buy_listing::handler(ctx)
     }
 
+    pub fn cancel_listing(ctx: Context<CancelListing>) -> Result<()> {
+    instructions::list_for_sale::cancel_listing(ctx)
+}
+
     pub fn add_comment(ctx: Context<AddComment>, content: String, parent_comment: Option<Pubkey>) -> Result<()> {
         instructions::add_comment::handler(ctx, content, parent_comment)
     }
@@ -113,4 +117,27 @@ pub mod discount_platform {
     pub fn mint_badge(ctx: Context<MintBadge>, badge_type: BadgeType) -> Result<()> {
         instructions::mint_badge::handler(ctx, badge_type)
     }
+
+   pub fn initialize_staking(
+    ctx: Context<InitializeStaking>,
+    reward_rate_per_day: u64,
+    min_stake_duration: i64,
+) -> Result<()> {
+    instructions::initialize_staking::handler(ctx, reward_rate_per_day, min_stake_duration)
+}
+
+pub fn stake_coupon(
+    ctx: Context<StakeCoupon>,
+    duration_days: u64,
+) -> Result<()> {
+    instructions::stake_coupon::handler(ctx, duration_days)
+}
+
+pub fn claim_rewards(ctx: Context<ClaimRewards>) -> Result<()> {
+    instructions::claim_rewards::handler(ctx)
+}
+
+pub fn auto_award_badge(ctx: Context<AutoAwardBadge>, badge_type: BadgeType) -> Result<()> {
+    instructions::auto_award_badge::handler(ctx, badge_type)
+}
 }

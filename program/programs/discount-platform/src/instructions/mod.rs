@@ -12,6 +12,13 @@ pub mod rate_promotion;
 pub mod update_external_deal;
 pub mod like_comment;
 pub mod add_comment;
+pub mod initialize_staking;
+pub mod stake_coupon;
+pub mod claim_rewards;
+pub mod auto_award_badge;
+
+
+
 
 pub use initialize::*;
 pub use register_merchant::*;
@@ -26,3 +33,7 @@ pub use rate_promotion::*;
 pub use update_external_deal::*;
 pub use like_comment::*;
 pub use add_comment::*;
+pub use initialize_staking::*;
+pub use stake_coupon::*;
+pub use claim_rewards::*;
+pub use auto_award_badge::*;

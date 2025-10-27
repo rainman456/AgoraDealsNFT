@@ -1,4 +1,4 @@
-// src/accounts/badge.rs
+// src/state/badge.rs
 use anchor_lang::prelude::*;
 
 #[account]
@@ -10,24 +10,10 @@ pub struct UserReputation {
     pub total_ratings_given: u32,
     pub total_comments: u32,
     pub reputation_score: u64,
-    pub tier: ReputationTier,
+    pub tier: crate::state::user_stats::ReputationTier,  // Use the one from user_stats
     #[max_len(10)]
     pub badges_earned: Vec<BadgeType>,
     pub joined_at: i64,
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq)]
-pub enum ReputationTier {
-    Bronze,
-    Silver,
-    Gold,
-    Platinum,
-    Diamond,
-}
-
-// Manual Space implementation for enum
-impl anchor_lang::Space for ReputationTier {
-    const INIT_SPACE: usize = 1; // 1 byte for enum discriminant
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq)]
