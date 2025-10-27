@@ -23,6 +23,7 @@ describe("Rating System", () => {
   let accounts: TestAccounts;
   let promotionPDA: PublicKey;
   let ratingPDA: PublicKey;
+  let userStatsPDA: PublicKey;
 
   before(async () => {
     accounts = await setupTestAccounts(program, connection);
@@ -98,6 +99,11 @@ describe("Rating System", () => {
       ],
       program.programId
     );
+
+    [userStatsPDA] = derivePDA(
+      [Buffer.from("user_stats"), accounts.user1.publicKey.toBuffer()],
+      program.programId
+    );
   });
 
   it("Rates a promotion", async () => {
@@ -106,6 +112,7 @@ describe("Rating System", () => {
       .accounts({
         rating: ratingPDA,
         promotion: promotionPDA,
+        userStats: userStatsPDA,
         user: accounts.user1.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -119,11 +126,20 @@ describe("Rating System", () => {
     assert.equal(rating.merchant.toString(), accounts.merchant1PDA.toString());
     assert.isAbove(rating.createdAt.toNumber(), 0);
     assert.isAbove(rating.updatedAt.toNumber(), 0);
+
+    // Verify UserStats was created and updated
+    const userStats = await program.account.userStats.fetch(userStatsPDA);
+    assert.equal(userStats.user.toString(), accounts.user1.publicKey.toString());
+    assert.equal(userStats.totalRatingsGiven, 1);
+    assert.isAbove(userStats.reputationScore.toNumber(), 0);
+    console.log("UserStats - Ratings:", userStats.totalRatingsGiven, "Reputation:", userStats.reputationScore.toString());
   });
 
   it("Updates existing rating", async () => {
     const ratingBefore = await program.account.rating.fetch(ratingPDA);
     const createdAt = ratingBefore.createdAt;
+    const userStatsBefore = await program.account.userStats.fetch(userStatsPDA);
+    const ratingCountBefore = userStatsBefore.totalRatingsGiven;
 
     // Wait a moment to ensure different timestamp
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -133,6 +149,7 @@ describe("Rating System", () => {
       .accounts({
         rating: ratingPDA,
         promotion: promotionPDA,
+        userStats: userStatsPDA,
         user: accounts.user1.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -146,6 +163,10 @@ describe("Rating System", () => {
     // The test should just verify the rating was updated
     // assert.equal(rating.createdAt.toNumber(), createdAt.toNumber());
     assert.isAbove(rating.updatedAt.toNumber(), 0);
+
+    // Verify UserStats rating count doesn't increase on update
+    const userStatsAfter = await program.account.userStats.fetch(userStatsPDA);
+    assert.equal(userStatsAfter.totalRatingsGiven, ratingCountBefore, "Rating count should not increase on update");
   });
 
   it("Multiple users can rate the same promotion", async () => {
@@ -158,11 +179,17 @@ describe("Rating System", () => {
       program.programId
     );
 
+    const [user2StatsPDA] = derivePDA(
+      [Buffer.from("user_stats"), accounts.user2.publicKey.toBuffer()],
+      program.programId
+    );
+
     await program.methods
       .ratePromotion(4)
       .accounts({
         rating: user2RatingPDA,
         promotion: promotionPDA,
+        userStats: user2StatsPDA,
         user: accounts.user2.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -172,6 +199,10 @@ describe("Rating System", () => {
     const rating = await program.account.rating.fetch(user2RatingPDA);
     assert.equal(rating.stars, 4);
     assert.equal(rating.user.toString(), accounts.user2.publicKey.toString());
+
+    // Verify user2's stats were created
+    const user2Stats = await program.account.userStats.fetch(user2StatsPDA);
+    assert.equal(user2Stats.totalRatingsGiven, 1);
   });
 
   it("User can rate different promotions", async () => {
@@ -218,11 +249,19 @@ describe("Rating System", () => {
       program.programId
     );
 
+    // Check if this rating already exists
+    const ratingExists = await accountExists(connection, rating2PDA);
+    
+    // Get rating count before
+    const userStatsBefore = await program.account.userStats.fetch(userStatsPDA);
+    const ratingCountBefore = userStatsBefore.totalRatingsGiven;
+
     await program.methods
       .ratePromotion(5)
       .accounts({
         rating: rating2PDA,
         promotion: promotion2PDA,
+        userStats: userStatsPDA,
         user: accounts.user1.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -232,6 +271,14 @@ describe("Rating System", () => {
     const rating = await program.account.rating.fetch(rating2PDA);
     assert.equal(rating.stars, 5);
     assert.equal(rating.promotion.toString(), promotion2PDA.toString());
+
+    // Verify user1's rating count increased by exactly 1 only if it was a new rating
+    const userStats = await program.account.userStats.fetch(userStatsPDA);
+    if (!ratingExists) {
+      assert.equal(userStats.totalRatingsGiven, ratingCountBefore + 1, "Rating count should increase by 1");
+    } else {
+      assert.equal(userStats.totalRatingsGiven, ratingCountBefore, "Rating count should not change on update");
+    }
   });
 
   it("Fails with invalid rating - zero stars", async () => {
@@ -244,12 +291,18 @@ describe("Rating System", () => {
       program.programId
     );
 
+    const [merchant1StatsPDA] = derivePDA(
+      [Buffer.from("user_stats"), accounts.merchant1.publicKey.toBuffer()],
+      program.programId
+    );
+
     try {
       await program.methods
         .ratePromotion(0) // Invalid: 0 stars
         .accounts({
           rating: testRatingPDA,
           promotion: promotionPDA,
+          userStats: merchant1StatsPDA,
           user: accounts.merchant1.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -272,12 +325,18 @@ describe("Rating System", () => {
       program.programId
     );
 
+    const [merchant2StatsPDA] = derivePDA(
+      [Buffer.from("user_stats"), accounts.merchant2.publicKey.toBuffer()],
+      program.programId
+    );
+
     try {
       await program.methods
         .ratePromotion(6) // Invalid: > 5 stars
         .accounts({
           rating: testRatingPDA,
           promotion: promotionPDA,
+          userStats: merchant2StatsPDA,
           user: accounts.merchant2.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -303,11 +362,17 @@ describe("Rating System", () => {
         program.programId
       );
 
+      const [testUserStatsPDA] = derivePDA(
+        [Buffer.from("user_stats"), testUser.publicKey.toBuffer()],
+        program.programId
+      );
+
       await program.methods
         .ratePromotion(stars)
         .accounts({
           rating: testRatingPDA,
           promotion: promotionPDA,
+          userStats: testUserStatsPDA,
           user: testUser.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -370,6 +435,7 @@ describe("Rating System", () => {
       .accounts({
         rating: rating2PDA,
         promotion: promotion2PDA,
+        userStats: userStatsPDA,
         user: accounts.user1.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -396,6 +462,11 @@ describe("Rating System", () => {
     // Check if rating exists
     const exists = await accountExists(connection, newRatingPDA);
     
+    const [user2StatsPDA] = derivePDA(
+      [Buffer.from("user_stats"), accounts.user2.publicKey.toBuffer()],
+      program.programId
+    );
+
     if (!exists) {
       // Create initial rating
       await program.methods
@@ -403,6 +474,7 @@ describe("Rating System", () => {
         .accounts({
           rating: newRatingPDA,
           promotion: promotionPDA,
+          userStats: user2StatsPDA,
           user: accounts.user2.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -422,6 +494,7 @@ describe("Rating System", () => {
       .accounts({
         rating: newRatingPDA,
         promotion: promotionPDA,
+        userStats: user2StatsPDA,
         user: accounts.user2.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -455,11 +528,17 @@ describe("Rating System", () => {
       program.programId
     );
 
+    const [merchant1StatsPDA] = derivePDA(
+      [Buffer.from("user_stats"), accounts.merchant1.publicKey.toBuffer()],
+      program.programId
+    );
+
     const tx = await program.methods
       .ratePromotion(5)
       .accounts({
         rating: eventTestRatingPDA,
         promotion: promotionPDA,
+        userStats: merchant1StatsPDA,
         user: accounts.merchant1.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -485,6 +564,7 @@ describe("Rating System", () => {
       .accounts({
         rating: minRatingPDA,
         promotion: promotionPDA,
+        userStats: userStatsPDA,
         user: accounts.user1.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -500,6 +580,7 @@ describe("Rating System", () => {
       .accounts({
         rating: minRatingPDA,
         promotion: promotionPDA,
+        userStats: userStatsPDA,
         user: accounts.user1.publicKey,
         systemProgram: SystemProgram.programId,
       })

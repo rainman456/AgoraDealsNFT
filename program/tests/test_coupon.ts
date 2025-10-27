@@ -36,6 +36,7 @@ describe("Coupon Operations", () => {
   let metadataPDA: PublicKey;
   let masterEditionPDA: PublicKey;
   let tokenAccount: PublicKey;
+  let userStatsPDA: PublicKey;
 
   before(async () => {
     console.log("\n=== SETUP PHASE ===");
@@ -153,6 +154,13 @@ describe("Coupon Operations", () => {
       console.log("Metadata PDA:", metadataPDA.toBase58());
       console.log("Master Edition PDA:", masterEditionPDA.toBase58());
 
+      // Derive UserStats PDA
+      [userStatsPDA] = derivePDA(
+        [Buffer.from("user_stats"), accounts.user1.publicKey.toBuffer()],
+        program.programId
+      );
+      console.log("UserStats PDA:", userStatsPDA.toBase58());
+
       await program.methods
         .mintCoupon(new BN(1))
         .accounts({
@@ -165,6 +173,7 @@ describe("Coupon Operations", () => {
           merchant: accounts.merchant1PDA,
           marketplace: accounts.marketplacePDA,
           recipient: accounts.user1.publicKey,
+          userStats: userStatsPDA,
           payer: accounts.user1.publicKey,
           authority: accounts.merchant1.publicKey,
           tokenProgram: TOKEN_PROGRAM_ID,
@@ -189,6 +198,13 @@ describe("Coupon Operations", () => {
 
       const promotionAfter = await program.account.promotion.fetch(promotionPDA);
       assert.equal(promotionAfter.currentSupply, promotion.currentSupply + 1);
+      
+      // Verify UserStats was created and updated
+      const userStats = await program.account.userStats.fetch(userStatsPDA);
+      assert.equal(userStats.user.toString(), accounts.user1.publicKey.toString());
+      assert.equal(userStats.totalPurchases, 1);
+      assert.isAbove(userStats.reputationScore.toNumber(), 0);
+      console.log("UserStats - Purchases:", userStats.totalPurchases, "Reputation:", userStats.reputationScore.toString());
       
       console.log("✓ Coupon minted successfully!");
     });
@@ -218,6 +234,11 @@ describe("Coupon Operations", () => {
           accounts.user2.publicKey
         );
 
+        const [user2StatsPDA] = derivePDA(
+          [Buffer.from("user_stats"), accounts.user2.publicKey.toBuffer()],
+          program.programId
+        );
+
         await program.methods
           .mintCoupon(new BN(i + 2))
           .accounts({
@@ -230,6 +251,7 @@ describe("Coupon Operations", () => {
             merchant: accounts.merchant1PDA,
             marketplace: accounts.marketplacePDA,
             recipient: accounts.user2.publicKey,
+            userStats: user2StatsPDA,
             payer: accounts.user2.publicKey,
             authority: accounts.merchant1.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
@@ -304,6 +326,7 @@ describe("Coupon Operations", () => {
           merchant: accounts.merchant1PDA,
           marketplace: accounts.marketplacePDA,
           recipient: accounts.user1.publicKey,
+          userStats: userStatsPDA,
           payer: accounts.user1.publicKey,
           authority: accounts.merchant1.publicKey,
           tokenProgram: TOKEN_PROGRAM_ID,
@@ -345,6 +368,7 @@ describe("Coupon Operations", () => {
             merchant: accounts.merchant1PDA,
             marketplace: accounts.marketplacePDA,
             recipient: accounts.user1.publicKey,
+            userStats: userStatsPDA,
             payer: accounts.user1.publicKey,
             authority: accounts.merchant1.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
@@ -424,6 +448,7 @@ describe("Coupon Operations", () => {
             merchant: accounts.merchant1PDA,
             marketplace: accounts.marketplacePDA,
             recipient: accounts.user1.publicKey,
+            userStats: userStatsPDA,
             payer: accounts.user1.publicKey,
             authority: accounts.merchant1.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
@@ -514,9 +539,11 @@ describe("Coupon Operations", () => {
           nftMint: couponMint.publicKey,
           tokenAccount: tokenAccount,
           merchant: accounts.merchant1PDA,
+          userStats: userStatsPDA,
           user: accounts.user1.publicKey,
           merchantAuthority: accounts.merchant1.publicKey,
           tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
         })
         .signers([accounts.user1, accounts.merchant1])
         .rpc();
@@ -527,6 +554,11 @@ describe("Coupon Operations", () => {
 
       const merchantAfter = await program.account.merchant.fetch(accounts.merchant1PDA);
       assert.equal(merchantAfter.totalCouponsRedeemed.toNumber(), redeemedCountBefore + 1);
+
+      // Verify UserStats was updated
+      const userStatsAfter = await program.account.userStats.fetch(userStatsPDA);
+      assert.isAbove(userStatsAfter.totalRedemptions, 0);
+      console.log("UserStats - Redemptions:", userStatsAfter.totalRedemptions, "Reputation:", userStatsAfter.reputationScore.toString());
     });
 
     it("Fails to redeem already redeemed coupon", async () => {
@@ -538,9 +570,11 @@ describe("Coupon Operations", () => {
             nftMint: couponMint.publicKey,
             tokenAccount: tokenAccount,
             merchant: accounts.merchant1PDA,
+            userStats: userStatsPDA,
             user: accounts.user1.publicKey,
             merchantAuthority: accounts.merchant1.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
           })
           .signers([accounts.user1, accounts.merchant1])
           .rpc();

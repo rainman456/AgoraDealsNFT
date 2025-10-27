@@ -500,14 +500,100 @@ describe("Marketplace Listing & Trading", () => {
 
       const listingBefore = await program.account.listing.fetch(newListingPDA);
       assert.equal(listingBefore.isActive, true);
+
+      // Cancel the listing
+      await program.methods
+        .cancelListing()
+        .accounts({
+          listing: newListingPDA,
+          seller: accounts.user1.publicKey,
+        })
+        .signers([accounts.user1])
+        .rpc();
+
+      const listingAfter = await program.account.listing.fetch(newListingPDA);
+      assert.equal(listingAfter.isActive, false);
     });
 
     it("Fails to cancel listing by non-seller", async () => {
-      // Requires cancel_listing instruction
+      const { couponPDA: newCouponPDA } = await mintCouponForTest(accounts.user1, new BN(6));
+
+      const [newListingPDA] = derivePDA(
+        [Buffer.from("listing"), newCouponPDA.toBuffer()],
+        program.programId
+      );
+
+      await program.methods
+        .listForSale(listingPrice)
+        .accounts({
+          listing: newListingPDA,
+          coupon: newCouponPDA,
+          seller: accounts.user1.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([accounts.user1])
+        .rpc();
+
+      try {
+        await program.methods
+          .cancelListing()
+          .accounts({
+            listing: newListingPDA,
+            seller: accounts.user2.publicKey, // Wrong seller
+          })
+          .signers([accounts.user2])
+          .rpc();
+        
+        assert.fail("Should have thrown an error");
+      } catch (error) {
+        expect(error.message).to.include("NotListingSeller");
+      }
     });
 
     it("Fails to cancel inactive listing", async () => {
-      // Requires cancel_listing instruction
+      const { couponPDA: newCouponPDA } = await mintCouponForTest(accounts.user1, new BN(7));
+
+      const [newListingPDA] = derivePDA(
+        [Buffer.from("listing"), newCouponPDA.toBuffer()],
+        program.programId
+      );
+
+      await program.methods
+        .listForSale(listingPrice)
+        .accounts({
+          listing: newListingPDA,
+          coupon: newCouponPDA,
+          seller: accounts.user1.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([accounts.user1])
+        .rpc();
+
+      // Cancel the listing first
+      await program.methods
+        .cancelListing()
+        .accounts({
+          listing: newListingPDA,
+          seller: accounts.user1.publicKey,
+        })
+        .signers([accounts.user1])
+        .rpc();
+
+      // Try to cancel again
+      try {
+        await program.methods
+          .cancelListing()
+          .accounts({
+            listing: newListingPDA,
+            seller: accounts.user1.publicKey,
+          })
+          .signers([accounts.user1])
+          .rpc();
+        
+        assert.fail("Should have thrown an error");
+      } catch (error) {
+        expect(error.message).to.include("ListingInactive");
+      }
     });
   });
 });

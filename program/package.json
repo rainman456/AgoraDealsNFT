@@ -15,7 +15,9 @@
     "test:badge": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_badge.ts",
     "test:external": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_external_deal.ts",
     "test:integration": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_integration.ts",
-    "test:debug": "ts-mocha -p ./tsconfig.json -t 1000000 tests/debug_seed.ts"
+    "test:staking": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_staking.ts",
+    "test:stats": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_user_stats.ts",
+    "test:autobadge": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_auto_badge.ts"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.0",
