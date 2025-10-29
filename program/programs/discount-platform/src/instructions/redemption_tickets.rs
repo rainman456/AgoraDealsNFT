@@ -1,5 +1,6 @@
+// src/instructions/redemption_tickets.rs
 use anchor_lang::prelude::*;
-use anchor_spl::token::{Token, TokenAccount, Mint, burn, Burn};
+use anchor_spl::token::{Token, TokenAccount, Mint, burn, Burn, close_account, CloseAccount};
 use crate::state::{
     Coupon, 
     Merchant, 
@@ -17,7 +18,7 @@ use crate::events::{TicketGenerated, TicketRedeemed, CouponRedeemed};
 // ============================================================================
 
 #[derive(Accounts)]
-#[instruction(nonce: u64)]  // Changed: Use nonce as instruction parameter
+#[instruction(nonce: u64)]
 pub struct GenerateRedemptionTicket<'info> {
     #[account(
         init,
@@ -27,7 +28,7 @@ pub struct GenerateRedemptionTicket<'info> {
             b"ticket",
             coupon.key().as_ref(),
             user.key().as_ref(),
-            &nonce.to_le_bytes()  // Use the nonce parameter directly
+            &nonce.to_le_bytes()
         ],
         bump
     )]
@@ -36,7 +37,7 @@ pub struct GenerateRedemptionTicket<'info> {
     #[account(
         constraint = coupon.owner == user.key() @ CouponError::NotCouponOwner,
         constraint = !coupon.is_redeemed @ CouponError::CouponAlreadyRedeemed,
-        constraint = coupon.expiry_timestamp > Clock::get().unwrap().unix_timestamp @ CouponError::CouponExpired
+        constraint = coupon.expiry_timestamp > Clock::get()?.unix_timestamp @ CouponError::CouponExpired
     )]
     pub coupon: Account<'info, Coupon>,
     
@@ -93,8 +94,8 @@ pub fn generate_redemption_ticket(
         nonce,
     });
     
-    msg!("✅ Redemption ticket generated. Valid until: {}", ticket.expires_at);
-    msg!("✅ Ticket hash (for QR): {:?}", ticket_hash);
+    msg!("✓ Redemption ticket generated. Valid until: {}", ticket.expires_at);
+    msg!("✓ Ticket hash (for QR): {:?}", ticket_hash);
     
     Ok(())
 }
@@ -149,9 +150,12 @@ pub struct VerifyAndRedeemTicket<'info> {
     )]
     pub user_stats: Account<'info, UserStats>,
     
-    /// CHECK: User who owns the coupon (for burning NFT)
-    #[account(mut)]
-    pub user: UncheckedAccount<'info>,
+    // CHANGED: User must be a Signer to authorize NFT burning
+    #[account(
+        mut,
+        constraint = user.key() == ticket.user @ CouponError::NotCouponOwner
+    )]
+    pub user: Signer<'info>,
     
     pub merchant_authority: Signer<'info>,
     pub token_program: Program<'info, Token>,
@@ -225,9 +229,21 @@ pub fn verify_and_redeem_ticket(
     let cpi_program = ctx.accounts.token_program.to_account_info();
     let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
     
-    // Note: In production, you'd want to sign this with a PDA
-    // For now, assuming user delegates authority to the program
     burn(cpi_ctx, 1)?;
+    
+    // Close the token account to reclaim rent
+    let close_accounts = CloseAccount {
+        account: ctx.accounts.token_account.to_account_info(),
+        destination: ctx.accounts.user.to_account_info(),
+        authority: ctx.accounts.user.to_account_info(),
+    };
+    
+    let close_ctx = CpiContext::new(
+        ctx.accounts.token_program.to_account_info(),
+        close_accounts,
+    );
+    
+    close_account(close_ctx)?;
     
     emit!(TicketRedeemed {
         ticket: ticket.key(),
@@ -248,9 +264,9 @@ pub fn verify_and_redeem_ticket(
         timestamp: clock.unix_timestamp,
     });
     
-    msg!("✅ Coupon redeemed successfully via ticket!");
-    msg!("✅ User reputation: {} | Tier: {:?}", user_stats.reputation_score, user_stats.tier);
-    msg!("✅ Merchant total redemptions: {}", merchant.total_coupons_redeemed);
+    msg!("✓ Coupon redeemed successfully via ticket!");
+    msg!("✓ User reputation: {} | Tier: {:?}", user_stats.reputation_score, user_stats.tier);
+    msg!("✓ Merchant total redemptions: {}", merchant.total_coupons_redeemed);
     
     Ok(())
 }
@@ -274,8 +290,8 @@ pub struct CancelRedemptionTicket<'info> {
 }
 
 pub fn cancel_redemption_ticket(ctx: Context<CancelRedemptionTicket>) -> Result<()> {
-    msg!("✅ Redemption ticket cancelled and account closed");
-    msg!("✅ Rent refunded to user");
+    msg!("✓ Redemption ticket cancelled and account closed");
+    msg!("✓ Rent refunded to user");
     
     Ok(())
 }
