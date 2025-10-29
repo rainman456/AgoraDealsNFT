@@ -17,7 +17,7 @@ import {
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_METADATA_PROGRAM_ID
-} from "./setup";
+} from "./setup-devnet";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 describe("Auto Badge Awarding System", () => {

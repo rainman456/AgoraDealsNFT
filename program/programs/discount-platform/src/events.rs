@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 // Re-export enums from state for use in events
-pub use crate::state::{BadgeType, DealSource};
+pub use crate::state::{BadgeType, DealSource, AuctionType};  
 
 #[event]
 pub struct MarketplaceInitialized {
@@ -150,4 +150,98 @@ pub struct BadgeEarned {
     pub user: Pubkey,
     pub badge_type: BadgeType,
     pub mint: Pubkey,
+}
+
+#[event]
+pub struct TicketGenerated {
+    pub ticket: Pubkey,
+    pub coupon: Pubkey,
+    pub user: Pubkey,
+    pub merchant: Pubkey,
+    pub ticket_hash: [u8; 32],
+    pub expires_at: i64,
+    pub nonce: u64,
+}
+
+#[event]
+pub struct TicketRedeemed {
+    pub ticket: Pubkey,
+    pub coupon: Pubkey,
+    pub nft_mint: Pubkey,
+    pub user: Pubkey,
+    pub merchant: Pubkey,
+    pub redeemed_at: i64,
+}
+
+#[event]
+pub struct GroupDealCreated {
+    pub group_deal: Pubkey,
+    pub promotion: Pubkey,
+    pub merchant: Pubkey,
+    pub organizer: Pubkey,
+    pub target_participants: u32,
+    pub base_price: u64,
+    pub deadline: i64,
+}
+
+#[event]
+pub struct GroupDealJoined {
+    pub group_deal: Pubkey,
+    pub user: Pubkey,
+    pub participants_count: u32,
+    pub amount_escrowed: u64,
+    pub current_discount: u8,
+}
+
+#[event]
+pub struct GroupDealFinalized {
+    pub group_deal: Pubkey,
+    pub participants_count: u32,
+    pub final_discount: u8,
+    pub total_revenue: u64,
+    pub finalized_at: i64,
+}
+
+#[event]
+pub struct GroupDealRefunded {
+    pub group_deal: Pubkey,
+    pub user: Pubkey,
+    pub refund_amount: u64,
+    pub timestamp: i64,
+}
+
+#[event]
+pub struct AuctionCreated {
+    pub auction: Pubkey,
+    pub coupon: Pubkey,
+    pub seller: Pubkey,
+    pub auction_type: AuctionType,
+    pub starting_price: u64,
+    pub reserve_price: u64,
+    pub end_time: i64,
+}
+
+#[event]
+pub struct BidPlaced {
+    pub auction: Pubkey,
+    pub bidder: Pubkey,
+    pub amount: u64,
+    pub bid_count: u32,
+    pub new_end_time: i64,
+}
+
+#[event]
+pub struct AuctionFinalized {
+    pub auction: Pubkey,
+    pub winner: Pubkey,
+    pub final_price: u64,
+    pub auction_type: AuctionType,
+    pub finalized_at: i64,
+}
+
+#[event]
+pub struct AuctionCancelled {
+    pub auction: Pubkey,
+    pub reason: String,
+    pub timestamp: i64,
 }

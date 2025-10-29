@@ -16,6 +16,8 @@ import {
   LAMPORTS_PER_SOL,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  // createConnection, // NEW
+  // getRpcUrl, 
   TOKEN_METADATA_PROGRAM_ID
 } from "./setup";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
@@ -28,6 +30,19 @@ describe("Coupon Operations", () => {
 
   const program = anchor.workspace.DiscountPlatform as Program<DiscountPlatform>;
   const connection = provider.connection;
+  //  const connection = createConnection();
+  // const provider = new anchor.AnchorProvider(
+  //   connection,
+  //   anchor.AnchorProvider.env().wallet,
+  //   { commitment: "confirmed" }
+  // );
+  
+  // anchor.setProvider(provider);
+  // const program = anchor.workspace.DiscountPlatform as Program<DiscountPlatform>;
+
+  // console.log("\n🧪 Running Coupon Tests");
+  // console.log(`📡 RPC: ${getRpcUrl()}`);
+  // console.log(`📋 Program: ${program.programId.toString()}\n`);
 
   let accounts: TestAccounts;
   let promotionPDA: PublicKey;

@@ -11,7 +11,7 @@ import {
   LAMPORTS_PER_SOL,
   airdrop,
   wait
-} from "./setup";
+} from "./setup-devnet";
 
 describe("External Deal System", () => {
   const provider = anchor.AnchorProvider.env();

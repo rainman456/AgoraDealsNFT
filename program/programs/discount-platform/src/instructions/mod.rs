@@ -16,6 +16,9 @@ pub mod initialize_staking;
 pub mod stake_coupon;
 pub mod claim_rewards;
 pub mod auto_award_badge;
+pub mod redemption_tickets;
+pub mod group_deals;
+pub mod auctions;
 
 
 
@@ -37,3 +40,6 @@ pub use initialize_staking::*;
 pub use stake_coupon::*;
 pub use claim_rewards::*;
 pub use auto_award_badge::*;
+pub use redemption_tickets::*;
+pub use group_deals::*;
+pub use auctions::*;

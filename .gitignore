@@ -12,4 +12,6 @@ parse.py
 hold
 hold2
 hold3
+.devnet-keys
+.testnet-keys
 

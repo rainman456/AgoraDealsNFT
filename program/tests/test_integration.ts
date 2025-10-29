@@ -18,7 +18,7 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_METADATA_PROGRAM_ID,
   airdrop
-} from "./setup";
+} from "./setup-devnet";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 describe("Integration Tests", () => {

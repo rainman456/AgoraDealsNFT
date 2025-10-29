@@ -1,4 +1,3 @@
-// src/instructions/register_merchant.rs
 use anchor_lang::prelude::*;
 use crate::state::{Merchant, Marketplace, Location};
 use crate::errors::CouponError;

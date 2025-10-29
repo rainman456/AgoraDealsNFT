@@ -18,7 +18,7 @@ discount_platform = "9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
@@ -30,7 +30,8 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 [test]
 startup_wait = 5000
 shutdown_wait = 2000
-upgradeable = false
+#upgradeable = false
+upgradeable = true
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"

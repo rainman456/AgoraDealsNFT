@@ -12,7 +12,7 @@ import {
   u64ToLeBytes,
   LAMPORTS_PER_SOL,
   airdrop
-} from "./setup";
+} from "./setup-devnet";
 
 describe("Comment System", () => {
   const provider = anchor.AnchorProvider.env();

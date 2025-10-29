@@ -12,7 +12,7 @@ import {
   LAMPORTS_PER_SOL,
   TOKEN_PROGRAM_ID,
   TOKEN_METADATA_PROGRAM_ID
-} from "./setup";
+} from "./setup-devnet";
 
 describe("Badge System", () => {
   const provider = anchor.AnchorProvider.env();
