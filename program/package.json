@@ -17,6 +17,9 @@
     "test:integration": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_integration.ts",
     "test:staking": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_staking.ts",
     "test:stats": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_user_stats.ts",
+    "test:groupdeals": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_group_deals.ts",
+    "test:auctions": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_auctions.ts",
+     "test:redemption": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_redemption_tickets.ts",
     "test:autobadge": "ts-mocha -p ./tsconfig.json -t 1000000 tests/test_auto_badge.ts",
 
 
