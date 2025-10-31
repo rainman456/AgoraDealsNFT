@@ -2,7 +2,6 @@
 
 A Web3-powered marketplace for discovering deals, earning loyalty rewards, and redeeming NFT-based coupons.
 
-# 🎟️
 
 > **Hackathon Submission**: Turning everyday discount coupons into tradeable NFTs on Solana.
 
