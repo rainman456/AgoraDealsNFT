@@ -1,32 +1,27 @@
-# AgoraDealsNFT
-A Web3-powered marketplace for discovering deals, earning loyalty rewards, and redeeming NFT-based coupons.
-# 🎟️ 
+# AgoraDeals
 
-> **Hackathon Submission**: Transforming traditional discount coupons into tradeable NFTs on Solana
+A Web3-powered marketplace for discovering deals, earning loyalty rewards, and redeeming NFT-based coupons.
+
+# 🎟️
+
+> **Hackathon Submission**: Turning everyday discount coupons into tradeable NFTs on Solana.
 
 [![Demo Video](https://img.shields.io/badge/Demo-Watch%20Video-red)](YOUR_YOUTUBE_LINK)
 [![Setup Guide](https://img.shields.io/badge/Docs-Setup%20Guide-blue)](./SETUP.md)
 [![API Docs](https://img.shields.io/badge/API-Documentation-green)](./API_DOCUMENTATION.md)
 
-## 🎯 Problem Statement
+## The Challenge
 
-Traditional discount platforms like Groupon trap users with:
-- ❌ Non-transferable coupons
-- ❌ Centralized control
-- ❌ No secondary market
-- ❌ Lack of ownership proof
+We've all been there: you snag a great deal on Groupon or a similar site, only to find the coupon stuck in your email inbox, non-transferable, and at the mercy of a central authority. No way to resell it if plans change, no proof of true ownership, and certainly no vibrant secondary market. It's frustrating—and it locks value away from users who could otherwise share, trade, or even collaborate on group buys.
 
-## ✨ Our Solution
+## How We're Fixing It
 
-DealForge creates a **trustless, transparent, and liquid deal economy** where:
-- ✅ Coupons are NFTs (own, trade, gift)
-- ✅ On-chain redemption verification
-- ✅ Secondary marketplace
-- ✅ Group deals with tiered discounts
-- ✅ Reputation & badge system
-- ✅ Geo-based discovery
+AgoraDeals flips the script with a decentralized platform that's built for real-world utility. Coupons become NFTs you can own outright, trade on a marketplace, or gift to friends. Redemption happens on-chain for tamper-proof verification, and we've layered in features like group deals with escalating discounts, a reputation system to reward active users, and location-aware discovery to surface nearby steals. It's a fluid economy where deals aren't just consumed—they circulate.
 
-## 🏗️ Architecture
+## Under the Hood
+
+Our stack keeps things lean and scalable:
+
 ```
 ┌─────────────┐      ┌─────────────┐      ┌──────────────┐
 │   Next.js   │ ───► │   MongoDB   │      │    Solana    │
@@ -35,172 +30,151 @@ DealForge creates a **trustless, transparent, and liquid deal economy** where:
 └─────────────┘                           └──────────────┘
 ```
 
-## 🎥 Demo Video
+## See It in Action
 
-**[Watch 4-minute demo on YouTube](YOUR_LINK)**
+**[Watch the 4-minute demo on YouTube](YOUR_LINK)**
 
-### What's Covered:
-- [00:00] Problem & Solution Overview
-- [00:30] Merchant Dashboard - Create Deal
-- [01:30] User Flow - Browse & Purchase
-- [02:30] QR Code Redemption (Key Feature!)
-- [03:30] Group Deals & Marketplace
-- [04:00] Technical Architecture
+We walk through the essentials:
+- [00:00] The problem and our approach
+- [00:30] Merchants setting up a new deal
+- [01:30] Users browsing and grabbing a coupon
+- [02:30] The QR code redemption magic (our standout feature)
+- [03:30] Marketplace trading and group deals
+- [04:00] A peek at the tech backbone
 
-## 🚀 Quick Start (Local Testing)
+## Get Started Locally
 
-### Prerequisites
+### What You'll Need
+- Node.js 18 or later
+- Solana CLI 1.18+
+- Anchor 0.29+
+- MongoDB 6.0+
+
+### Five-Minute Setup
+Fire it up with these steps:
+
 ```bash
-Node.js 18+
-Solana CLI 1.18+
-Anchor 0.29+
-MongoDB 6.0+
-```
+# 1. Grab the code
+git clone https://github.com/yourusername/agoradeals
+cd agoradeals
 
-### Setup in 5 Minutes
-```bash
-# 1. Clone repository
-git clone https://github.com/yourusername/dealforge
-cd dealforge
-
-# 2. Start MongoDB
+# 2. Launch MongoDB
 mongod --dbpath ~/data/db
 
-# 3. Start Solana local validator
+# 3. Spin up a local Solana validator
 cd anchor
 solana-test-validator --reset
 
-# 4. Deploy smart contracts
+# 4. Build and deploy the contracts
 anchor build
 anchor deploy
 
-# 5. Start frontend
+# 5. Boot the frontend
 cd ../frontend
 npm install
 npm run dev
 ```
 
-**[📖 Full Setup Guide](./SETUP.md)** | **[🎬 Video Setup Tutorial](YOUR_LINK)**
+For the deep dive, check **[the full setup guide](./SETUP.md)** or **[our video tutorial](YOUR_LINK)**.
 
-## ✅ Implemented Features
+## What We've Built
 
-### Core Features
-- [x] **NFT Coupon Minting** - Metaplex standard, SPL tokens
-- [x] **QR Code Redemption** - Time-limited tickets with cryptographic verification
-- [x] **Secondary Marketplace** - List, buy, auction coupons
-- [x] **Group Deals** - Escrow-based pooled purchases with tiered discounts
-- [x] **Reputation System** - 5 tiers (Bronze→Diamond) + NFT badges
-- [x] **Social Features** - Comments, ratings, likes
-- [x] **Geo Discovery** - Location-based deal finding
-- [x] **Merchant Dashboard** - Easy deal creation & analytics
+### Key Features
+We've nailed the core loop and then some:
+- **NFT Coupon Creation**: Using Metaplex standards and SPL tokens for seamless minting.
+- **QR Redemption**: Time-bound tickets with crypto-backed proofs—no more fakes.
+- **Marketplace Trading**: List for fixed prices, run auctions, or just browse.
+- **Group Buys**: Pool funds via escrow for bigger discounts as more join.
+- **User Rep**: Climb from Bronze to Diamond tiers, snag NFT badges along the way.
+- **Community Vibes**: Rate, comment, and like to build trust.
+- **Local Focus**: Deals pop up based on your spot on the map.
+- **Merchant Tools**: A dashboard for crafting deals and tracking performance.
 
-### Technical Implementation
-- [x] **Smart Contracts**: Rust + Anchor framework
-- [x] **Frontend**: Next.js 14 (App Router)
-- [x] **Database**: MongoDB (user data, off-chain indexing)
-- [x] **Wallet Integration**: Phantom, Backpack, Solflare
-- [x] **File Storage**: Local (prototype) / S3-ready
-- [x] **API**: RESTful endpoints (Next.js API routes)
+### Tech Breakdown
+- **Contracts**: Rust via Anchor.
+- **Front End**: Next.js 14 with the App Router.
+- **Data Layer**: MongoDB for user profiles and indexing.
+- **Wallets**: Plug-and-play with Phantom, Backpack, or Solflare.
+- **Storage**: Local files for now, wired for S3.
+- **APIs**: Clean REST routes handled in Next.js.
 
-## 🎯 Web3 Integration Challenges Addressed
+## Tackling the Tough Web3 Bits
 
-### 1. NFT Representation
-**Challenge**: How to represent coupons as NFTs?
+Building on Solana meant confronting real hurdles head-on. Here's how we did it.
 
-**Solution**:
-- Metaplex Token Metadata standard
-- Each coupon = unique NFT with metadata (discount %, expiry, merchant)
-- SPL Token for ownership transfer
-- IPFS-ready metadata URIs
+### 1. Making Coupons Feel Like NFTs
+**The Hurdle**: Coupons need metadata like expiry dates and discount details, but they have to be truly unique and transferable.
 
-**Code**: [`src/instructions/mint_coupon.rs`](anchor/programs/discount_platform/src/instructions/mint_coupon.rs)
+**Our Take**: We leaned on Metaplex for metadata (discounts, merchants, etc.) and SPL for transfers. URIs point to IPFS for longevity. It's straightforward ownership without the fluff.
 
-### 2. Redemption Flow
-**Challenge**: How to verify redemption without centralization?
+Peek at the code in [`anchor/programs/agoradeals/src/instructions/mint_coupon.rs`](anchor/programs/agoradeals/src/instructions/mint_coupon.rs).
 
-**Solution**: 2-Step On-Chain Verification
+### 2. Redemption Without the Middleman
+**The Hurdle**: How do you confirm a coupon's used without trusting a server?
+
+**Our Take**: A two-part on-chain dance—user generates a short-lived QR hash, merchant scans and burns the NFT. Five-minute expiry kills replay risks.
+
+Details in [`anchor/programs/agoradeals/src/instructions/redemption_tickets.rs`](anchor/programs/agoradeals/src/instructions/redemption_tickets.rs).
+
+### 3. Hiding the Web3 Plumbing
+**The Hurdle**: Crypto UX can scare off everyday shoppers.
+
+**Our Take**: Ditch the jargon—"Your Account" instead of "Wallet." We added email sign-ins that spin up embedded wallets, tossed in gasless redemptions for starters, and prepped fiat ramps.
+
+See it live in [`frontend/src/contexts/WalletContext.tsx`](frontend/src/contexts/WalletContext.tsx).
+
+### 4. Easy Wins for Merchants
+**The Hurdle**: Small shops shouldn't need a PhD in blockchain to list deals.
+
+**Our Take**: A step-by-step wizard with templates for common spots like eateries or spas. CSV uploads for bulk, and it all hides the chain under the hood.
+
+Core logic in [`frontend/src/app/merchant/create/page.tsx`](frontend/src/app/merchant/create/page.tsx).
+
+### 5. Keeping the Marketplace Buzzing
+**The Hurdle**: Without liquidity, trading's a ghost town.
+
+**Our Take**: Options for fixed sales or auctions (English, Dutch, sealed). Escrow locks in safety, with a modest 2.5% cut to keep things running.
+
+Implementation via [`anchor/programs/agoradeals/src/instructions/auctions.rs`](anchor/programs/agoradeals/src/instructions/auctions.rs).
+
+## File Layout
 ```
-User → Generate Ticket (creates QR with time-limited hash)
-     ↓
-Merchant → Scans QR → Verifies on-chain → Burns NFT
-```
-
-**Key Innovation**: Tickets expire in 5 minutes, preventing replay attacks
-
-**Code**: [`src/instructions/redemption_tickets.rs`](anchor/programs/discount_platform/src/instructions/redemption_tickets.rs)
-
-### 3. Web3 Abstraction
-**Challenge**: Make it usable for non-crypto users
-
-**Solution**:
-- No crypto jargon in UI ("Your Account" not "Wallet")
-- Embedded wallet option (email login → wallet created)
-- Gasless transactions for first 5 redemptions
-- Fiat on-ramp integration ready
-
-**Code**: [`src/contexts/WalletContext.tsx`](frontend/src/contexts/WalletContext.tsx)
-
-### 4. Merchant Onboarding
-**Challenge**: Small businesses need simple NFT creation
-
-**Solution**:
-- Wizard-style deal creation (5 steps)
-- Pre-made templates (Restaurant, Spa, Travel)
-- Bulk import via CSV
-- "Create Deal" abstracts all blockchain complexity
-
-**Code**: [`src/app/merchant/create/page.tsx`](frontend/src/app/merchant/create/page.tsx)
-
-### 5. Marketplace Liquidity
-**Challenge**: Enable coupon resale
-
-**Solution**:
-- Fixed-price listings
-- 3 auction types (English, Dutch, Sealed Bid)
-- Escrow system prevents scams
-- 2.5% marketplace fee for sustainability
-
-**Code**: [`src/instructions/auctions.rs`](anchor/programs/discount_platform/src/instructions/auctions.rs)
-
-## 📁 Project Structure
-```
-dealforge/
-├── anchor/                    # Solana smart contracts
+agoradeals/
+├── anchor/                    # Solana programs
 │   ├── programs/
-│   │   └── discount_platform/
+│   │   └── agoradeals/
 │   │       ├── src/
-│   │       │   ├── instructions/   # 18 instruction handlers
-│   │       │   ├── state/          # Account schemas
-│   │       │   ├── events.rs       # 13 event types
+│   │       │   ├── instructions/   # 18 handlers for the heavy lifting
+│   │       │   ├── state/          # Account definitions
+│   │       │   ├── events.rs       # 13 event flavors
 │   │       │   └── lib.rs
 │   │       └── Cargo.toml
-│   └── tests/                # 15 comprehensive tests
+│   └── tests/                # 15 solid test suites
 │
-└── frontend/                  # Next.js application
+└── frontend/                  # The user-facing app
     ├── src/
-    │   ├── app/              # Pages + API routes
-    │   │   ├── api/          # 70+ REST endpoints
+    │   ├── app/              # Routes and APIs
+    │   │   ├── api/          # 70+ endpoints
     │   │   ├── deals/
     │   │   ├── merchant/
     │   │   └── wallet/
-    │   ├── components/       # Reusable UI components
-    │   ├── lib/              # Solana & MongoDB utils
-    │   ├── models/           # 15 MongoDB schemas
-    │   └── contexts/         # React contexts
+    │   ├── components/       # UI building blocks
+    │   ├── lib/              # Helpers for Solana and DB
+    │   ├── models/           # 15 schemas for Mongo
+    │   └── contexts/         # React state magic
     └── public/
-        └── uploads/          # Local file storage
+        └── uploads/          # Temp file spot
 ```
 
-## 🔌 API Integration
+## Hook Into the API
 
-### Public API Available at `/api/v1/*`
+Our public endpoints live at `/api/v1/*`. Try fetching nearby deals:
 
-**Example: Get Deals Near Me**
 ```bash
 curl http://localhost:3000/api/deals?lat=6.5244&lng=3.3792&radius=5000
 ```
 
-**Response:**
+You'll get something like:
 ```json
 {
   "success": true,
@@ -219,91 +193,80 @@ curl http://localhost:3000/api/deals?lat=6.5244&lng=3.3792&radius=5000
 }
 ```
 
-**[📚 Full API Documentation](./API_DOCUMENTATION.md)** - 70+ endpoints documented
+Everything's covered in **[the API docs](./API_DOCUMENTATION.md)**—70+ routes, fully spec'd out.
 
-## 🧪 Testing
+## Testing It Out
 
-### Automated Tests
+### Automated Checks
 ```bash
 cd anchor
 anchor test
-# ✅ 15/15 tests passing
+# All 15 green!
 ```
 
-### Manual Testing Checklist
-- [x] User registration & wallet connection
-- [x] Merchant onboarding
-- [x] Create promotion (NFT minting)
-- [x] Purchase coupon
-- [x] Generate redemption QR code
-- [x] Merchant verifies & redeems
-- [x] List coupon on marketplace
-- [x] Buy from marketplace
-- [x] Join group deal
-- [x] Earn reputation badge
+### Hands-On Flow
+We've vetted the end-to-end:
+- [x] Sign up and link a wallet
+- [x] Merchant setup
+- [x] Mint a promo NFT
+- [x] Snag and redeem a coupon
+- [x] QR scan and burn
+- [x] Marketplace list and buy
+- [x] Group deal join
+- [x] Badge unlocks
 
-**[📋 Full Test Plan](./DEMO.md)**
+Full rundown in **[DEMO.md](./DEMO.md)**.
 
-## 📊 Technical Highlights
+## Tech Snapshot
 
-### Smart Contract Stats
-- **Language**: Rust
-- **Framework**: Anchor 0.29
-- **Instructions**: 18 (create_promotion, mint_coupon, redeem, etc.)
-- **Accounts**: 15 types (User, Merchant, Coupon, etc.)
-- **Events**: 13 emitted events
-- **Tests**: 15 passing tests
-- **Security**: Proper PDA derivation, authority checks, constraint validation
+### Contracts
+- Rust with Anchor 0.29
+- 18 instructions (e.g., mint, redeem)
+- 15 account types
+- 13 events for transparency
+- 15 tests, all passing
+- Security basics: PDAs, checks, validations
 
-### Backend Stats
-- **Database**: MongoDB (15 collections)
-- **API Endpoints**: 70+ RESTful routes
-- **File Storage**: Local (S3-ready)
-- **Real-time**: Polling (WebSocket-ready)
+### Backend
+- MongoDB across 15 collections
+- 70+ REST paths
+- Local storage (S3 on deck)
+- Polling for updates (WebSockets next)
 
-### Frontend Stats
-- **Framework**: Next.js 14 (App Router)
-- **UI Library**: Tailwind CSS + shadcn/ui
-- **State**: React Context + SWR
-- **Wallet**: Solana Wallet Adapter
+### Frontend
+- Next.js 14 App Router
+- Tailwind + shadcn for styling
+- Context and SWR for state
+- Wallet Adapter for seamless connects
 
-## 🏆 Innovation Points
+## What Sets Us Apart
 
-1. **QR Code Redemption System** - Novel approach to trustless verification
-2. **Group Deals** - DeFi-style escrow with tiered discounts
-3. **NFT Badges** - On-chain reputation gamification
-4. **Spatial Indexing** - Geo-discovery with on-chain verification
-5. **Multi-Auction Types** - English, Dutch, Sealed Bid
-6. **Staking Rewards** - Lock coupons for rewards
+1. **QR Redemption**: A fresh, secure way to close the loop on-chain.
+2. **Group Dynamics**: Escrow-powered pooling with discount ramps.
+3. **Rep as NFTs**: Gamify loyalty with verifiable badges.
+4. **Geo Smarts**: On-chain location proofs for hyper-local finds.
+5. **Auction Variety**: From classic English to sealed bids.
+6. **Stake for Perks**: Lock in coupons, earn extras.
 
-## 🛣️ Roadmap (Post-Hackathon)
+## Next Steps
 
-- [ ] Mainnet deployment
-- [ ] Mobile app (React Native)
-- [ ] Integration with Magic Eden, Tensor
-- [ ] Partner with 10 local merchants
-- [ ] Travel deals aggregation (Skyscanner API)
-- [ ] Cross-chain support (Ethereum, Polygon)
+After the hackathon:
+- [ ] Test proper on Devnet
+- [ ] Go live on mainnet
+- [ ] Build a React Native mobile version
+- [ ] Link up with Magic Eden and Tensor
+- [ ] Onboard 10 real merchants
+- [ ] Pull in travel APIs like Skyscanner
+- [ ] Add Ethereum and Polygon bridges
 
-## 👥 Team
 
-**[Your Name]** - Full Stack Developer
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Twitter: [@yourhandle](https://twitter.com/yourhandle)
+## License
 
-## 📄 License
+MIT—grab it [here](LICENSE).
 
-MIT License - See [LICENSE](LICENSE)
-
-## 🙏 Acknowledgments
-
-- Solana Foundation
-- Superteam
-- Anchor Framework
-- Metaplex
 
 ---
 
-**Built with ❤️ for Solana Hackathon 2025**
+**Crafted with passion for the Solana Hackathon 2025**
 
-[🎥 Watch Demo](YOUR_LINK) | [📖 Documentation](./SETUP.md) | [🔗 API Docs](./API_DOCUMENTATION.md)
+[🎥 Demo](YOUR_LINK) | [📖 Setup](./SETUP.md) | [🔗 APIs](./API_DOCUMENTATION.md)
