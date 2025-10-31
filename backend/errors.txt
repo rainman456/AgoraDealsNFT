@@ -1,0 +1,241 @@
+src/__tests__/utils/mockData.ts(2,16): error TS7016: Could not find a declaration file for module 'bn.js'. '/workspaces/AgoraDealsNFT/backend/node_modules/bn.js/lib/bn.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bn.js` if it exists or add a new declaration (.d.ts) file containing `declare module 'bn.js';`
+src/__tests__/utils/testHelpers.ts(3,16): error TS7016: Could not find a declaration file for module 'bn.js'. '/workspaces/AgoraDealsNFT/backend/node_modules/bn.js/lib/bn.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bn.js` if it exists or add a new declaration (.d.ts) file containing `declare module 'bn.js';`
+src/app.ts(38,17): error TS6133: 'res' is declared but its value is never read.
+src/app.ts(47,23): error TS6133: 'req' is declared but its value is never read.
+src/app.ts(75,12): error TS6133: 'req' is declared but its value is never read.
+src/config/solana.ts(3,10): error TS2305: Module '"../idl/discount_platform"' has no exported member 'IDL'.
+src/config/solana.ts(41,7): error TS2345: Argument of type 'PublicKey' is not assignable to parameter of type 'Provider'.
+  Property 'connection' is missing in type 'PublicKey' but required in type 'Provider'.
+src/controllers/auction.ts(7,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/auction.ts(8,16): error TS7016: Could not find a declaration file for module 'bn.js'. '/workspaces/AgoraDealsNFT/backend/node_modules/bn.js/lib/bn.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bn.js` if it exists or add a new declaration (.d.ts) file containing `declare module 'bn.js';`
+src/controllers/auction.ts(15,9): error TS7030: Not all code paths return a value.
+src/controllers/auction.ts(29,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/auction.ts(69,42): error TS2554: Expected 9 arguments, but got 6.
+src/controllers/auction.ts(146,9): error TS7030: Not all code paths return a value.
+src/controllers/auction.ts(150,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/auction.ts(276,9): error TS7030: Not all code paths return a value.
+src/controllers/auction.ts(279,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/auction.ts(310,42): error TS2339: Property 'settleAuction' does not exist on type 'SolanaService'.
+src/controllers/auction.ts(408,9): error TS7030: Not all code paths return a value.
+src/controllers/badge.ts(5,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/badge.ts(43,23): error TS6133: 'req' is declared but its value is never read.
+src/controllers/badge.ts(75,9): error TS7030: Not all code paths return a value.
+src/controllers/badge.ts(78,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/badge.ts(99,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/badge.ts(104,47): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/badge.ts(171,9): error TS7030: Not all code paths return a value.
+src/controllers/badge.ts(174,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/badge.ts(195,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/badge.ts(228,45): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/badge.ts(242,43): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/controllers/badge.ts(284,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/badge.ts(288,47): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/coupon.ts(8,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/coupon.ts(15,9): error TS7030: Not all code paths return a value.
+src/controllers/coupon.ts(18,13): error TS6133: 'walletAddress' is declared but its value is never read.
+src/controllers/coupon.ts(18,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/coupon.ts(126,9): error TS7030: Not all code paths return a value.
+src/controllers/coupon.ts(128,60): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/coupon.ts(192,9): error TS7030: Not all code paths return a value.
+src/controllers/coupon.ts(257,9): error TS7030: Not all code paths return a value.
+src/controllers/coupon.ts(260,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/external.ts(11,9): error TS7030: Not all code paths return a value.
+src/controllers/external.ts(23,45): error TS2339: Property 'fetchFlightDeals' does not exist on type 'AggregatorService'.
+src/controllers/external.ts(75,9): error TS7030: Not all code paths return a value.
+src/controllers/external.ts(87,45): error TS2339: Property 'fetchHotelDeals' does not exist on type 'AggregatorService'.
+src/controllers/external.ts(138,18): error TS6133: 'req' is declared but its value is never read.
+src/controllers/group-deal.ts(7,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/group-deal.ts(8,16): error TS7016: Could not find a declaration file for module 'bn.js'. '/workspaces/AgoraDealsNFT/backend/node_modules/bn.js/lib/bn.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bn.js` if it exists or add a new declaration (.d.ts) file containing `declare module 'bn.js';`
+src/controllers/group-deal.ts(15,9): error TS7030: Not all code paths return a value.
+src/controllers/group-deal.ts(29,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/group-deal.ts(55,42): error TS2554: Expected 8 arguments, but got 6.
+src/controllers/group-deal.ts(119,9): error TS7030: Not all code paths return a value.
+src/controllers/group-deal.ts(123,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/group-deal.ts(171,9): error TS2554: Expected 2 arguments, but got 3.
+src/controllers/group-deal.ts(271,9): error TS7030: Not all code paths return a value.
+src/controllers/group-deal.ts(303,9): error TS7030: Not all code paths return a value.
+src/controllers/group-deal.ts(306,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/marketplace.ts(7,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/marketplace.ts(14,9): error TS7030: Not all code paths return a value.
+src/controllers/marketplace.ts(17,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/marketplace.ts(150,9): error TS7030: Not all code paths return a value.
+src/controllers/marketplace.ts(153,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/marketplace.ts(220,9): error TS7030: Not all code paths return a value.
+src/controllers/marketplace.ts(223,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/merchant-dashboard.ts(2,1): error TS6133: 'PublicKey' is declared but its value is never read.
+src/controllers/merchant-dashboard.ts(16,9): error TS7030: Not all code paths return a value.
+src/controllers/merchant-dashboard.ts(173,9): error TS7030: Not all code paths return a value.
+src/controllers/merchant.ts(6,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/merchant.ts(13,9): error TS7030: Not all code paths return a value.
+src/controllers/merchant.ts(15,65): error TS6133: 'website' is declared but its value is never read.
+src/controllers/merchant.ts(15,74): error TS6133: 'email' is declared but its value is never read.
+src/controllers/merchant.ts(15,81): error TS6133: 'phone' is declared but its value is never read.
+src/controllers/merchant.ts(16,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/merchant.ts(80,9): error TS7030: Not all code paths return a value.
+src/controllers/promotion.ts(7,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/promotion.ts(15,9): error TS7030: Not all code paths return a value.
+src/controllers/promotion.ts(25,9): error TS6133: 'originalPrice' is declared but its value is never read.
+src/controllers/promotion.ts(26,9): error TS6133: 'images' is declared but its value is never read.
+src/controllers/promotion.ts(27,9): error TS6133: 'terms' is declared but its value is never read.
+src/controllers/promotion.ts(30,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/promotion.ts(178,9): error TS2322: Type '{ location?: { latitude: number; longitude: number; } | undefined; }[]' is not assignable to type '{ merchantDetails: (Document<unknown, {}, IMerchant, {}, {}> & IMerchant & Required<{ _id: unknown; }> & { __v: number; }) | undefined; onChainAddress: string; ... 23 more ...; __v: number; }[]'.
+  Type '{ location?: { latitude: number; longitude: number; } | undefined; }' is missing the following properties from type '{ merchantDetails: (Document<unknown, {}, IMerchant, {}, {}> & IMerchant & Required<{ _id: unknown; }> & { __v: number; }) | undefined; onChainAddress: string; ... 23 more ...; __v: number; }': merchantDetails, onChainAddress, merchant, title, and 19 more.
+src/controllers/promotion.ts(179,11): error TS2345: Argument of type '{ merchantDetails: (Document<unknown, {}, IMerchant, {}, {}> & IMerchant & Required<{ _id: unknown; }> & { __v: number; }) | undefined; onChainAddress: string; ... 23 more ...; __v: number; }[]' is not assignable to parameter of type '{ location?: { latitude: number; longitude: number; } | undefined; }[]'.
+  Type '{ merchantDetails: (Document<unknown, {}, IMerchant, {}, {}> & IMerchant & Required<{ _id: unknown; }> & { __v: number; }) | undefined; onChainAddress: string; ... 23 more ...; __v: number; }' has no properties in common with type '{ location?: { latitude: number; longitude: number; } | undefined; }'.
+src/controllers/promotion.ts(225,9): error TS7030: Not all code paths return a value.
+src/controllers/promotion.ts(280,9): error TS7030: Not all code paths return a value.
+src/controllers/promotion.ts(283,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/promotion.ts(366,9): error TS7030: Not all code paths return a value.
+src/controllers/promotion.ts(369,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/rating.ts(5,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/rating.ts(12,9): error TS7030: Not all code paths return a value.
+src/controllers/rating.ts(15,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/rating.ts(41,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/rating.ts(47,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/rating.ts(53,46): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/rating.ts(92,46): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/rating.ts(103,43): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/controllers/rating.ts(103,48): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/controllers/rating.ts(108,27): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/controllers/rating.ts(119,45): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/controllers/rating.ts(162,46): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/rating.ts(176,45): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/controllers/rating.ts(220,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/rating.ts(224,44): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/redemption-ticket.ts(7,32): error TS2307: Cannot find module '../utils/qr-generator' or its corresponding type declarations.
+src/controllers/redemption-ticket.ts(8,16): error TS7016: Could not find a declaration file for module 'bn.js'. '/workspaces/AgoraDealsNFT/backend/node_modules/bn.js/lib/bn.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bn.js` if it exists or add a new declaration (.d.ts) file containing `declare module 'bn.js';`
+src/controllers/redemption-ticket.ts(15,9): error TS7030: Not all code paths return a value.
+src/controllers/redemption-ticket.ts(18,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/redemption-ticket.ts(128,9): error TS7030: Not all code paths return a value.
+src/controllers/redemption-ticket.ts(131,60): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/redemption-ticket.ts(231,9): error TS7030: Not all code paths return a value.
+src/controllers/redemption-ticket.ts(234,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/redemption.ts(8,32): error TS2307: Cannot find module '../utils/qr-generator' or its corresponding type declarations.
+src/controllers/redemption.ts(16,9): error TS7030: Not all code paths return a value.
+src/controllers/redemption.ts(19,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/redemption.ts(81,9): error TS7030: Not all code paths return a value.
+src/controllers/redemption.ts(84,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/redemption.ts(216,9): error TS7030: Not all code paths return a value.
+src/controllers/social.ts(4,1): error TS6133: 'Promotion' is declared but its value is never read.
+src/controllers/social.ts(12,9): error TS7030: Not all code paths return a value.
+src/controllers/social.ts(15,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/social.ts(61,9): error TS7030: Not all code paths return a value.
+src/controllers/social.ts(197,9): error TS7030: Not all code paths return a value.
+src/controllers/social.ts(200,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/social.ts(272,13): error TS6133: 'walletAddress' is declared but its value is never read.
+src/controllers/social.ts(272,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/staking.ts(5,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/staking.ts(12,24): error TS6133: 'req' is declared but its value is never read.
+src/controllers/staking.ts(17,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/staking.ts(21,49): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/staking.ts(55,9): error TS7030: Not all code paths return a value.
+src/controllers/staking.ts(58,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/staking.ts(77,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/staking.ts(83,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/staking.ts(117,45): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/staking.ts(131,43): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/controllers/staking.ts(167,9): error TS7030: Not all code paths return a value.
+src/controllers/staking.ts(173,42): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/staking.ts(222,9): error TS7030: Not all code paths return a value.
+src/controllers/staking.ts(225,59): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/staking.ts(244,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/staking.ts(250,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/staking.ts(255,50): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/user-stats.ts(5,61): error TS2306: File '/workspaces/AgoraDealsNFT/backend/src/utils/pagination.ts' is not a module.
+src/controllers/user-stats.ts(58,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/user-stats.ts(62,47): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/user-stats.ts(119,46): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/user-stats.ts(125,47): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/controllers/user-stats.ts(130,26): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/controllers/user-stats.ts(130,29): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/controllers/user-stats.ts(141,47): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/controllers/user-stats.ts(141,50): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/controllers/user-stats.ts(191,23): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/user-stats.ts(195,47): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/user-stats.ts(208,47): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/user-stats.ts(217,37): error TS7006: Parameter 'nft' implicitly has an 'any' type.
+src/controllers/user-stats.ts(256,26): error TS6133: 'req' is declared but its value is never read.
+src/controllers/user-stats.ts(259,48): error TS2339: Property 'program' does not exist on type 'SolanaService'.
+src/controllers/user-stats.ts(262,51): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/controllers/user-stats.ts(262,56): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/controllers/user-stats.ts(263,53): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/controllers/user-stats.ts(263,58): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/controllers/user-stats.ts(264,49): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/controllers/user-stats.ts(264,54): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/controllers/user-stats.ts(265,50): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/controllers/user-stats.ts(265,55): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/controllers/user-stats.ts(276,29): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/middleware/auth.ts(8,27): error TS7030: Not all code paths return a value.
+src/middleware/auth.ts(26,38): error TS7030: Not all code paths return a value.
+src/middleware/validation.ts(72,10): error TS7030: Not all code paths return a value.
+src/middleware/validation.ts(103,3): error TS6133: 'req' is declared but its value is never read.
+src/middleware/validation.ts(105,3): error TS6133: 'next' is declared but its value is never read.
+src/routes/auth.ts(64,35): error TS7030: Not all code paths return a value.
+src/routes/auth.ts(107,9): error TS2353: Object literal may only specify known properties, and 'merchant' does not exist in type 'ResolvedAccounts<{ name: "merchant"; writable: true; pda: { seeds: [{ kind: "const"; value: [109, 101, 114, 99, 104, 97, 110, 116]; }, { kind: "account"; path: "authority"; }]; }; } | { name: "marketplace"; writable: true; } | { ...; } | { ...; }>'.
+src/routes/auth.ts(155,36): error TS7030: Not all code paths return a value.
+src/routes/auth.ts(193,40): error TS7030: Not all code paths return a value.
+src/routes/upload.ts(2,20): error TS2307: Cannot find module 'multer' or its corresponding type declarations.
+src/routes/upload.ts(19,17): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/upload.ts(19,22): error TS6133: 'file' is declared but its value is never read.
+src/routes/upload.ts(19,22): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/routes/upload.ts(19,28): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/routes/upload.ts(29,14): error TS6133: 'req' is declared but its value is never read.
+src/routes/upload.ts(29,14): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/upload.ts(29,19): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/routes/upload.ts(29,25): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/routes/upload.ts(40,16): error TS6133: 'req' is declared but its value is never read.
+src/routes/upload.ts(40,16): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/upload.ts(40,21): error TS7006: Parameter 'file' implicitly has an 'any' type.
+src/routes/upload.ts(40,27): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+src/routes/upload.ts(58,47): error TS7030: Not all code paths return a value.
+src/routes/upload.ts(60,14): error TS2339: Property 'file' does not exist on type 'Request<{ type: string; }, any, any, ParsedQs, Record<string, any>>'.
+src/routes/upload.ts(67,56): error TS2339: Property 'file' does not exist on type 'Request<{ type: string; }, any, any, ParsedQs, Record<string, any>>'.
+src/routes/upload.ts(72,23): error TS2339: Property 'file' does not exist on type 'Request<{ type: string; }, any, any, ParsedQs, Record<string, any>>'.
+src/routes/upload.ts(74,19): error TS2339: Property 'file' does not exist on type 'Request<{ type: string; }, any, any, ParsedQs, Record<string, any>>'.
+src/routes/upload.ts(75,23): error TS2339: Property 'file' does not exist on type 'Request<{ type: string; }, any, any, ParsedQs, Record<string, any>>'.
+src/routes/upload.ts(91,35): error TS7030: Not all code paths return a value.
+src/scripts/seed-database.ts(10,16): error TS7016: Could not find a declaration file for module 'bn.js'. '/workspaces/AgoraDealsNFT/backend/node_modules/bn.js/lib/bn.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bn.js` if it exists or add a new declaration (.d.ts) file containing `declare module 'bn.js';`
+src/scripts/seed-database.ts(39,13): error TS2353: Object literal may only specify known properties, and 'marketplace' does not exist in type 'ResolvedAccounts<{ name: "marketplace"; writable: true; pda: { seeds: [{ kind: "const"; value: [109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101]; }]; }; } | { name: "authority"; writable: true; signer: true; } | { ...; }>'.
+src/scripts/seed-database.ts(150,13): error TS2353: Object literal may only specify known properties, and 'merchant' does not exist in type 'ResolvedAccounts<{ name: "merchant"; writable: true; pda: { seeds: [{ kind: "const"; value: [109, 101, 114, 99, 104, 97, 110, 116]; }, { kind: "account"; path: "authority"; }]; }; } | { name: "marketplace"; writable: true; } | { ...; } | { ...; }>'.
+src/scripts/seed-database.ts(215,13): error TS2353: Object literal may only specify known properties, and 'promotion' does not exist in type 'ResolvedAccounts<{ name: "promotion"; writable: true; pda: { seeds: [{ kind: "const"; value: [112, 114, 111, 109, 111, 116, 105, 111, 110]; }, { kind: "account"; path: "merchant"; }, { kind: "account"; path: "merchant.total_coupons_created"; account: "merchant"; }]; }; } | { ...; } | { ...; } | { ...; }>'.
+src/services/aggregator.service.ts(28,67): error TS6133: 'date' is declared but its value is never read.
+src/services/aggregator.service.ts(104,27): error TS6133: 'category' is declared but its value is never read.
+src/services/aggregator.service.ts(237,35): error TS6133: 'data' is declared but its value is never read.
+src/services/aggregator.service.ts(242,32): error TS6133: 'data' is declared but its value is never read.
+src/services/solana.service.ts(5,16): error TS7016: Could not find a declaration file for module 'bn.js'. '/workspaces/AgoraDealsNFT/backend/node_modules/bn.js/lib/bn.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bn.js` if it exists or add a new declaration (.d.ts) file containing `declare module 'bn.js';`
+src/services/solana.service.ts(22,11): error TS2353: Object literal may only specify known properties, and 'marketplace' does not exist in type 'ResolvedAccounts<{ name: "marketplace"; writable: true; pda: { seeds: [{ kind: "const"; value: [109, 97, 114, 107, 101, 116, 112, 108, 97, 99, 101]; }]; }; } | { name: "authority"; writable: true; signer: true; } | { ...; }>'.
+src/services/solana.service.ts(53,11): error TS2353: Object literal may only specify known properties, and 'merchant' does not exist in type 'ResolvedAccounts<{ name: "merchant"; writable: true; pda: { seeds: [{ kind: "const"; value: [109, 101, 114, 99, 104, 97, 110, 116]; }, { kind: "account"; path: "authority"; }]; }; } | { name: "marketplace"; writable: true; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(96,11): error TS2353: Object literal may only specify known properties, and 'promotion' does not exist in type 'ResolvedAccounts<{ name: "promotion"; writable: true; pda: { seeds: [{ kind: "const"; value: [112, 114, 111, 109, 111, 116, 105, 111, 110]; }, { kind: "account"; path: "merchant"; }, { kind: "account"; path: "merchant.total_coupons_created"; account: "merchant"; }]; }; } | { ...; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(167,11): error TS2353: Object literal may only specify known properties, and 'coupon' does not exist in type 'ResolvedAccounts<{ name: "coupon"; writable: true; pda: { seeds: [{ kind: "const"; value: [99, 111, 117, 112, 111, 110]; }, { kind: "account"; path: "promotion"; }, { kind: "account"; path: "promotion.current_supply"; account: "promotion"; }]; }; } | ... 16 more ... | { ...; }>'.
+src/services/solana.service.ts(229,11): error TS2353: Object literal may only specify known properties, and 'userStats' does not exist in type 'ResolvedAccounts<{ name: "coupon"; writable: true; } | { name: "nftMint"; writable: true; } | { name: "tokenAccount"; writable: true; } | { name: "merchant"; writable: true; } | { name: "userStats"; writable: true; pda: { ...; }; } | { ...; } | { ...; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(263,11): error TS2353: Object literal may only specify known properties, and 'listing' does not exist in type 'ResolvedAccounts<{ name: "listing"; writable: true; pda: { seeds: [{ kind: "const"; value: [108, 105, 115, 116, 105, 110, 103]; }, { kind: "account"; path: "coupon"; }]; }; } | { name: "coupon"; } | { name: "userStats"; writable: true; pda: { ...; }; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(288,13): error TS6133: 'coupon' is declared but its value is never read.
+src/services/solana.service.ts(301,11): error TS2353: Object literal may only specify known properties, and 'systemProgram' does not exist in type 'ResolvedAccounts<{ name: "listing"; writable: true; } | { name: "coupon"; writable: true; } | { name: "marketplace"; } | { name: "seller"; writable: true; } | { name: "buyer"; writable: true; signer: true; } | { name: "marketplaceAuthority"; writable: true; } | { ...; }>'.
+src/services/solana.service.ts(353,11): error TS2353: Object literal may only specify known properties, and 'rating' does not exist in type 'ResolvedAccounts<{ name: "rating"; writable: true; pda: { seeds: [{ kind: "const"; value: [114, 97, 116, 105, 110, 103]; }, { kind: "account"; path: "user"; }, { kind: "account"; path: "promotion"; }]; }; } | { name: "promotion"; } | { ...; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(380,5): error TS6133: 'commentId' is declared but its value is never read.
+src/services/solana.service.ts(391,11): error TS2353: Object literal may only specify known properties, and 'comment' does not exist in type 'ResolvedAccounts<{ name: "comment"; writable: true; pda: { seeds: [{ kind: "const"; value: [99, 111, 109, 109, 101, 110, 116]; }, { kind: "account"; path: "user"; }, { kind: "account"; path: "promotion"; }]; }; } | ... 4 more ... | { ...; }>'.
+src/services/solana.service.ts(424,11): error TS2353: Object literal may only specify known properties, and 'commentLike' does not exist in type 'ResolvedAccounts<{ name: "commentLike"; writable: true; pda: { seeds: [{ kind: "const"; value: [99, 111, 109, 109, 101, 110, 116, 95, 108, 105, 107, 101]; }, { kind: "account"; path: "user"; }, { kind: "account"; path: "comment"; }]; }; } | { ...; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(469,11): error TS2353: Object literal may only specify known properties, and 'externalDeal' does not exist in type 'ResolvedAccounts<{ name: "externalDeal"; writable: true; pda: { seeds: [{ kind: "const"; value: [101, 120, 116, 101, 114, 110, 97, 108, 95, 100, 101, 97, 108]; }, { kind: "arg"; path: "externalId"; }]; }; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(499,11): error TS2353: Object literal may only specify known properties, and 'ticket' does not exist in type 'ResolvedAccounts<{ name: "ticket"; writable: true; pda: { seeds: [{ kind: "const"; value: [116, 105, 99, 107, 101, 116]; }, { kind: "account"; path: "coupon"; }, { kind: "account"; path: "user"; }, { kind: "arg"; path: "nonce"; }]; }; } | { ...; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(552,11): error TS2353: Object literal may only specify known properties, and 'userStats' does not exist in type 'ResolvedAccounts<{ name: "ticket"; writable: true; } | { name: "coupon"; writable: true; } | { name: "nftMint"; writable: true; } | { name: "tokenAccount"; writable: true; } | { name: "merchant"; writable: true; } | ... 4 more ... | { ...; }>'.
+src/services/solana.service.ts(620,11): error TS2353: Object literal may only specify known properties, and 'groupDeal' does not exist in type 'ResolvedAccounts<{ name: "groupDeal"; writable: true; pda: { seeds: [{ kind: "const"; value: [103, 114, 111, 117, 112, 95, 100, 101, 97, 108]; }, { kind: "account"; path: "promotion"; }, { kind: "arg"; path: "dealId"; }]; }; } | ... 4 more ... | { ...; }>'.
+src/services/solana.service.ts(652,11): error TS2353: Object literal may only specify known properties, and 'participant' does not exist in type 'ResolvedAccounts<{ name: "participant"; writable: true; pda: { seeds: [{ kind: "const"; value: [112, 97, 114, 116, 105, 99, 105, 112, 97, 110, 116]; }, { kind: "account"; path: "groupDeal"; }, { kind: "account"; path: "user"; }]; }; } | ... 4 more ... | { ...; }>'.
+src/services/solana.service.ts(689,11): error TS2353: Object literal may only specify known properties, and 'escrowVault' does not exist in type 'ResolvedAccounts<{ name: "groupDeal"; writable: true; } | { name: "promotion"; writable: true; } | { name: "merchant"; writable: true; } | { name: "marketplace"; writable: true; } | { name: "escrowVault"; writable: true; pda: { ...; }; } | { ...; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(720,11): error TS2353: Object literal may only specify known properties, and 'escrowVault' does not exist in type 'ResolvedAccounts<{ name: "groupDeal"; writable: true; } | { name: "participant"; writable: true; } | { name: "escrowVault"; writable: true; pda: { seeds: [{ kind: "const"; value: [103, 114, 111, 117, 112, 95, ... 5 more ..., 119]; }, { ...; }]; }; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(750,11): error TS2353: Object literal may only specify known properties, and 'coupon' does not exist in type 'ResolvedAccounts<{ name: "coupon"; writable: true; pda: { seeds: [{ kind: "const"; value: [103, 114, 111, 117, 112, 95, 99, 111, 117, 112, 111, 110]; }, { kind: "account"; path: "groupDeal"; }, { kind: "account"; path: "participant.user"; account: "groupParticipant"; }]; }; } | ... 4 more ... | { ...; }>'.
+src/services/solana.service.ts(796,11): error TS2353: Object literal may only specify known properties, and 'auction' does not exist in type 'ResolvedAccounts<{ name: "auction"; writable: true; pda: { seeds: [{ kind: "const"; value: [97, 117, 99, 116, 105, 111, 110]; }, { kind: "account"; path: "coupon"; }, { kind: "arg"; path: "auctionId"; }]; }; } | { ...; } | { ...; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(830,11): error TS2353: Object literal may only specify known properties, and 'bid' does not exist in type 'ResolvedAccounts<{ name: "bid"; writable: true; pda: { seeds: [{ kind: "const"; value: [98, 105, 100]; }, { kind: "account"; path: "auction"; }, { kind: "account"; path: "bidder"; }, { kind: "account"; path: "auction.bid_count"; account: "couponAuction"; }]; }; } | ... 5 more ... | { ...; }>'.
+src/services/solana.service.ts(869,11): error TS2353: Object literal may only specify known properties, and 'userStats' does not exist in type 'ResolvedAccounts<{ name: "auction"; writable: true; } | { name: "coupon"; writable: true; } | { name: "marketplace"; } | { name: "seller"; writable: true; } | { name: "marketplaceAuthority"; writable: true; } | { ...; } | { ...; } | { ...; }>'.
+src/services/solana.service.ts(908,11): error TS2353: Object literal may only specify known properties, and 'escrow' does not exist in type 'ResolvedAccounts<{ name: "auction"; writable: true; } | { name: "coupon"; writable: true; } | { name: "marketplace"; } | { name: "escrow"; writable: true; pda: { seeds: [{ kind: "const"; value: [97, 117, 99, 116, ... 9 more ..., 119]; }, { ...; }]; }; } | ... 5 more ... | { ...; }>'.
+src/services/solana.service.ts(963,11): error TS2353: Object literal may only specify known properties, and 'stakingPool' does not exist in type 'ResolvedAccounts<{ name: "stakingPool"; writable: true; pda: { seeds: [{ kind: "const"; value: [115, 116, 97, 107, 105, 110, 103, 95, 112, 111, 111, 108]; }]; }; } | { name: "authority"; writable: true; signer: true; } | { ...; }>'.
+src/services/solana.service.ts(1001,11): error TS2353: Object literal may only specify known properties, and 'stakeAccount' does not exist in type 'ResolvedAccounts<{ name: "stakeAccount"; writable: true; pda: { seeds: [{ kind: "const"; value: [115, 116, 97, 107, 101]; }, { kind: "account"; path: "coupon"; }, { kind: "account"; path: "user"; }]; }; } | { name: "stakingPool"; writable: true; pda: { ...; }; } | ... 6 more ... | { ...; }>'.
+src/services/solana.service.ts(1045,11): error TS2353: Object literal may only specify known properties, and 'stakeAccount' does not exist in type 'ResolvedAccounts<{ name: "stakeAccount"; writable: true; pda: { seeds: [{ kind: "const"; value: [115, 116, 97, 107, 101]; }, { kind: "account"; path: "stake_account.coupon"; account: "stakeAccount"; }, { ...; }]; }; } | ... 7 more ... | { ...; }>'.
+src/services/solana.service.ts(1135,11): error TS2353: Object literal may only specify known properties, and 'tokenProgram' does not exist in type 'ResolvedAccounts<{ name: "badgeNft"; writable: true; } | { name: "mint"; writable: true; signer: true; } | { name: "metadata"; writable: true; } | { name: "masterEdition"; writable: true; } | { name: "user"; writable: true; signer: true; } | ... 5 more ... | { ...; }>'.
+src/services/solana.service.ts(1191,11): error TS2353: Object literal may only specify known properties, and 'userStats' does not exist in type 'ResolvedAccounts<{ name: "badgeNft"; writable: true; } | { name: "userStats"; writable: true; pda: { seeds: [{ kind: "const"; value: [117, 115, 101, 114, 95, 115, 116, 97, 116, 115]; }, { kind: "account"; path: "user"; }]; }; } | ... 10 more ... | { ...; }>'.
