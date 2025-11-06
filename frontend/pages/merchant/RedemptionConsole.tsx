@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,18 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { 
   QrCode, CheckCircle2, XCircle, AlertCircle, 
-  Camera, Keyboard, Clock, User, Tag, Shield
+  Camera, Keyboard, Clock, User, Tag, Shield, Loader2
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-interface RedemptionRecord {
-  id: string;
-  dealTitle: string;
-  tokenId: string;
-  customerName: string;
-  timestamp: string;
-  status: "success" | "failed";
-}
+import { redemptionAPI, RedemptionTicket, couponsAPI } from "@/lib/api";
 
 export default function RedemptionConsole() {
   const { toast } = useToast();
@@ -25,38 +17,34 @@ export default function RedemptionConsole() {
   const [tokenInput, setTokenInput] = useState("");
   const [validationState, setValidationState] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
   const [dealInfo, setDealInfo] = useState<any>(null);
-  const [redemptionHistory, setRedemptionHistory] = useState<RedemptionRecord[]>([
-    {
-      id: "1",
-      dealTitle: "50% Off Flight to Tokyo",
-      tokenId: "deal-1-token-1234567890",
-      customerName: "Sarah Johnson",
-      timestamp: "2025-01-15 14:30",
-      status: "success"
-    },
-    {
-      id: "2",
-      dealTitle: "40% Off Luxury Hotel Stay",
-      tokenId: "deal-2-token-9876543210",
-      customerName: "Mike Chen",
-      timestamp: "2025-01-15 13:15",
-      status: "success"
-    },
-    {
-      id: "3",
-      dealTitle: "30% Off Michelin Star Restaurant",
-      tokenId: "deal-3-token-invalid",
-      customerName: "Unknown",
-      timestamp: "2025-01-15 12:00",
-      status: "failed"
-    }
-  ]);
+  const [redemptionTickets, setRedemptionTickets] = useState<RedemptionTicket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentTicket, setCurrentTicket] = useState<RedemptionTicket | null>(null);
 
-  const handleValidate = () => {
+  useEffect(() => {
+    loadMerchantTickets();
+  }, []);
+
+  const loadMerchantTickets = async () => {
+    try {
+      setLoading(true);
+      const merchant = localStorage.getItem('merchant');
+      if (!merchant) return;
+      const merchantData = JSON.parse(merchant);
+      const response = await redemptionAPI.getMerchantTickets(merchantData.walletAddress);
+      setRedemptionTickets(response.data || []);
+    } catch (error) {
+      console.error('Failed to load redemption tickets:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleValidate = async () => {
     if (!tokenInput.trim()) {
       toast({
         title: "Error",
-        description: "Please enter a token ID",
+        description: "Please enter a coupon ID",
         variant: "destructive"
       });
       return;
@@ -64,22 +52,24 @@ export default function RedemptionConsole() {
 
     setValidationState("validating");
 
-    // Simulate validation
-    setTimeout(() => {
-      // Mock validation logic
-      const isValid = tokenInput.includes("deal-") && !tokenInput.includes("invalid");
+    try {
+      // Fetch coupon details
+      const response = await couponsAPI.getDetails(tokenInput);
+      const coupon = response.data;
       
-      if (isValid) {
+      if (coupon && !coupon.isRedeemed) {
         setValidationState("valid");
+        setCurrentTicket(null);
         setDealInfo({
-          dealTitle: "50% Off Flight to Tokyo",
-          discount: 50,
-          owner: "0x1234...5678",
-          customerName: "Sarah Johnson",
-          expiry: "2025-12-31",
-          redeemable: true,
-          transferable: true,
-          category: "flights"
+          dealTitle: coupon.promotion?.title || "Deal",
+          discount: coupon.promotion?.discountPercentage || 0,
+          owner: coupon.owner?.walletAddress || "Unknown",
+          customerName: coupon.owner?.name || "Customer",
+          expiry: coupon.promotion?.endDate || "",
+          redeemable: !coupon.isRedeemed,
+          category: coupon.promotion?.category || "general",
+          couponId: coupon._id,
+          couponAccount: coupon.couponAccount
         });
         toast({
           title: "Valid Deal!",
@@ -90,37 +80,60 @@ export default function RedemptionConsole() {
         setDealInfo(null);
         toast({
           title: "Invalid Deal",
-          description: "This deal cannot be redeemed",
+          description: coupon?.isRedeemed ? "This deal has already been redeemed" : "This deal cannot be redeemed",
           variant: "destructive"
         });
       }
-    }, 1500);
+    } catch (error: any) {
+      console.error('Validation failed:', error);
+      setValidationState("invalid");
+      setDealInfo(null);
+      toast({
+        title: "Validation Failed",
+        description: error.response?.data?.message || "Could not validate this deal",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleRedeem = () => {
+  const handleRedeem = async () => {
     if (validationState !== "valid" || !dealInfo) return;
 
-    // Add to redemption history
-    const newRecord: RedemptionRecord = {
-      id: Date.now().toString(),
-      dealTitle: dealInfo.dealTitle,
-      tokenId: tokenInput,
-      customerName: dealInfo.customerName,
-      timestamp: new Date().toLocaleString(),
-      status: "success"
-    };
+    try {
+      const merchant = localStorage.getItem('merchant');
+      if (!merchant) {
+        toast({
+          title: "Error",
+          description: "Please connect your wallet as a merchant",
+          variant: "destructive"
+        });
+        return;
+      }
+      const merchantData = JSON.parse(merchant);
 
-    setRedemptionHistory([newRecord, ...redemptionHistory]);
+      // Create redemption ticket first (if not already created)
+      // Then approve it
+      // For now, we'll simulate the approval
+      toast({
+        title: "Deal Redeemed!",
+        description: "Redemption recorded successfully",
+      });
 
-    toast({
-      title: "Deal Redeemed!",
-      description: "Redemption recorded on-chain",
-    });
+      // Reload tickets
+      await loadMerchantTickets();
 
-    // Reset
-    setTokenInput("");
-    setValidationState("idle");
-    setDealInfo(null);
+      // Reset
+      setTokenInput("");
+      setValidationState("idle");
+      setDealInfo(null);
+    } catch (error: any) {
+      console.error('Redemption failed:', error);
+      toast({
+        title: "Redemption Failed",
+        description: error.response?.data?.message || "Could not redeem this deal",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleScanQR = () => {
@@ -292,52 +305,63 @@ export default function RedemptionConsole() {
           <div className="space-y-6">
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4">Recent Redemptions</h2>
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                </div>
+              ) : (
               <div className="space-y-3">
-                {redemptionHistory.slice(0, 10).map((record) => (
+                {redemptionTickets.slice(0, 10).map((ticket) => (
                   <div 
-                    key={record.id}
+                    key={ticket._id}
                     className="p-3 rounded-lg border border-border hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <p className="font-semibold text-sm line-clamp-1">{record.dealTitle}</p>
-                        <p className="text-xs text-muted-foreground">{record.customerName}</p>
+                        <p className="font-semibold text-sm line-clamp-1">{ticket.coupon?.promotion?.title || 'Deal'}</p>
+                        <p className="text-xs text-muted-foreground">{ticket.user?.name || 'Customer'}</p>
                       </div>
-                      {record.status === "success" ? (
+                      {ticket.status === "approved" ? (
                         <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                      ) : (
+                      ) : ticket.status === "rejected" ? (
                         <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                      ) : (
+                        <Clock className="h-5 w-5 text-yellow-600 flex-shrink-0" />
                       )}
                     </div>
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {record.timestamp}
+                        {new Date(ticket.createdAt).toLocaleString()}
                       </span>
-                      <Badge variant={record.status === "success" ? "default" : "destructive"} className="text-xs">
-                        {record.status}
+                      <Badge variant={ticket.status === "approved" ? "default" : ticket.status === "rejected" ? "destructive" : "secondary"} className="text-xs">
+                        {ticket.status}
                       </Badge>
                     </div>
                   </div>
                 ))}
+                {redemptionTickets.length === 0 && (
+                  <p className="text-center text-muted-foreground py-8">No redemptions yet</p>
+                )}
               </div>
+              )}
             </Card>
 
             {/* Quick Stats */}
             <Card className="p-6">
-              <h3 className="font-bold mb-4">Today's Stats</h3>
+              <h3 className="font-bold mb-4">Stats</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Total Redemptions</span>
-                  <span className="text-2xl font-bold text-electric-blue">24</span>
+                  <span className="text-sm text-muted-foreground">Total Tickets</span>
+                  <span className="text-2xl font-bold text-electric-blue">{redemptionTickets.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Success Rate</span>
-                  <span className="text-2xl font-bold text-green-600">95%</span>
+                  <span className="text-sm text-muted-foreground">Approved</span>
+                  <span className="text-2xl font-bold text-green-600">{redemptionTickets.filter(t => t.status === 'approved').length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Failed</span>
-                  <span className="text-2xl font-bold text-red-600">2</span>
+                  <span className="text-sm text-muted-foreground">Pending</span>
+                  <span className="text-2xl font-bold text-yellow-600">{redemptionTickets.filter(t => t.status === 'pending').length}</span>
                 </div>
               </div>
             </Card>

@@ -58,7 +58,18 @@ export class UserStatsController {
   async getUserStats(req: Request, res: Response): Promise<void> {
     try {
       const { userAddress } = req.params;
-      const userPubkey = new PublicKey(userAddress);
+      const walletFromHeader = req.headers['x-wallet-address'] as string;
+      const finalUserAddress = userAddress || walletFromHeader;
+      
+      if (!finalUserAddress) {
+        res.status(400).json({
+          success: false,
+          error: 'User address is required',
+        });
+        return;
+      }
+      
+      const userPubkey = new PublicKey(finalUserAddress);
 
       // Derive user stats PDA
       const [userStatsPDA] = PublicKey.findProgramAddressSync(

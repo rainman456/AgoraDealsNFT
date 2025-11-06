@@ -32,6 +32,8 @@ import Profile from '@/pages/Profile';
 import DealDetail from '@/pages/DealDetail';
 import MerchantDashboard from '@/pages/MerchantDashboard';
 import MerchantDashboardEnhanced from '@/pages/MerchantDashboardEnhanced';
+import MerchantLogin from '@/pages/MerchantLogin';
+import UserLogin from '@/pages/UserLogin';
 
 // Merchant Pages
 import MerchantOnboarding from '@/pages/merchant/MerchantOnboarding';
@@ -40,7 +42,7 @@ import PromotionWizard from '@/pages/merchant/PromotionWizard';
 import RedemptionConsole from '@/pages/merchant/RedemptionConsole';
 
 // Onboarding
-import Onboarding from '@/pages/onboarding/Onboarding';
+import Onboarding from './pages/onboarding/Onboarding';
 
 const queryClient = new QueryClient();
 
@@ -109,8 +111,7 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/home" element={<Home />} />
               <Route path="/deals" element={<Deals />} />
-              <Route path="/deals/:id" element={<DealDetail />} />
-              <Route path="/user/deals/:id" element={<DealDetailUser />} />
+              <Route path="/deals/:id" element={<DealDetailUser />} />
               <Route path="/marketplace" element={<Marketplace />} />
               <Route path="/my-deals" element={<MyDeals />} />
               <Route path="/redemption" element={<Redemption />} />
@@ -120,15 +121,20 @@ const App = () => {
               <Route path="/redemption-tickets" element={<RedemptionTickets />} />
               <Route path="/social" element={<Social />} />
               <Route path="/stats" element={<UserStats />} />
+              <Route path="/user-stats" element={<UserStats />} />
               <Route path="/staking" element={<Staking />} />
               <Route path="/external-deals" element={<ExternalDeals />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/user/profile" element={<ProfileUser />} />
+              <Route path="/user/login" element={<UserLogin />} />
               
               {/* Merchant Routes */}
+              <Route path="/merchant/login" element={<MerchantLogin />} />
               <Route path="/merchant/onboarding" element={<MerchantOnboarding />} />
               <Route path="/merchant/dashboard" element={<MerchantDashboard />} />
+              <Route path="/merchant/promotions" element={<MerchantDashboard />} />
               <Route path="/merchant/analytics" element={<MerchantDashboardEnhanced />} />
+              <Route path="/merchant/profile" element={<MerchantDashboard />} />
               <Route path="/merchant/dashboard-old" element={<Dashboard />} />
               <Route path="/merchant/create-deal" element={<PromotionWizard />} />
               <Route path="/merchant/redemption" element={<RedemptionConsole />} />

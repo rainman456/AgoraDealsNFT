@@ -27,6 +27,26 @@ export function calculateDistance(
 }
 
 /**
+ * Check if a point is within a given radius from a center point
+ * @param centerLat Latitude of center point
+ * @param centerLon Longitude of center point
+ * @param pointLat Latitude of point to check
+ * @param pointLon Longitude of point to check
+ * @param radiusMeters Radius in meters
+ * @returns True if point is within radius
+ */
+export function isWithinRadius(
+  centerLat: number,
+  centerLon: number,
+  pointLat: number,
+  pointLon: number,
+  radiusMeters: number
+): boolean {
+  const distance = calculateDistance(centerLat, centerLon, pointLat, pointLon);
+  return distance <= radiusMeters;
+}
+
+/**
  * Filter items by distance from a location
  */
 export function filterByDistance<T extends { location?: { latitude: number; longitude: number } }>(

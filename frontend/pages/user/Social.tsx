@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { socialAPI, promotionsAPI } from '@/lib/api';
 import { 
   TrendingUp, Heart, Share2, Eye, Star, MessageCircle, 
   Flame, Clock, ThumbsUp, Twitter, Facebook, Link2,
@@ -38,114 +39,40 @@ interface Review {
   helpful: number;
 }
 
-const mockTrendingDeals: SocialDeal[] = [
-  {
-    id: '1',
-    title: '70% Off Luxury Spa Day',
-    merchant: 'Zen Wellness Spa',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=400&fit=crop',
-    discount: 70,
-    category: 'Wellness',
-    views: 12500,
-    likes: 3400,
-    shares: 890,
-    comments: 234,
-    rating: 4.8,
-    totalRatings: 567,
-    trending: true,
-    timeframe: '24h'
-  },
-  {
-    id: '2',
-    title: '50% Off Michelin Star Dinner',
-    merchant: 'Culinary Delights',
-    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop',
-    discount: 50,
-    category: 'Dining',
-    views: 9800,
-    likes: 2100,
-    shares: 650,
-    comments: 189,
-    rating: 4.9,
-    totalRatings: 423,
-    trending: true,
-    timeframe: '24h'
-  },
-  {
-    id: '3',
-    title: '60% Off Adventure Park',
-    merchant: 'Adventure World',
-    image: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600&h=400&fit=crop',
-    discount: 60,
-    category: 'Entertainment',
-    views: 8900,
-    likes: 1800,
-    shares: 520,
-    comments: 145,
-    rating: 4.7,
-    totalRatings: 389,
-    trending: true,
-    timeframe: '7d'
-  },
-  {
-    id: '4',
-    title: '80% Off Yoga Classes',
-    merchant: 'Flow Yoga Studio',
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop',
-    discount: 80,
-    category: 'Fitness',
-    views: 7600,
-    likes: 1500,
-    shares: 430,
-    comments: 98,
-    rating: 4.6,
-    totalRatings: 312,
-    trending: false,
-    timeframe: '7d'
-  }
-];
-
-const mockReviews: Review[] = [
-  {
-    id: '1',
-    dealId: '1',
-    user: '0x1234...5678',
-    rating: 5,
-    comment: 'Amazing deal! The spa experience was absolutely worth it. Highly recommend!',
-    timestamp: new Date(Date.now() - 3600000).toISOString(),
-    helpful: 45
-  },
-  {
-    id: '2',
-    dealId: '1',
-    user: '0xabcd...efgh',
-    rating: 4,
-    comment: 'Great value for money. The massage was relaxing and the staff was professional.',
-    timestamp: new Date(Date.now() - 7200000).toISOString(),
-    helpful: 32
-  },
-  {
-    id: '3',
-    dealId: '2',
-    user: '0x9876...5432',
-    rating: 5,
-    comment: 'Best dining experience ever! The food was exquisite and the ambiance perfect.',
-    timestamp: new Date(Date.now() - 10800000).toISOString(),
-    helpful: 67
-  }
-];
-
 export default function Social() {
+  const [deals, setDeals] = useState<SocialDeal[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [timeframe, setTimeframe] = useState<'24h' | '7d' | '30d'>('24h');
   const [selectedDeal, setSelectedDeal] = useState<SocialDeal | null>(null);
   const [newReview, setNewReview] = useState('');
   const [newRating, setNewRating] = useState(5);
   const [likedDeals, setLikedDeals] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const filteredDeals = mockTrendingDeals.filter(deal => 
-    timeframe === '24h' ? true : deal.timeframe === timeframe || deal.timeframe === '24h'
-  );
+  useEffect(() => {
+    loadTrendingDeals();
+  }, [timeframe]);
+
+  const loadTrendingDeals = async () => {
+    try {
+      setLoading(true);
+      const response = await socialAPI.getTrending({ timeframe, limit: 50 });
+      setDeals(response.data || []);
+    } catch (error) {
+      console.error('Failed to load trending deals:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load trending deals",
+        variant: "destructive"
+      });
+      setDeals([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredDeals = deals;
 
   const handleLike = (dealId: string) => {
     setLikedDeals(prev => {
@@ -164,26 +91,51 @@ export default function Social() {
     });
   };
 
-  const handleShare = (platform: string, deal: SocialDeal) => {
-    toast({
-      title: `Shared on ${platform}!`,
-      description: `"${deal.title}" has been shared successfully`
-    });
+  const handleShare = async (platform: string, deal: SocialDeal) => {
+    try {
+      await socialAPI.trackShare({
+        itemId: deal.id,
+        itemType: 'deal',
+        platform,
+        walletAddress: localStorage.getItem('walletAddress') || ''
+      });
+      toast({
+        title: `Shared on ${platform}!`,
+        description: `"${deal.title}" has been shared successfully`
+      });
+    } catch (error) {
+      console.error('Failed to track share:', error);
+    }
   };
 
-  const handleSubmitReview = () => {
-    if (!newReview.trim()) return;
+  const handleSubmitReview = async () => {
+    if (!newReview.trim() || !selectedDeal) return;
 
-    toast({
-      title: "Review Posted!",
-      description: "Thank you for sharing your experience"
-    });
-
-    setNewReview('');
-    setNewRating(5);
+    try {
+      await socialAPI.rate({
+        couponId: selectedDeal.id,
+        rating: newRating,
+        review: newReview,
+        walletAddress: localStorage.getItem('walletAddress') || ''
+      });
+      toast({
+        title: "Review Posted!",
+        description: "Thank you for sharing your experience"
+      });
+      setNewReview('');
+      setNewRating(5);
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit review",
+        variant: "destructive"
+      });
+    }
   };
 
-  const formatNumber = (num: number) => {
+  const formatNumber = (num: number | undefined) => {
+    if (!num) return '0';
     if (num >= 1000) return `${(num / 1000).toFixed(1)}k`;
     return num.toString();
   };
@@ -203,22 +155,22 @@ export default function Social() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card className="p-4 text-center">
             <Flame className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">{mockTrendingDeals.filter(d => d.trending).length}</p>
+            <p className="text-2xl font-bold">{deals.filter(d => d.trending).length}</p>
             <p className="text-xs text-muted-foreground">Trending Now</p>
           </Card>
           <Card className="p-4 text-center">
             <Eye className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">{formatNumber(mockTrendingDeals.reduce((sum, d) => sum + d.views, 0))}</p>
+            <p className="text-2xl font-bold">{formatNumber(deals.reduce((sum, d) => sum + d.views, 0))}</p>
             <p className="text-xs text-muted-foreground">Total Views</p>
           </Card>
           <Card className="p-4 text-center">
             <Heart className="w-6 h-6 text-red-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">{formatNumber(mockTrendingDeals.reduce((sum, d) => sum + d.likes, 0))}</p>
+            <p className="text-2xl font-bold">{formatNumber(deals.reduce((sum, d) => sum + d.likes, 0))}</p>
             <p className="text-xs text-muted-foreground">Total Likes</p>
           </Card>
           <Card className="p-4 text-center">
             <Share2 className="w-6 h-6 text-green-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">{formatNumber(mockTrendingDeals.reduce((sum, d) => sum + d.shares, 0))}</p>
+            <p className="text-2xl font-bold">{formatNumber(deals.reduce((sum, d) => sum + d.shares, 0))}</p>
             <p className="text-xs text-muted-foreground">Total Shares</p>
           </Card>
         </div>
@@ -352,7 +304,7 @@ export default function Social() {
 
           <TabsContent value="popular" className="space-y-6">
             <div className="grid grid-cols-1 gap-4">
-              {mockTrendingDeals
+              {deals
                 .sort((a, b) => b.likes - a.likes)
                 .map((deal, index) => (
                   <Card key={deal.id} className="p-5 flex gap-4 hover:shadow-lg transition-shadow">
@@ -427,8 +379,8 @@ export default function Social() {
 
             {/* Reviews List */}
             <div className="space-y-4">
-              {mockReviews.map((review) => {
-                const deal = mockTrendingDeals.find(d => d.id === review.dealId);
+              {reviews.map((review) => {
+                const deal = deals.find(d => d.id === review.dealId);
                 return (
                   <Card key={review.id} className="p-5">
                     <div className="flex items-start gap-4">

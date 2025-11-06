@@ -13,7 +13,8 @@ router.post('/mint', badgeController.mintBadge.bind(badgeController));
 router.post('/auto-award', badgeController.autoAwardBadge.bind(badgeController));
 
 // GET /api/v1/badges/user/:userAddress
-router.get('/user/:userAddress', badgeController.getUserBadgeNFTs.bind(badgeController));
+// GET /api/v1/badges/user/ (with wallet from header)
+router.get('/user/:userAddress?', badgeController.getUserBadgeNFTs.bind(badgeController));
 
 // GET /api/v1/badges/check-eligibility/:userAddress
 router.get('/check-eligibility/:userAddress', badgeController.checkEligibility.bind(badgeController));

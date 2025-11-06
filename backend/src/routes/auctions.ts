@@ -5,6 +5,7 @@ import { walletService } from '../services/wallet.service';
 import { getSolanaConfig } from '../config/solana';
 import { PublicKey } from '@solana/web3.js';
 import { logger } from '../utils/logger';
+import { auctionController } from '../controllers/auction';
 
 const router = Router();
 
@@ -228,5 +229,11 @@ router.get('/merchant/:walletAddress', async (req, res): Promise<void> => {
     });
   }
 });
+
+/**
+ * Get auctions
+ * GET /api/auctions
+ */
+router.get('/', (req, res) => auctionController.getAuctions(req, res));
 
 export default router;

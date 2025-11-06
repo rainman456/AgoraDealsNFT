@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ArrowLeft, Check, Sparkles, Eye, Zap, Calendar, DollarSign, Target, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, Sparkles, Eye, Zap, Calendar, DollarSign, Target, Image as ImageIcon, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { promotionsAPI } from "@/lib/api";
 
 interface PromotionData {
   title: string;
@@ -47,6 +48,7 @@ export default function PromotionWizard() {
     image: "",
     template: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -76,12 +78,51 @@ export default function PromotionWizard() {
     });
   };
 
-  const handleSubmit = () => {
-    toast({
-      title: "🎉 Deal Created!",
-      description: "Your promotion is now live and visible to customers",
-    });
-    setTimeout(() => navigate("/merchant/dashboard"), 1500);
+  const handleSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+      const merchant = localStorage.getItem('merchant');
+      if (!merchant) {
+        toast({
+          title: "Error",
+          description: "Please connect your wallet as a merchant",
+          variant: "destructive"
+        });
+        return;
+      }
+      const merchantData = JSON.parse(merchant);
+      
+      // Calculate expiry days from date
+      const expiryDate = new Date(formData.expiry);
+      const today = new Date();
+      const expiryDays = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+      await promotionsAPI.create({
+        walletAddress: merchantData.walletAddress,
+        title: formData.title,
+        description: formData.description,
+        discountPercentage: formData.discount,
+        price: formData.price,
+        category: formData.category,
+        maxSupply: formData.quantity,
+        expiryDays: expiryDays > 0 ? expiryDays : 30,
+      });
+
+      toast({
+        title: "🎉 Deal Created!",
+        description: "Your promotion is now live and visible to customers",
+      });
+      setTimeout(() => navigate("/merchant/dashboard"), 1500);
+    } catch (error: any) {
+      console.error('Failed to create promotion:', error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to create deal. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const calculateROI = () => {
@@ -438,11 +479,21 @@ export default function PromotionWizard() {
           ) : (
             <Button
               onClick={handleSubmit}
+              disabled={isSubmitting || !formData.title || !formData.description || !formData.category || !formData.expiry}
               size="lg"
               className="min-w-[160px] bg-gradient-to-r from-success to-accent text-white hover:shadow-xl"
             >
-              <Zap className="w-4 h-4 mr-2" />
-              Launch Deal
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4 mr-2" />
+                  Launch Deal
+                </>
+              )}
             </Button>
           )}
         </div>

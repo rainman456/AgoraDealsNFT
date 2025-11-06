@@ -7,9 +7,8 @@ import { Search, Mail, MapPin, Star, Loader2, SlidersHorizontal, Sparkles } from
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Promotion } from "@/lib/api";
+import { Promotion, promotionsAPI } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { mockDeals, promotionToDeal } from "@/lib/mock-data";
 
 export default function Deals() {
   const [deals, setDeals] = useState<Promotion[]>([]);
@@ -30,17 +29,43 @@ export default function Deals() {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  // Load mock deals data
+  // Load deals from API
   useEffect(() => {
-    setLoading(true);
-    // Simulate API delay for smooth UX
-    setTimeout(() => {
-      // Convert mock deals to include both Promotion and Deal properties
-      const dealsWithLegacyProps = mockDeals.map(promotionToDeal);
-      setDeals(dealsWithLegacyProps as any);
-      setLoading(false);
-    }, 300);
-  }, []);
+    const fetchDeals = async () => {
+      try {
+        setLoading(true);
+        const response = await promotionsAPI.list({ 
+          isActive: true,
+          page: 1,
+          limit: 100 
+        });
+        
+        if (response.success) {
+          const dealsData = response.data?.promotions || response.data || [];
+          if (Array.isArray(dealsData)) {
+            setDeals(dealsData);
+          } else {
+            console.warn('API response data is not an array:', response);
+            setDeals([]);
+          }
+        } else {
+          setDeals([]);
+        }
+      } catch (error) {
+        console.error('Failed to load deals:', error);
+        setDeals([]);
+        toast({
+          title: "Error loading deals",
+          description: "Please try again later",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDeals();
+  }, [toast]);
 
   const ITEMS_PER_PAGE = 9;
 
@@ -76,7 +101,7 @@ export default function Deals() {
     }
   }, [nearMeEnabled, userLocation, toast]);
 
-  const filteredDeals = deals
+  const filteredDeals = Array.isArray(deals) ? deals
     .filter((deal) => {
       const merchantName = deal.merchant?.businessName || deal.merchant?.name || '';
       const matchesSearch =
@@ -99,7 +124,7 @@ export default function Deals() {
         return ratingB - ratingA;
       }
       return 0;
-    });
+    }) : [];
 
   // Infinite scroll logic
   useEffect(() => {
@@ -325,20 +350,23 @@ export default function Deals() {
 
           {/* Deals Grid - TikTok-inspired feed */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {displayedDeals.map((deal, index) => (
-              <div 
-                key={deal._id}
-                className="animate-slide-up"
-                style={{ animationDelay: `${(index % 9) * 30}ms` }}
-              >
-                <DealCard
-                  deal={deal}
-                  isOwned={ownedDeals.includes(deal._id)}
-                  onClaim={() => handleClaimDeal(deal._id)}
-                  onLike={() => handleLike(deal._id)}
-                />
-              </div>
-            ))}
+            {displayedDeals.map((deal, index) => {
+              const dealId = deal._id || deal.id || `deal-${index}`;
+              return (
+                <div 
+                  key={dealId}
+                  className="animate-slide-up"
+                  style={{ animationDelay: `${(index % 9) * 30}ms` }}
+                >
+                  <DealCard
+                    deal={deal}
+                    isOwned={ownedDeals.includes(dealId)}
+                    onClaim={() => handleClaimDeal(dealId)}
+                    onLike={() => handleLike(dealId)}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           {/* Loading Indicator - Smooth */}

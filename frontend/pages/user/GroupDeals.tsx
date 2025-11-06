@@ -3,6 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Users, Clock, TrendingUp, Zap, Share2, Bell, CheckCircle, Flame } from "lucide-react";
+import { groupDealsAPI } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Tier {
   minParticipants: number;
@@ -29,101 +31,34 @@ interface GroupDeal {
   currentTier: number;
 }
 
-const mockGroupDeals: GroupDeal[] = [
-  {
-    id: "1",
-    title: "Group Spa Day - 4 People",
-    description: "Luxury spa package with massage, facial, and pool access",
-    merchant: "Zen Wellness Spa",
-    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=400&fit=crop",
-    discount: 60,
-    currentParticipants: 3,
-    targetParticipants: 4,
-    maxParticipants: 6,
-    timeLeft: 7200, // 2 hours
-    pricePerPerson: 49,
-    originalPrice: 120,
-    category: "wellness",
-    trending: true,
-    tiers: [
-      { minParticipants: 2, discountPercentage: 30, pricePerUnit: 84 },
-      { minParticipants: 4, discountPercentage: 60, pricePerUnit: 49 },
-      { minParticipants: 6, discountPercentage: 75, pricePerUnit: 30 }
-    ],
-    currentTier: 1
-  },
-  {
-    id: "2",
-    title: "Restaurant Group Dinner - 6 People",
-    description: "3-course meal at Michelin-starred restaurant",
-    merchant: "Culinary Delights",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop",
-    discount: 50,
-    currentParticipants: 4,
-    targetParticipants: 6,
-    maxParticipants: 10,
-    timeLeft: 10800, // 3 hours
-    pricePerPerson: 75,
-    originalPrice: 150,
-    category: "dining",
-    trending: true,
-    tiers: [
-      { minParticipants: 3, discountPercentage: 25, pricePerUnit: 112 },
-      { minParticipants: 6, discountPercentage: 50, pricePerUnit: 75 },
-      { minParticipants: 10, discountPercentage: 65, pricePerUnit: 52 }
-    ],
-    currentTier: 1
-  },
-  {
-    id: "3",
-    title: "Adventure Park - 8 People",
-    description: "Full day access to theme park with fast passes",
-    merchant: "Adventure World",
-    image: "https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600&h=400&fit=crop",
-    discount: 45,
-    currentParticipants: 6,
-    targetParticipants: 8,
-    maxParticipants: 12,
-    timeLeft: 14400, // 4 hours
-    pricePerPerson: 55,
-    originalPrice: 100,
-    category: "entertainment",
-    trending: false,
-    tiers: [
-      { minParticipants: 4, discountPercentage: 20, pricePerUnit: 80 },
-      { minParticipants: 8, discountPercentage: 45, pricePerUnit: 55 },
-      { minParticipants: 12, discountPercentage: 60, pricePerUnit: 40 }
-    ],
-    currentTier: 1
-  },
-  {
-    id: "4",
-    title: "Yoga Class Bundle - 10 People",
-    description: "Month of unlimited yoga classes",
-    merchant: "Flow Yoga Studio",
-    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop",
-    discount: 55,
-    currentParticipants: 8,
-    targetParticipants: 10,
-    maxParticipants: 15,
-    timeLeft: 5400, // 1.5 hours
-    pricePerPerson: 45,
-    originalPrice: 100,
-    category: "fitness",
-    trending: true,
-    tiers: [
-      { minParticipants: 5, discountPercentage: 30, pricePerUnit: 70 },
-      { minParticipants: 10, discountPercentage: 55, pricePerUnit: 45 },
-      { minParticipants: 15, discountPercentage: 70, pricePerUnit: 30 }
-    ],
-    currentTier: 1
-  },
-];
-
 export default function GroupDeals() {
-  const [deals, setDeals] = useState(mockGroupDeals);
+  const [deals, setDeals] = useState<GroupDeal[]>([]);
   const [joinedDeals, setJoinedDeals] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    loadDeals();
+  }, []);
+
+  const loadDeals = async () => {
+    try {
+      setLoading(true);
+      const response = await groupDealsAPI.list({ limit: 50 });
+      setDeals(response.data || []);
+    } catch (error) {
+      console.error('Failed to load group deals:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load group deals",
+        variant: "destructive"
+      });
+      setDeals([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Update countdown timers
   useEffect(() => {
@@ -153,22 +88,33 @@ export default function GroupDeals() {
     }
   };
 
-  const handleJoinDeal = (dealId: string) => {
-    setJoinedDeals(prev => new Set(prev).add(dealId));
-    
-    // Simulate participant increase
-    setDeals(prevDeals =>
-      prevDeals.map(deal =>
-        deal.id === dealId
-          ? { ...deal, currentParticipants: Math.min(deal.currentParticipants + 1, deal.targetParticipants) }
-          : deal
-      )
-    );
+  const handleJoinDeal = async (dealId: string) => {
+    if (!user?.walletAddress) {
+      toast({
+        title: "Wallet Required",
+        description: "Please connect your wallet to join a group deal",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    toast({
-      title: "🎉 You're In!",
-      description: "Share with friends to unlock the deal faster",
-    });
+    try {
+      await groupDealsAPI.join(dealId, { quantity: 1, walletAddress: user.walletAddress });
+      setJoinedDeals(prev => new Set(prev).add(dealId));
+      loadDeals();
+
+      toast({
+        title: "🎉 You're In!",
+        description: "Share with friends to unlock the deal faster",
+      });
+    } catch (error) {
+      console.error('Failed to join group deal:', error);
+      toast({
+        title: "Error",
+        description: "Failed to join group deal",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleShare = (deal: GroupDeal) => {
@@ -235,6 +181,18 @@ export default function GroupDeals() {
         </div>
 
         {/* Group Deals Grid */}
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading group deals...</p>
+          </div>
+        ) : deals.length === 0 ? (
+          <Card className="p-12 text-center">
+            <Users className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-xl font-semibold mb-2">No group deals available</h3>
+            <p className="text-muted-foreground">Check back soon for new group deals</p>
+          </Card>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {deals.map((deal) => {
             const progressPercentage = getProgressPercentage(deal.currentParticipants, deal.targetParticipants);
@@ -245,12 +203,12 @@ export default function GroupDeals() {
             const isUrgent = deal.timeLeft < 3600; // Less than 1 hour
 
             return (
-              <Card key={deal.id} className="overflow-hidden card-hover border-0 shadow-lg relative">
+              <Card key={`group-deal-${deal.id}`} className="overflow-hidden card-hover border-0 shadow-lg relative">
                 {/* Trending Badge */}
                 {deal.trending && (
-                  <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-secondary to-warning text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg animate-pulse">
-                    <Flame className="w-3 h-3" />
-                    TRENDING
+                  <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-1.5 shadow-xl animate-pulse">
+                    <Flame className="w-4 h-4" />
+                    🔥 HOT DEAL
                   </div>
                 )}
 
@@ -263,18 +221,20 @@ export default function GroupDeals() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                   
-                  {/* Discount Badge */}
-                  <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-accent text-white px-4 py-2 rounded-full shadow-lg">
-                    <span className="text-xl font-bold">{deal.discount}%</span>
-                    <span className="text-xs ml-1">OFF</span>
+                  {/* Discount Badge - More prominent */}
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-3 rounded-full shadow-2xl transform hover:scale-110 transition-transform">
+                    <span className="text-2xl font-black">{deal.discount}%</span>
+                    <span className="text-sm ml-1 font-bold">OFF</span>
                   </div>
 
-                  {/* Timer - Bottom Left */}
-                  <div className={`absolute bottom-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md ${
-                    isUrgent ? 'bg-destructive/90 text-white animate-pulse' : 'bg-white/90 text-foreground'
+                  {/* Timer - Bottom Left with urgency */}
+                  <div className={`absolute bottom-4 left-4 flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md shadow-lg ${
+                    isUrgent ? 'bg-red-500 text-white animate-pulse' : 'bg-orange-500 text-white'
                   }`}>
                     <Clock className="w-4 h-4" />
-                    <span className="text-sm font-bold">{formatTimeLeft(deal.timeLeft)}</span>
+                    <span className="text-sm font-bold">
+                      {isUrgent ? '🔥 ' : ''}{formatTimeLeft(deal.timeLeft)} left!
+                    </span>
                   </div>
                 </div>
 
@@ -304,7 +264,7 @@ export default function GroupDeals() {
                         const isUnlocked = deal.currentParticipants >= tier.minParticipants;
                         const isCurrent = idx === deal.currentTier;
                         return (
-                          <div key={idx} className="flex items-center gap-2">
+                          <div key={`${deal.id}-tier-${idx}`} className="flex items-center gap-2">
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                               isUnlocked ? 'bg-success text-white' : isCurrent ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'
                             }`}>
@@ -336,8 +296,8 @@ export default function GroupDeals() {
                         </span>
                       </div>
                       {isAlmostFull && (
-                        <span className="text-xs font-bold text-warning animate-pulse">
-                          Only {spotsLeft} spots left!
+                        <span className="text-xs font-bold text-red-500 animate-pulse flex items-center gap-1">
+                          ⚠️ Only {spotsLeft} spots left!
                         </span>
                       )}
                     </div>
@@ -354,20 +314,24 @@ export default function GroupDeals() {
                     </div>
                   </div>
 
-                  {/* Social Proof */}
-                  <div className="flex items-center gap-2 mb-4 text-xs text-foreground/60">
+                  {/* Social Proof - More exciting */}
+                  <div className="flex items-center gap-2 mb-4 text-sm">
                     <div className="flex -space-x-2">
-                      {[...Array(Math.min(4, deal.currentParticipants))].map((_, i) => (
+                      {[...Array(Math.min(5, deal.currentParticipants))].map((_, i) => (
                         <div
                           key={i}
-                          className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary border-2 border-background flex items-center justify-center text-white text-[10px] font-bold"
+                          className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary border-2 border-background flex items-center justify-center text-white text-xs font-bold shadow-md"
                         >
                           {String.fromCharCode(65 + i)}
                         </div>
                       ))}
                     </div>
-                    <span>
-                      {deal.currentParticipants > 0 && `${deal.currentParticipants} people are in`}
+                    <span className="font-semibold text-foreground">
+                      {deal.currentParticipants > 0 && (
+                        <>
+                          <span className="text-primary">{deal.currentParticipants}</span> {deal.currentParticipants === 1 ? 'person' : 'people'} joined! 🎉
+                        </>
+                      )}
                     </span>
                   </div>
 
@@ -431,6 +395,7 @@ export default function GroupDeals() {
             );
           })}
         </div>
+        )}
 
         {/* How It Works */}
         <Card className="mt-12 p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">

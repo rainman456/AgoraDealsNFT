@@ -47,20 +47,20 @@ export function EmbeddedWallet({ isOpen, onClose, onSuccess }: EmbeddedWalletPro
     
     setStep('creating');
     
-    // Simulate wallet creation
+    // Simulate account creation
     setTimeout(() => {
       const mockAddress = '0x' + Math.random().toString(16).substring(2, 42);
       setWalletAddress(mockAddress);
       setStep('success');
       
-      // Store wallet info
+      // Store account info
       localStorage.setItem('wallet_address', mockAddress);
       localStorage.setItem('wallet_email', email);
       localStorage.setItem('wallet_created', new Date().toISOString());
       
       toast({
         title: "Account Created",
-        description: "Your secure wallet is ready to use",
+        description: "Your secure account is ready to use",
       });
 
       if (onSuccess) {
@@ -102,7 +102,7 @@ export function EmbeddedWallet({ isOpen, onClose, onSuccess }: EmbeddedWalletPro
     navigator.clipboard.writeText(walletAddress);
     toast({
       title: "Copied",
-      description: "Wallet address copied to clipboard",
+      description: "Account ID copied to clipboard",
     });
   };
 
@@ -112,7 +112,7 @@ export function EmbeddedWallet({ isOpen, onClose, onSuccess }: EmbeddedWalletPro
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Wallet className="w-5 h-5 text-primary" />
-            {step === 'login' && 'Sign In'}
+            {step === 'login' && 'Sign In to Your Account'}
             {step === 'creating' && 'Setting Up Your Account'}
             {step === 'success' && 'Welcome!'}
           </DialogTitle>

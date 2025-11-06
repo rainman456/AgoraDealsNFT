@@ -9,6 +9,81 @@ import { getPaginationParams, createPaginationResult } from '../utils/pagination
 
 export class CouponController {
   /**
+   * GET /api/v1/coupons
+   * List all coupons with filters
+   */
+  async list(req: Request, res: Response): Promise<void> {
+    try {
+      const { page, limit, skip } = getPaginationParams(req.query);
+      const { status, category } = req.query;
+
+      const filter: any = {};
+
+      if (status === 'active') {
+        filter.isRedeemed = false;
+        filter.expiryTimestamp = { $gt: new Date() };
+      } else if (status === 'redeemed') {
+        filter.isRedeemed = true;
+      } else if (status === 'expired') {
+        filter.expiryTimestamp = { $lte: new Date() };
+      }
+
+      if (category) {
+        // Need to join with promotions to filter by category
+        const promotions = await Promotion.find({ category });
+        const promotionAddresses = promotions.map(p => p.onChainAddress);
+        filter.promotion = { $in: promotionAddresses };
+      }
+
+      const [coupons, total] = await Promise.all([
+        Coupon.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 }),
+        Coupon.countDocuments(filter),
+      ]);
+
+      // Populate promotion details
+      const promotionIds = [...new Set(coupons.map((c) => c.promotion))];
+      const promotions = await Promotion.find({ onChainAddress: { $in: promotionIds } });
+      const promotionMap = new Map(promotions.map((p) => [p.onChainAddress, p]));
+
+      res.json({
+        success: true,
+        data: {
+          coupons: coupons.map((c) => {
+            const promotion = promotionMap.get(c.promotion);
+            return {
+              id: c._id,
+              onChainAddress: c.onChainAddress,
+              nftMint: c.nftMint,
+              couponId: c.couponId,
+              owner: c.owner,
+              promotion: promotion ? {
+                id: promotion._id,
+                title: promotion.title,
+                description: promotion.description,
+                category: promotion.category,
+              } : null,
+              discountPercentage: c.discountPercentage,
+              expiryTimestamp: c.expiryTimestamp,
+              isRedeemed: c.isRedeemed,
+              redeemedAt: c.redeemedAt,
+              isListed: c.isListed,
+              listingPrice: c.listingPrice,
+              createdAt: c.createdAt,
+            };
+          }),
+          pagination: createPaginationResult(page, limit, total),
+        },
+      });
+    } catch (error) {
+      logger.error('Failed to list coupons:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  }
+
+  /**
    * POST /api/v1/coupons/mint
    * Mint a new coupon
    */
@@ -327,3 +402,9 @@ export class CouponController {
 }
 
 export const couponController = new CouponController();
+
+// Export individual controller methods for testing
+export const mintCoupon = couponController.mint.bind(couponController);
+export const transferCoupon = couponController.transfer.bind(couponController);
+export const getCoupon = couponController.getDetails.bind(couponController);
+export const getUserCoupons = couponController.getMyCoupons.bind(couponController);

@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { userStatsAPI, badgesAPI } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Trophy, Award, Star, TrendingUp, Target, Zap, 
   Gift, Crown, Shield, Flame, Heart, Users,
@@ -60,121 +62,89 @@ const tiers: UserTier[] = [
   }
 ];
 
-const mockBadges: UserBadge[] = [
-  {
-    id: 1,
-    name: 'First Purchase',
-    description: 'Made your first coupon purchase',
-    icon: '🎉',
-    rarity: 'common',
-    earned: true,
-    earnedAt: '2024-01-15'
-  },
-  {
-    id: 2,
-    name: 'Deal Hunter',
-    description: 'Purchased 10 coupons',
-    icon: '🎯',
-    rarity: 'common',
-    earned: true,
-    earnedAt: '2024-02-01',
-    progress: 10,
-    requirement: 10
-  },
-  {
-    id: 3,
-    name: 'Savvy Saver',
-    description: 'Saved over $500 in total',
-    icon: '💰',
-    rarity: 'rare',
-    earned: true,
-    earnedAt: '2024-03-10',
-    progress: 750,
-    requirement: 500
-  },
-  {
-    id: 4,
-    name: 'Social Butterfly',
-    description: 'Share 25 deals with friends',
-    icon: '🦋',
-    rarity: 'rare',
-    earned: false,
-    progress: 18,
-    requirement: 25
-  },
-  {
-    id: 5,
-    name: 'Review Master',
-    description: 'Write 50 helpful reviews',
-    icon: '⭐',
-    rarity: 'epic',
-    earned: false,
-    progress: 32,
-    requirement: 50
-  },
-  {
-    id: 6,
-    name: 'Group Leader',
-    description: 'Complete 20 group deals',
-    icon: '👥',
-    rarity: 'epic',
-    earned: false,
-    progress: 12,
-    requirement: 20
-  },
-  {
-    id: 7,
-    name: 'Auction King',
-    description: 'Win 15 auctions',
-    icon: '🔨',
-    rarity: 'epic',
-    earned: false,
-    progress: 7,
-    requirement: 15
-  },
-  {
-    id: 8,
-    name: 'Legendary Shopper',
-    description: 'Reach Diamond tier',
-    icon: '💎',
-    rarity: 'legendary',
-    earned: false,
-    progress: 2500,
-    requirement: 5000
-  },
-  {
-    id: 9,
-    name: 'Early Adopter',
-    description: 'Joined in the first month',
-    icon: '🚀',
-    rarity: 'legendary',
-    earned: true,
-    earnedAt: '2024-01-01'
-  }
-];
-
-const mockStats = {
-  totalRedemptions: 45,
-  totalPurchases: 67,
-  totalSavings: 2847,
-  reputationScore: 2500,
-  currentTier: 'Gold',
-  joinedDate: '2024-01-15',
-  streakDays: 23,
-  referrals: 8,
-  groupDealsCompleted: 12,
-  auctionsWon: 7,
-  reviewsWritten: 32
-};
-
 export default function UserStats() {
+  const [badges, setBadges] = useState<UserBadge[]>([]);
+  const [stats, setStats] = useState({
+    totalRedemptions: 0,
+    totalPurchases: 0,
+    totalSavings: 0,
+    reputationScore: 0,
+    currentTier: 'Bronze',
+    joinedDate: '',
+    streakDays: 0,
+    referrals: 0,
+    groupDealsCompleted: 0,
+    auctionsWon: 0,
+    reviewsWritten: 0
+  });
   const [selectedBadge, setSelectedBadge] = useState<UserBadge | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const currentTierIndex = tiers.findIndex(t => t.name === mockStats.currentTier);
+  useEffect(() => {
+    loadUserStats();
+  }, []);
+
+  const loadUserStats = async () => {
+    try {
+      setLoading(true);
+      const walletAddress = localStorage.getItem('walletAddress') || '';
+      
+      if (!walletAddress) {
+        // Set default empty stats instead of showing error
+        setStats({
+          totalRedemptions: 0,
+          totalPurchases: 0,
+          totalSavings: 0,
+          reputationScore: 0,
+          currentTier: 'Bronze',
+          joinedDate: new Date().toISOString(),
+          streakDays: 0,
+          referrals: 0,
+          groupDealsCompleted: 0,
+          auctionsWon: 0,
+          reviewsWritten: 0
+        });
+        setBadges([]);
+        setLoading(false);
+        return;
+      }
+      
+      const [statsResponse, badgesResponse] = await Promise.all([
+        userStatsAPI.getStats(walletAddress),
+        badgesAPI.getUserBadges(walletAddress)
+      ]);
+      setStats(statsResponse.data || {
+        totalRedemptions: 0,
+        totalPurchases: 0,
+        totalSavings: 0,
+        reputationScore: 0,
+        currentTier: 'Bronze',
+        joinedDate: new Date().toISOString(),
+        streakDays: 0,
+        referrals: 0,
+        groupDealsCompleted: 0,
+        auctionsWon: 0,
+        reviewsWritten: 0
+      });
+      setBadges(badgesResponse.data || []);
+    } catch (error) {
+      console.error('Failed to load user stats:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load user statistics",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const currentTierIndex = tiers.findIndex(t => t.name === stats.currentTier);
   const currentTier = tiers[currentTierIndex];
   const nextTier = tiers[currentTierIndex + 1];
   const tierProgress = nextTier 
-    ? ((mockStats.reputationScore - currentTier.minPoints) / (nextTier.minPoints - currentTier.minPoints)) * 100
+    ? ((stats.reputationScore - currentTier.minPoints) / (nextTier.minPoints - currentTier.minPoints)) * 100
     : 100;
 
   const getRarityColor = (rarity: string) => {
@@ -187,8 +157,8 @@ export default function UserStats() {
     return colors[rarity as keyof typeof colors];
   };
 
-  const earnedBadges = mockBadges.filter(b => b.earned);
-  const unearnedBadges = mockBadges.filter(b => !b.earned);
+  const earnedBadges = Array.isArray(badges) ? badges.filter(b => b.earned) : [];
+  const unearnedBadges = Array.isArray(badges) ? badges.filter(b => !b.earned) : [];
 
   return (
     <main className="min-h-screen bg-background pb-20 md:pb-8 pt-4">
@@ -211,11 +181,11 @@ export default function UserStats() {
               <div className="flex items-center gap-3 mb-2">
                 <h2 className="text-2xl font-bold">{currentTier.name} Tier</h2>
                 <Badge className="bg-primary text-white">
-                  {mockStats.reputationScore} points
+                  {stats.reputationScore} points
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                Member since {new Date(mockStats.joinedDate).toLocaleDateString()}
+                Member since {new Date(stats.joinedDate).toLocaleDateString()}
               </p>
             </div>
           </div>
@@ -225,12 +195,12 @@ export default function UserStats() {
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium">Progress to {nextTier.name}</span>
                 <span className="text-muted-foreground">
-                  {mockStats.reputationScore} / {nextTier.minPoints} points
+                  {stats.reputationScore} / {nextTier.minPoints} points
                 </span>
               </div>
               <Progress value={tierProgress} className="h-3" />
               <p className="text-xs text-muted-foreground">
-                {nextTier.minPoints - mockStats.reputationScore} points until next tier
+                {nextTier.minPoints - stats.reputationScore} points until next tier
               </p>
             </div>
           )}
@@ -249,42 +219,42 @@ export default function UserStats() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
           <Card className="p-3 md:p-5 text-center">
             <ShoppingBag className="w-6 h-6 md:w-8 md:h-8 text-blue-500 mx-auto mb-1 md:mb-2" />
-            <p className="text-xl md:text-3xl font-bold">{mockStats.totalPurchases}</p>
+            <p className="text-xl md:text-3xl font-bold">{stats.totalPurchases}</p>
             <p className="text-[10px] md:text-xs text-muted-foreground">Purchases</p>
           </Card>
           <Card className="p-3 md:p-5 text-center">
             <Ticket className="w-6 h-6 md:w-8 md:h-8 text-green-500 mx-auto mb-1 md:mb-2" />
-            <p className="text-xl md:text-3xl font-bold">{mockStats.totalRedemptions}</p>
+            <p className="text-xl md:text-3xl font-bold">{stats.totalRedemptions}</p>
             <p className="text-[10px] md:text-xs text-muted-foreground">Redeemed</p>
           </Card>
           <Card className="p-3 md:p-5 text-center">
             <DollarSign className="w-6 h-6 md:w-8 md:h-8 text-yellow-500 mx-auto mb-1 md:mb-2" />
-            <p className="text-xl md:text-3xl font-bold">${mockStats.totalSavings}</p>
+            <p className="text-xl md:text-3xl font-bold">${stats.totalSavings}</p>
             <p className="text-[10px] md:text-xs text-muted-foreground">Savings</p>
           </Card>
           <Card className="p-3 md:p-5 text-center">
             <Flame className="w-6 h-6 md:w-8 md:h-8 text-orange-500 mx-auto mb-1 md:mb-2" />
-            <p className="text-xl md:text-3xl font-bold">{mockStats.streakDays}</p>
+            <p className="text-xl md:text-3xl font-bold">{stats.streakDays}</p>
             <p className="text-[10px] md:text-xs text-muted-foreground">Streak</p>
           </Card>
           <Card className="p-3 md:p-5 text-center">
             <Users className="w-6 h-6 md:w-8 md:h-8 text-purple-500 mx-auto mb-1 md:mb-2" />
-            <p className="text-xl md:text-3xl font-bold">{mockStats.groupDealsCompleted}</p>
+            <p className="text-xl md:text-3xl font-bold">{stats.groupDealsCompleted}</p>
             <p className="text-[10px] md:text-xs text-muted-foreground">Groups</p>
           </Card>
           <Card className="p-3 md:p-5 text-center">
             <Trophy className="w-6 h-6 md:w-8 md:h-8 text-cyan-500 mx-auto mb-1 md:mb-2" />
-            <p className="text-xl md:text-3xl font-bold">{mockStats.auctionsWon}</p>
+            <p className="text-xl md:text-3xl font-bold">{stats.auctionsWon}</p>
             <p className="text-[10px] md:text-xs text-muted-foreground">Auctions</p>
           </Card>
           <Card className="p-3 md:p-5 text-center">
             <Star className="w-6 h-6 md:w-8 md:h-8 text-pink-500 mx-auto mb-1 md:mb-2" />
-            <p className="text-xl md:text-3xl font-bold">{mockStats.reviewsWritten}</p>
+            <p className="text-xl md:text-3xl font-bold">{stats.reviewsWritten}</p>
             <p className="text-[10px] md:text-xs text-muted-foreground">Reviews</p>
           </Card>
           <Card className="p-3 md:p-5 text-center">
             <Heart className="w-6 h-6 md:w-8 md:h-8 text-red-500 mx-auto mb-1 md:mb-2" />
-            <p className="text-xl md:text-3xl font-bold">{mockStats.referrals}</p>
+            <p className="text-xl md:text-3xl font-bold">{stats.referrals}</p>
             <p className="text-[10px] md:text-xs text-muted-foreground">Referrals</p>
           </Card>
         </div>
@@ -294,7 +264,7 @@ export default function UserStats() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Badges & Achievements</h2>
             <Badge variant="outline">
-              {earnedBadges.length} / {mockBadges.length} Unlocked
+              {earnedBadges.length} / {badges.length} Unlocked
             </Badge>
           </div>
 
@@ -366,8 +336,8 @@ export default function UserStats() {
           <h2 className="text-2xl font-bold mb-6">Tier Roadmap</h2>
           <div className="space-y-4">
             {tiers.map((tier, idx) => {
-              const isUnlocked = mockStats.reputationScore >= tier.minPoints;
-              const isCurrent = tier.name === mockStats.currentTier;
+              const isUnlocked = stats.reputationScore >= tier.minPoints;
+              const isCurrent = tier.name === stats.currentTier;
               
               return (
                 <div key={tier.name} className="flex items-start gap-4">

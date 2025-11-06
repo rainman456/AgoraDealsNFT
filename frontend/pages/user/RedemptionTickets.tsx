@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { QrCode, Clock, MapPin, CheckCircle, XCircle, Ticket } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { QrCode, Clock, MapPin, CheckCircle, XCircle, Ticket, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { redemptionAPI } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface RedemptionTicket {
   id: string;
@@ -22,62 +24,40 @@ interface RedemptionTicket {
   consumedAt?: string;
 }
 
-const mockTickets: RedemptionTicket[] = [
-  {
-    id: '1',
-    couponTitle: '50% Off Pizza',
-    merchantName: "Joe's Pizza",
-    ticketHash: 'a1b2c3d4e5f6',
-    expiresAt: new Date(Date.now() + 300000).toISOString(),
-    status: 'active',
-    qrCode: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSI0MCIgeT0iNDAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iYmxhY2siLz48cmVjdCB4PSI4MCIgeT0iNDAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iYmxhY2siLz48cmVjdCB4PSIxMjAiIHk9IjQwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9ImJsYWNrIi8+PC9zdmc+',
-    location: {
-      latitude: 40.7128,
-      longitude: -74.0060,
-      address: '123 Main St, New York, NY'
-    },
-    generatedAt: new Date(Date.now() - 60000).toISOString()
-  },
-  {
-    id: '2',
-    couponTitle: '30% Off Coffee',
-    merchantName: 'Coffee House',
-    ticketHash: 'f6e5d4c3b2a1',
-    expiresAt: new Date(Date.now() - 10000).toISOString(),
-    status: 'expired',
-    qrCode: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSI2MCIgeT0iNjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iYmxhY2siLz48L3N2Zz4=',
-    location: {
-      latitude: 40.7580,
-      longitude: -73.9855,
-      address: '456 Park Ave, New York, NY'
-    },
-    generatedAt: new Date(Date.now() - 400000).toISOString()
-  },
-  {
-    id: '3',
-    couponTitle: '20% Off Spa Treatment',
-    merchantName: 'Luxury Spa',
-    ticketHash: '1a2b3c4d5e6f',
-    expiresAt: new Date(Date.now() - 200000).toISOString(),
-    status: 'consumed',
-    qrCode: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSI1MCIgeT0iNTAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iYmxhY2siLz48L3N2Zz4=',
-    location: {
-      latitude: 40.7489,
-      longitude: -73.9680,
-      address: '789 Wellness Blvd, New York, NY'
-    },
-    generatedAt: new Date(Date.now() - 500000).toISOString(),
-    consumedAt: new Date(Date.now() - 300000).toISOString()
-  }
-];
+
 
 export default function RedemptionTickets() {
+  const [tickets, setTickets] = useState<RedemptionTicket[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<RedemptionTicket | null>(null);
   const [filter, setFilter] = useState<'all' | 'active' | 'consumed' | 'expired'>('all');
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const filteredTickets = mockTickets.filter(ticket => 
+  useEffect(() => {
+    loadTickets();
+  }, []);
+
+  const loadTickets = async () => {
+    try {
+      setLoading(true);
+      const response = await redemptionAPI.listTickets({ limit: 50 });
+      setTickets(response.data || []);
+    } catch (error) {
+      console.error('Failed to load redemption tickets:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load redemption tickets",
+        variant: "destructive"
+      });
+      setTickets([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredTickets = Array.isArray(tickets) ? tickets.filter(ticket => 
     filter === 'all' || ticket.status === filter
-  );
+  ) : [];
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -123,6 +103,12 @@ export default function RedemptionTickets() {
         </div>
 
         {/* Tickets Grid */}
+        {loading ? (
+          <div className="text-center py-16">
+            <Loader2 className="w-16 h-16 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-muted-foreground">Loading tickets...</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTickets.map((ticket) => (
             <Card key={ticket.id} className="p-6 hover:shadow-lg transition-shadow">
@@ -164,6 +150,7 @@ export default function RedemptionTickets() {
             </Card>
           ))}
         </div>
+        )}
 
         {filteredTickets.length === 0 && (
           <div className="text-center py-12">

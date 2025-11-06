@@ -32,11 +32,14 @@ export default function Home() {
       try {
         setLoading(true);
         const response = await promotionsAPI.list({ isActive: true, limit: 20 });
-        if (response.success) {
-          setDeals(response.data);
+        if (response.success && response.data?.promotions && Array.isArray(response.data.promotions)) {
+          setDeals(response.data.promotions);
+        } else {
+          setDeals([]);
         }
       } catch (error) {
         console.error('Failed to fetch deals:', error);
+        setDeals([]);
       } finally {
         setLoading(false);
       }
@@ -60,17 +63,17 @@ export default function Home() {
 
 
 
-  const heroDeals = deals.slice(0, 3);
-  const trendingDeals = deals.slice(0, 3);
-  const nearbyDeals = deals.slice(3, 6);
+  const heroDeals = Array.isArray(deals) ? deals.slice(0, 3) : [];
+  const trendingDeals = Array.isArray(deals) ? deals.slice(0, 3) : [];
+  const nearbyDeals = Array.isArray(deals) ? deals.slice(3, 6) : [];
   const liveAuctions: any[] = [];
 
-  const filteredDeals = deals.filter((deal) => {
+  const filteredDeals = Array.isArray(deals) ? deals.filter((deal) => {
     const matchesCategory = selectedCategory === "all" || deal.category === selectedCategory;
     const matchesSearch = deal.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          deal.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
-  });
+  }) : [];
 
   return (
     <main className="min-h-screen bg-background">

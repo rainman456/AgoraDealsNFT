@@ -1,14 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ['class'],
-    content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
+    content: [
+      './index.html',
+      './App.tsx',
+      './main.tsx',
+      './components/**/*.{ts,tsx,js,jsx}',
+      './pages/**/*.{ts,tsx,js,jsx}',
+      './contexts/**/*.{ts,tsx,js,jsx}',
+      './hooks/**/*.{ts,tsx,js,jsx}',
+      './lib/**/*.{ts,tsx,js,jsx}'
+    ],
   theme: {
   	extend: {
   		fontFamily: {
-  			heading: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-  			body: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-  			sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-  			mono: ['JetBrains Mono', 'monospace'],
+  			heading: ['Jost', 'system-ui', '-apple-system', 'sans-serif'],
+  			body: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
+  			sans: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
+  			mono: ['ui-monospace', 'monospace'],
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

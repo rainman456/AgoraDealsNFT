@@ -1,6 +1,4 @@
 import express, { Application } from 'express';
-import cors from 'cors';
-import { corsOptions } from './middleware/auth';
 import { errorHandler } from './middleware/validation';
 import { logger } from './utils/logger';
 
@@ -26,20 +24,41 @@ import socialRoutes from './routes/social';
 export function createApp(): Application {
   const app = express();
 
-  // Middleware
-  app.use(cors(corsOptions));
+  // Middleware - Allow all origins for prototype
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization,X-Wallet-Address');
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+    next();
+  });
+  
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   
   // Serve static files (uploaded images)
   app.use('/uploads', express.static('uploads'));
 
-  // Request logging
-  app.use((req, _res, next) => {
-    logger.info(`${req.method} ${req.path}`, {
+  // Request logging with detailed information
+  app.use((req, res, next) => {
+    const start = Date.now();
+    
+    logger.info(`📥 Incoming Request: ${req.method} ${req.path}`, {
       ip: req.ip,
+      origin: req.get('origin'),
       userAgent: req.get('user-agent'),
+      query: req.query,
+      body: req.method !== 'GET' ? req.body : undefined,
     });
+
+    // Log response
+    res.on('finish', () => {
+      const duration = Date.now() - start;
+      logger.info(`📤 Response: ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
+    });
+    
     next();
   });
 

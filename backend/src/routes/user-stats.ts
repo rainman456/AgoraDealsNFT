@@ -9,10 +9,10 @@ router.get('/leaderboard', userStatsController.getLeaderboard.bind(userStatsCont
 // GET /api/v1/user-stats/stats/overview
 router.get('/stats/overview', userStatsController.getPlatformStats.bind(userStatsController));
 
+// GET /api/v1/user-stats/:userAddress/badges (must come before /:userAddress)
+router.get('/:userAddress/badges', userStatsController.getUserBadges.bind(userStatsController));
+
 // GET /api/v1/user-stats/:userAddress
 router.get('/:userAddress', userStatsController.getUserStats.bind(userStatsController));
-
-// GET /api/v1/user-stats/:userAddress/badges
-router.get('/:userAddress/badges', userStatsController.getUserBadges.bind(userStatsController));
 
 export default router;

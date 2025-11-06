@@ -14,7 +14,9 @@ export interface WalletData {
 }
 
 export class WalletService {
-  private config = getSolanaConfig();
+  private get config() {
+    return getSolanaConfig();
+  }
 
   /**
    * Generate a new wallet keypair

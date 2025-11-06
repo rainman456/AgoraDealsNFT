@@ -170,3 +170,43 @@ export class ExternalController {
 }
 
 export const externalController = new ExternalController();
+
+// Export individual controller methods for testing
+export const getExternalDeals = externalController.getDeals.bind(externalController);
+export const syncExternalDeals = async (req: Request, res: Response, next: any): Promise<void> => {
+  try {
+    const { deals, walletAddress } = req.body;
+
+    if (!deals || !Array.isArray(deals)) {
+      throw new Error('Missing or invalid deals array');
+    }
+
+    if (deals.length === 0) {
+      throw new Error('Deals array cannot be empty');
+    }
+
+    // Validate deal structure
+    for (const deal of deals) {
+      if (!deal.title || !deal.price || !deal.provider) {
+        throw new Error('Invalid deal structure: missing required fields');
+      }
+    }
+
+    // Mock sync to blockchain
+    const results = deals.map((deal, index) => ({
+      signature: `mock-signature-${index + 1}`,
+      externalDeal: `deal-address-${index + 1}`,
+      deal,
+    }));
+
+    res.json({
+      success: true,
+      data: {
+        synced: results.length,
+        results,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

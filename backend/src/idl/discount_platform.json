@@ -1,0 +1,5064 @@
+{
+  "address": "9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3",
+  "metadata": {
+    "name": "discount_platform",
+    "version": "1.0.0",
+    "spec": "0.1.0",
+    "description": "Web3-powered discount marketplace with NFT coupons"
+  },
+  "instructions": [
+    {
+      "name": "add_comment",
+      "discriminator": [
+        59,
+        175,
+        193,
+        236,
+        134,
+        214,
+        75,
+        141
+      ],
+      "accounts": [
+        {
+          "name": "comment",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  109,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "promotion"
+              }
+            ]
+          }
+        },
+        {
+          "name": "promotion"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "content",
+          "type": "string"
+        },
+        {
+          "name": "parent_comment",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "auto_award_badge",
+      "discriminator": [
+        142,
+        251,
+        216,
+        167,
+        62,
+        45,
+        205,
+        180
+      ],
+      "accounts": [
+        {
+          "name": "badge_nft",
+          "writable": true
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "metadata",
+          "writable": true
+        },
+        {
+          "name": "master_edition",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "token_metadata_program",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "sysvar_instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "badge_type",
+          "type": {
+            "defined": {
+              "name": "BadgeType"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "buy_dutch_auction",
+      "discriminator": [
+        61,
+        177,
+        198,
+        161,
+        36,
+        102,
+        221,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true
+        },
+        {
+          "name": "coupon",
+          "writable": true
+        },
+        {
+          "name": "marketplace"
+        },
+        {
+          "name": "seller",
+          "writable": true
+        },
+        {
+          "name": "marketplace_authority",
+          "writable": true
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "buy_listing",
+      "discriminator": [
+        115,
+        149,
+        42,
+        108,
+        44,
+        49,
+        140,
+        153
+      ],
+      "accounts": [
+        {
+          "name": "listing",
+          "writable": true
+        },
+        {
+          "name": "coupon",
+          "writable": true
+        },
+        {
+          "name": "marketplace"
+        },
+        {
+          "name": "seller",
+          "writable": true
+        },
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "marketplace_authority",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_auction",
+      "discriminator": [
+        156,
+        43,
+        197,
+        110,
+        218,
+        105,
+        143,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true
+        },
+        {
+          "name": "seller",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_listing",
+      "discriminator": [
+        41,
+        183,
+        50,
+        232,
+        230,
+        233,
+        157,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "listing",
+          "writable": true
+        },
+        {
+          "name": "seller",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_redemption_ticket",
+      "discriminator": [
+        222,
+        100,
+        219,
+        91,
+        40,
+        96,
+        114,
+        132
+      ],
+      "accounts": [
+        {
+          "name": "ticket",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_rewards",
+      "discriminator": [
+        4,
+        144,
+        132,
+        71,
+        116,
+        23,
+        151,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "stake_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "stake_account.coupon",
+                "account": "StakeAccount"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "staking_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  105,
+                  110,
+                  103,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "nft_mint"
+        },
+        {
+          "name": "stake_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_account",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "reward_pool",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_auction",
+      "discriminator": [
+        234,
+        6,
+        201,
+        246,
+        47,
+        219,
+        176,
+        107
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coupon"
+              },
+              {
+                "kind": "arg",
+                "path": "auction_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "coupon"
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "seller"
+              }
+            ]
+          }
+        },
+        {
+          "name": "seller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "auction_id",
+          "type": "u64"
+        },
+        {
+          "name": "auction_type",
+          "type": {
+            "defined": {
+              "name": "AuctionType"
+            }
+          }
+        },
+        {
+          "name": "starting_price",
+          "type": "u64"
+        },
+        {
+          "name": "reserve_price",
+          "type": "u64"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "i64"
+        },
+        {
+          "name": "auto_extend",
+          "type": "bool"
+        },
+        {
+          "name": "min_bid_increment",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_group_deal",
+      "discriminator": [
+        224,
+        6,
+        90,
+        198,
+        152,
+        131,
+        64,
+        180
+      ],
+      "accounts": [
+        {
+          "name": "group_deal",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                  95,
+                  100,
+                  101,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "promotion"
+              },
+              {
+                "kind": "arg",
+                "path": "deal_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                  95,
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "group_deal"
+              }
+            ]
+          }
+        },
+        {
+          "name": "promotion"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "organizer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "deal_id",
+          "type": "u64"
+        },
+        {
+          "name": "target_participants",
+          "type": "u32"
+        },
+        {
+          "name": "max_participants",
+          "type": "u32"
+        },
+        {
+          "name": "base_price",
+          "type": "u64"
+        },
+        {
+          "name": "discount_tiers",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "DiscountTier"
+              }
+            }
+          }
+        },
+        {
+          "name": "duration_seconds",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "create_promotion",
+      "discriminator": [
+        165,
+        11,
+        98,
+        141,
+        245,
+        78,
+        115,
+        127
+      ],
+      "accounts": [
+        {
+          "name": "promotion",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  109,
+                  111,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "merchant"
+              },
+              {
+                "kind": "account",
+                "path": "merchant.total_coupons_created",
+                "account": "Merchant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "discount_percentage",
+          "type": "u8"
+        },
+        {
+          "name": "max_supply",
+          "type": "u32"
+        },
+        {
+          "name": "expiry_timestamp",
+          "type": "i64"
+        },
+        {
+          "name": "category",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "price",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "finalize_auction",
+      "discriminator": [
+        220,
+        209,
+        175,
+        193,
+        57,
+        132,
+        241,
+        168
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true
+        },
+        {
+          "name": "coupon",
+          "writable": true
+        },
+        {
+          "name": "marketplace"
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110,
+                  95,
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              }
+            ]
+          }
+        },
+        {
+          "name": "seller",
+          "writable": true
+        },
+        {
+          "name": "winner",
+          "writable": true
+        },
+        {
+          "name": "marketplace_authority",
+          "writable": true
+        },
+        {
+          "name": "winner_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "winner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "finalize_group_deal",
+      "discriminator": [
+        92,
+        214,
+        22,
+        247,
+        179,
+        218,
+        217,
+        253
+      ],
+      "accounts": [
+        {
+          "name": "group_deal",
+          "writable": true
+        },
+        {
+          "name": "promotion",
+          "writable": true
+        },
+        {
+          "name": "merchant",
+          "writable": true
+        },
+        {
+          "name": "marketplace",
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                  95,
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "group_deal"
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant_authority",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "generate_redemption_ticket",
+      "discriminator": [
+        20,
+        118,
+        197,
+        161,
+        99,
+        59,
+        158,
+        102
+      ],
+      "accounts": [
+        {
+          "name": "ticket",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  105,
+                  99,
+                  107,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coupon"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "coupon"
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "latitude",
+          "type": {
+            "option": "f64"
+          }
+        },
+        {
+          "name": "longitude",
+          "type": {
+            "option": "f64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "marketplace",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116,
+                  112,
+                  108,
+                  97,
+                  99,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_staking",
+      "discriminator": [
+        184,
+        41,
+        251,
+        154,
+        146,
+        145,
+        197,
+        77
+      ],
+      "accounts": [
+        {
+          "name": "staking_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  105,
+                  110,
+                  103,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "reward_rate_per_day",
+          "type": "u64"
+        },
+        {
+          "name": "min_stake_duration",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "join_group_deal",
+      "discriminator": [
+        37,
+        179,
+        229,
+        69,
+        250,
+        197,
+        155,
+        17
+      ],
+      "accounts": [
+        {
+          "name": "participant",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "group_deal"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "group_deal",
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                  95,
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "group_deal"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "like_comment",
+      "discriminator": [
+        129,
+        249,
+        45,
+        219,
+        85,
+        221,
+        49,
+        38
+      ],
+      "accounts": [
+        {
+          "name": "comment_like",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  109,
+                  109,
+                  101,
+                  110,
+                  116,
+                  95,
+                  108,
+                  105,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "comment"
+              }
+            ]
+          }
+        },
+        {
+          "name": "comment",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "list_for_sale",
+      "discriminator": [
+        188,
+        214,
+        1,
+        112,
+        93,
+        215,
+        124,
+        207
+      ],
+      "accounts": [
+        {
+          "name": "listing",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  105,
+                  115,
+                  116,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coupon"
+              }
+            ]
+          }
+        },
+        {
+          "name": "coupon"
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "seller"
+              }
+            ]
+          }
+        },
+        {
+          "name": "seller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "price",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "mint_badge",
+      "discriminator": [
+        242,
+        234,
+        237,
+        183,
+        232,
+        245,
+        146,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "badge_nft",
+          "writable": true
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "metadata",
+          "writable": true
+        },
+        {
+          "name": "master_edition",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "token_metadata_program"
+        },
+        {
+          "name": "sysvar_instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "badge_type",
+          "type": {
+            "defined": {
+              "name": "BadgeType"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mint_coupon",
+      "discriminator": [
+        190,
+        110,
+        73,
+        138,
+        8,
+        160,
+        244,
+        63
+      ],
+      "accounts": [
+        {
+          "name": "coupon",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  117,
+                  112,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "promotion"
+              },
+              {
+                "kind": "account",
+                "path": "promotion.current_supply",
+                "account": "Promotion"
+              }
+            ]
+          }
+        },
+        {
+          "name": "nft_mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "recipient"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "metadata",
+          "writable": true
+        },
+        {
+          "name": "master_edition",
+          "writable": true
+        },
+        {
+          "name": "promotion",
+          "writable": true
+        },
+        {
+          "name": "merchant",
+          "writable": true
+        },
+        {
+          "name": "marketplace",
+          "writable": true
+        },
+        {
+          "name": "recipient"
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "recipient"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "token_metadata_program"
+        },
+        {
+          "name": "sysvar_instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "coupon_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "mint_group_coupon",
+      "discriminator": [
+        243,
+        118,
+        67,
+        65,
+        128,
+        254,
+        105,
+        45
+      ],
+      "accounts": [
+        {
+          "name": "coupon",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                  95,
+                  99,
+                  111,
+                  117,
+                  112,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "group_deal"
+              },
+              {
+                "kind": "account",
+                "path": "participant.user",
+                "account": "GroupParticipant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "group_deal"
+        },
+        {
+          "name": "participant",
+          "writable": true
+        },
+        {
+          "name": "promotion"
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "coupon_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "place_bid",
+      "discriminator": [
+        238,
+        77,
+        148,
+        91,
+        200,
+        151,
+        92,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "bid",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              },
+              {
+                "kind": "account",
+                "path": "auction.bid_count",
+                "account": "CouponAuction"
+              }
+            ]
+          }
+        },
+        {
+          "name": "auction",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110,
+                  95,
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              }
+            ]
+          }
+        },
+        {
+          "name": "previous_bidder",
+          "writable": true
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bidder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bid_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "rate_promotion",
+      "discriminator": [
+        112,
+        114,
+        13,
+        124,
+        71,
+        134,
+        72,
+        156
+      ],
+      "accounts": [
+        {
+          "name": "rating",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "promotion"
+              }
+            ]
+          }
+        },
+        {
+          "name": "promotion"
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "stars",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "redeem_coupon",
+      "discriminator": [
+        66,
+        181,
+        163,
+        197,
+        244,
+        189,
+        153,
+        0
+      ],
+      "accounts": [
+        {
+          "name": "coupon",
+          "writable": true
+        },
+        {
+          "name": "nft_mint",
+          "writable": true
+        },
+        {
+          "name": "token_account",
+          "writable": true
+        },
+        {
+          "name": "merchant",
+          "writable": true
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "merchant_authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "refund_group_deal",
+      "discriminator": [
+        197,
+        172,
+        6,
+        56,
+        10,
+        105,
+        1,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "group_deal",
+          "writable": true
+        },
+        {
+          "name": "participant",
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                  95,
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "group_deal"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_merchant",
+      "discriminator": [
+        238,
+        245,
+        77,
+        132,
+        161,
+        88,
+        216,
+        248
+      ],
+      "accounts": [
+        {
+          "name": "merchant",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketplace",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "category",
+          "type": "string"
+        },
+        {
+          "name": "latitude",
+          "type": {
+            "option": "f64"
+          }
+        },
+        {
+          "name": "longitude",
+          "type": {
+            "option": "f64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "stake_coupon",
+      "discriminator": [
+        71,
+        4,
+        167,
+        79,
+        221,
+        84,
+        213,
+        156
+      ],
+      "accounts": [
+        {
+          "name": "stake_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "coupon"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "staking_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  105,
+                  110,
+                  103,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "coupon",
+          "writable": true
+        },
+        {
+          "name": "nft_mint"
+        },
+        {
+          "name": "user_token_account",
+          "writable": true
+        },
+        {
+          "name": "stake_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "duration_days",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "transfer_coupon",
+      "discriminator": [
+        144,
+        38,
+        18,
+        1,
+        196,
+        64,
+        73,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "coupon",
+          "writable": true
+        },
+        {
+          "name": "new_owner"
+        },
+        {
+          "name": "from_authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_external_deal",
+      "discriminator": [
+        218,
+        142,
+        159,
+        101,
+        126,
+        111,
+        151,
+        27
+      ],
+      "accounts": [
+        {
+          "name": "external_deal",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  120,
+                  116,
+                  101,
+                  114,
+                  110,
+                  97,
+                  108,
+                  95,
+                  100,
+                  101,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "external_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "external_id",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "original_price",
+          "type": "u64"
+        },
+        {
+          "name": "discounted_price",
+          "type": "u64"
+        },
+        {
+          "name": "category",
+          "type": "string"
+        },
+        {
+          "name": "image_url",
+          "type": "string"
+        },
+        {
+          "name": "affiliate_url",
+          "type": "string"
+        },
+        {
+          "name": "expiry_timestamp",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "verify_and_redeem_ticket",
+      "discriminator": [
+        4,
+        231,
+        211,
+        144,
+        127,
+        73,
+        60,
+        15
+      ],
+      "accounts": [
+        {
+          "name": "ticket",
+          "writable": true
+        },
+        {
+          "name": "coupon",
+          "writable": true
+        },
+        {
+          "name": "nft_mint",
+          "writable": true
+        },
+        {
+          "name": "token_account",
+          "writable": true
+        },
+        {
+          "name": "merchant",
+          "writable": true
+        },
+        {
+          "name": "user_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "ticket.user",
+                "account": "RedemptionTicket"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "merchant_authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "expected_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BadgeNFT",
+      "discriminator": [
+        241,
+        237,
+        124,
+        145,
+        201,
+        125,
+        9,
+        228
+      ]
+    },
+    {
+      "name": "Bid",
+      "discriminator": [
+        143,
+        246,
+        48,
+        245,
+        42,
+        145,
+        180,
+        88
+      ]
+    },
+    {
+      "name": "Comment",
+      "discriminator": [
+        150,
+        135,
+        96,
+        244,
+        55,
+        199,
+        50,
+        65
+      ]
+    },
+    {
+      "name": "CommentLike",
+      "discriminator": [
+        221,
+        8,
+        40,
+        37,
+        98,
+        193,
+        74,
+        224
+      ]
+    },
+    {
+      "name": "Coupon",
+      "discriminator": [
+        24,
+        230,
+        224,
+        210,
+        200,
+        206,
+        79,
+        57
+      ]
+    },
+    {
+      "name": "CouponAuction",
+      "discriminator": [
+        14,
+        103,
+        197,
+        53,
+        109,
+        113,
+        243,
+        17
+      ]
+    },
+    {
+      "name": "ExternalDeal",
+      "discriminator": [
+        185,
+        162,
+        54,
+        98,
+        125,
+        135,
+        18,
+        40
+      ]
+    },
+    {
+      "name": "GroupDeal",
+      "discriminator": [
+        251,
+        18,
+        233,
+        197,
+        54,
+        139,
+        183,
+        133
+      ]
+    },
+    {
+      "name": "GroupParticipant",
+      "discriminator": [
+        219,
+        23,
+        9,
+        69,
+        193,
+        219,
+        76,
+        73
+      ]
+    },
+    {
+      "name": "Listing",
+      "discriminator": [
+        218,
+        32,
+        50,
+        73,
+        43,
+        134,
+        26,
+        58
+      ]
+    },
+    {
+      "name": "Marketplace",
+      "discriminator": [
+        70,
+        222,
+        41,
+        62,
+        78,
+        3,
+        32,
+        174
+      ]
+    },
+    {
+      "name": "Merchant",
+      "discriminator": [
+        71,
+        235,
+        30,
+        40,
+        231,
+        21,
+        32,
+        64
+      ]
+    },
+    {
+      "name": "Promotion",
+      "discriminator": [
+        32,
+        59,
+        115,
+        212,
+        100,
+        17,
+        137,
+        59
+      ]
+    },
+    {
+      "name": "Rating",
+      "discriminator": [
+        203,
+        130,
+        231,
+        178,
+        120,
+        130,
+        70,
+        17
+      ]
+    },
+    {
+      "name": "RedemptionTicket",
+      "discriminator": [
+        134,
+        239,
+        22,
+        113,
+        25,
+        135,
+        201,
+        241
+      ]
+    },
+    {
+      "name": "StakeAccount",
+      "discriminator": [
+        80,
+        158,
+        67,
+        124,
+        50,
+        189,
+        192,
+        255
+      ]
+    },
+    {
+      "name": "StakingPool",
+      "discriminator": [
+        203,
+        19,
+        214,
+        220,
+        220,
+        154,
+        24,
+        102
+      ]
+    },
+    {
+      "name": "UserStats",
+      "discriminator": [
+        176,
+        223,
+        136,
+        27,
+        122,
+        79,
+        32,
+        227
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AuctionCancelled",
+      "discriminator": [
+        22,
+        32,
+        51,
+        83,
+        215,
+        194,
+        171,
+        209
+      ]
+    },
+    {
+      "name": "AuctionCreated",
+      "discriminator": [
+        133,
+        190,
+        194,
+        65,
+        172,
+        0,
+        70,
+        178
+      ]
+    },
+    {
+      "name": "AuctionFinalized",
+      "discriminator": [
+        136,
+        160,
+        117,
+        237,
+        77,
+        211,
+        136,
+        28
+      ]
+    },
+    {
+      "name": "BadgeEarned",
+      "discriminator": [
+        225,
+        182,
+        190,
+        32,
+        34,
+        212,
+        200,
+        93
+      ]
+    },
+    {
+      "name": "BidPlaced",
+      "discriminator": [
+        135,
+        53,
+        176,
+        83,
+        193,
+        69,
+        108,
+        61
+      ]
+    },
+    {
+      "name": "CommentAdded",
+      "discriminator": [
+        18,
+        240,
+        225,
+        131,
+        42,
+        132,
+        33,
+        44
+      ]
+    },
+    {
+      "name": "CommentLiked",
+      "discriminator": [
+        17,
+        248,
+        234,
+        191,
+        239,
+        66,
+        17,
+        231
+      ]
+    },
+    {
+      "name": "CouponListed",
+      "discriminator": [
+        97,
+        85,
+        98,
+        144,
+        181,
+        103,
+        12,
+        66
+      ]
+    },
+    {
+      "name": "CouponMinted",
+      "discriminator": [
+        54,
+        185,
+        253,
+        75,
+        64,
+        7,
+        149,
+        3
+      ]
+    },
+    {
+      "name": "CouponRedeemed",
+      "discriminator": [
+        123,
+        241,
+        185,
+        217,
+        117,
+        208,
+        200,
+        89
+      ]
+    },
+    {
+      "name": "CouponSold",
+      "discriminator": [
+        245,
+        210,
+        117,
+        5,
+        91,
+        232,
+        148,
+        23
+      ]
+    },
+    {
+      "name": "CouponTransferred",
+      "discriminator": [
+        77,
+        240,
+        123,
+        57,
+        82,
+        224,
+        32,
+        246
+      ]
+    },
+    {
+      "name": "ExternalDealUpdated",
+      "discriminator": [
+        194,
+        197,
+        216,
+        240,
+        74,
+        154,
+        2,
+        7
+      ]
+    },
+    {
+      "name": "GroupDealCreated",
+      "discriminator": [
+        183,
+        37,
+        173,
+        20,
+        41,
+        38,
+        80,
+        67
+      ]
+    },
+    {
+      "name": "GroupDealFinalized",
+      "discriminator": [
+        161,
+        187,
+        252,
+        163,
+        226,
+        4,
+        234,
+        14
+      ]
+    },
+    {
+      "name": "GroupDealJoined",
+      "discriminator": [
+        138,
+        226,
+        185,
+        73,
+        188,
+        232,
+        202,
+        150
+      ]
+    },
+    {
+      "name": "GroupDealRefunded",
+      "discriminator": [
+        60,
+        234,
+        231,
+        97,
+        232,
+        56,
+        246,
+        225
+      ]
+    },
+    {
+      "name": "ListingCancelled",
+      "discriminator": [
+        11,
+        46,
+        163,
+        10,
+        103,
+        80,
+        139,
+        194
+      ]
+    },
+    {
+      "name": "MarketplaceInitialized",
+      "discriminator": [
+        22,
+        167,
+        42,
+        34,
+        172,
+        55,
+        155,
+        14
+      ]
+    },
+    {
+      "name": "MerchantRated",
+      "discriminator": [
+        184,
+        191,
+        161,
+        222,
+        26,
+        43,
+        236,
+        153
+      ]
+    },
+    {
+      "name": "MerchantRegistered",
+      "discriminator": [
+        202,
+        61,
+        140,
+        95,
+        139,
+        239,
+        17,
+        83
+      ]
+    },
+    {
+      "name": "PromotionCreated",
+      "discriminator": [
+        147,
+        163,
+        31,
+        31,
+        135,
+        41,
+        143,
+        81
+      ]
+    },
+    {
+      "name": "PromotionRated",
+      "discriminator": [
+        27,
+        155,
+        125,
+        60,
+        145,
+        32,
+        2,
+        25
+      ]
+    },
+    {
+      "name": "RewardsClaimed",
+      "discriminator": [
+        75,
+        98,
+        88,
+        18,
+        219,
+        112,
+        88,
+        121
+      ]
+    },
+    {
+      "name": "RewardsStaked",
+      "discriminator": [
+        85,
+        8,
+        24,
+        163,
+        22,
+        70,
+        141,
+        6
+      ]
+    },
+    {
+      "name": "TicketGenerated",
+      "discriminator": [
+        205,
+        225,
+        168,
+        122,
+        145,
+        69,
+        243,
+        213
+      ]
+    },
+    {
+      "name": "TicketRedeemed",
+      "discriminator": [
+        251,
+        171,
+        7,
+        57,
+        152,
+        25,
+        168,
+        38
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NameTooLong",
+      "msg": "Name is too long"
+    },
+    {
+      "code": 6001,
+      "name": "CategoryTooLong",
+      "msg": "Category is too long"
+    },
+    {
+      "code": 6002,
+      "name": "DescriptionTooLong",
+      "msg": "Description is too long"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidDiscount",
+      "msg": "Invalid discount percentage"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidSupply",
+      "msg": "Invalid supply amount"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidExpiry",
+      "msg": "Invalid expiry timestamp"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidPrice",
+      "msg": "Invalid price"
+    },
+    {
+      "code": 6007,
+      "name": "PromotionInactive",
+      "msg": "Promotion is inactive"
+    },
+    {
+      "code": 6008,
+      "name": "SupplyExhausted",
+      "msg": "Supply exhausted"
+    },
+    {
+      "code": 6009,
+      "name": "PromotionExpired",
+      "msg": "Promotion expired"
+    },
+    {
+      "code": 6010,
+      "name": "CouponAlreadyRedeemed",
+      "msg": "Coupon already redeemed"
+    },
+    {
+      "code": 6011,
+      "name": "CouponExpired",
+      "msg": "Coupon expired"
+    },
+    {
+      "code": 6012,
+      "name": "NotCouponOwner",
+      "msg": "Not coupon owner"
+    },
+    {
+      "code": 6013,
+      "name": "WrongMerchant",
+      "msg": "Wrong merchant"
+    },
+    {
+      "code": 6014,
+      "name": "NotMerchantAuthority",
+      "msg": "Not merchant authority"
+    },
+    {
+      "code": 6015,
+      "name": "NotMarketplaceAuthority",
+      "msg": "Not marketplace authority"
+    },
+    {
+      "code": 6016,
+      "name": "ListingInactive",
+      "msg": "Listing inactive"
+    },
+    {
+      "code": 6017,
+      "name": "WrongCoupon",
+      "msg": "Wrong coupon"
+    },
+    {
+      "code": 6018,
+      "name": "NotListingSeller",
+      "msg": "Not listing seller"
+    },
+    {
+      "code": 6019,
+      "name": "InvalidCoordinates",
+      "msg": "Invalid coordinates"
+    },
+    {
+      "code": 6020,
+      "name": "LocationNotSupported",
+      "msg": "Location not supported"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidInput",
+      "msg": "Invalid input: string exceeds maximum length"
+    }
+  ],
+  "types": [
+    {
+      "name": "AuctionCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "auction_type",
+            "type": {
+              "defined": {
+                "name": "AuctionType"
+              }
+            }
+          },
+          {
+            "name": "starting_price",
+            "type": "u64"
+          },
+          {
+            "name": "reserve_price",
+            "type": "u64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionFinalized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "winner",
+            "type": "pubkey"
+          },
+          {
+            "name": "final_price",
+            "type": "u64"
+          },
+          {
+            "name": "auction_type",
+            "type": {
+              "defined": {
+                "name": "AuctionType"
+              }
+            }
+          },
+          {
+            "name": "finalized_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "English"
+          },
+          {
+            "name": "Dutch"
+          },
+          {
+            "name": "SealedBid"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BadgeEarned",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "badge_type",
+            "type": {
+              "defined": {
+                "name": "BadgeType"
+              }
+            }
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BadgeNFT",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "badge_type",
+            "type": {
+              "defined": {
+                "name": "BadgeType"
+              }
+            }
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "metadata",
+            "type": "pubkey"
+          },
+          {
+            "name": "earned_at",
+            "type": "i64"
+          },
+          {
+            "name": "metadata_uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BadgeType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "FirstPurchase"
+          },
+          {
+            "name": "TenRedemptions"
+          },
+          {
+            "name": "FiftyRedemptions"
+          },
+          {
+            "name": "TopReviewer"
+          },
+          {
+            "name": "EarlyAdopter"
+          },
+          {
+            "name": "MerchantPartner"
+          },
+          {
+            "name": "CommunityModerator"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "bidder",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "is_winning",
+            "type": "bool"
+          },
+          {
+            "name": "is_refunded",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BidPlaced",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "bidder",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "bid_count",
+            "type": "u32"
+          },
+          {
+            "name": "new_end_time",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Comment",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "likes",
+            "type": "u32"
+          },
+          {
+            "name": "is_merchant_reply",
+            "type": "bool"
+          },
+          {
+            "name": "parent_comment",
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CommentAdded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "comment",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "is_reply",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CommentLike",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "comment",
+            "type": "pubkey"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CommentLiked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "comment",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Coupon",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "discount_percentage",
+            "type": "u8"
+          },
+          {
+            "name": "expiry_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "is_redeemed",
+            "type": "bool"
+          },
+          {
+            "name": "redeemed_at",
+            "type": "i64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "metadata_uri",
+            "type": "string"
+          },
+          {
+            "name": "mint",
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CouponAuction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "auction_type",
+            "type": {
+              "defined": {
+                "name": "AuctionType"
+              }
+            }
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "starting_price",
+            "type": "u64"
+          },
+          {
+            "name": "reserve_price",
+            "type": "u64"
+          },
+          {
+            "name": "current_bid",
+            "type": "u64"
+          },
+          {
+            "name": "highest_bidder",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "bid_count",
+            "type": "u32"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "is_finalized",
+            "type": "bool"
+          },
+          {
+            "name": "auto_extend",
+            "type": "bool"
+          },
+          {
+            "name": "extension_seconds",
+            "type": "i64"
+          },
+          {
+            "name": "min_bid_increment",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CouponListed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "listing",
+            "type": "pubkey"
+          },
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CouponMinted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "discount_percentage",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CouponRedeemed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "discount_percentage",
+            "type": "u8"
+          },
+          {
+            "name": "redemption_code",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CouponSold",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "listing",
+            "type": "pubkey"
+          },
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "buyer",
+            "type": "pubkey"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "marketplace_fee",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CouponTransferred",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "from",
+            "type": "pubkey"
+          },
+          {
+            "name": "to",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DealSource",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Skyscanner"
+          },
+          {
+            "name": "BookingCom"
+          },
+          {
+            "name": "Shopify"
+          },
+          {
+            "name": "Amazon"
+          },
+          {
+            "name": "Custom"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DiscountTier",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "min_participants",
+            "type": "u32"
+          },
+          {
+            "name": "discount_percentage",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExternalDeal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oracle_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "source",
+            "type": {
+              "defined": {
+                "name": "DealSource"
+              }
+            }
+          },
+          {
+            "name": "external_id",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "original_price",
+            "type": "u64"
+          },
+          {
+            "name": "discounted_price",
+            "type": "u64"
+          },
+          {
+            "name": "discount_percentage",
+            "type": "u8"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "name": "image_url",
+            "type": "string"
+          },
+          {
+            "name": "affiliate_url",
+            "type": "string"
+          },
+          {
+            "name": "expiry_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "last_updated",
+            "type": "i64"
+          },
+          {
+            "name": "is_verified",
+            "type": "bool"
+          },
+          {
+            "name": "verification_count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExternalDealUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "deal",
+            "type": "pubkey"
+          },
+          {
+            "name": "source",
+            "type": {
+              "defined": {
+                "name": "DealSource"
+              }
+            }
+          },
+          {
+            "name": "external_id",
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "verified",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GroupDeal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "organizer",
+            "type": "pubkey"
+          },
+          {
+            "name": "target_participants",
+            "type": "u32"
+          },
+          {
+            "name": "current_participants",
+            "type": "u32"
+          },
+          {
+            "name": "max_participants",
+            "type": "u32"
+          },
+          {
+            "name": "base_price",
+            "type": "u64"
+          },
+          {
+            "name": "discount_tiers",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "DiscountTier"
+                  }
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "deadline",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "is_finalized",
+            "type": "bool"
+          },
+          {
+            "name": "escrow_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "finalized_at",
+            "type": "i64"
+          },
+          {
+            "name": "total_escrowed",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GroupDealCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "group_deal",
+            "type": "pubkey"
+          },
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "organizer",
+            "type": "pubkey"
+          },
+          {
+            "name": "target_participants",
+            "type": "u32"
+          },
+          {
+            "name": "base_price",
+            "type": "u64"
+          },
+          {
+            "name": "deadline",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GroupDealFinalized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "group_deal",
+            "type": "pubkey"
+          },
+          {
+            "name": "participants_count",
+            "type": "u32"
+          },
+          {
+            "name": "final_discount",
+            "type": "u8"
+          },
+          {
+            "name": "total_revenue",
+            "type": "u64"
+          },
+          {
+            "name": "finalized_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GroupDealJoined",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "group_deal",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "participants_count",
+            "type": "u32"
+          },
+          {
+            "name": "amount_escrowed",
+            "type": "u64"
+          },
+          {
+            "name": "current_discount",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GroupDealRefunded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "group_deal",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "refund_amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GroupParticipant",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "group_deal",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_escrowed",
+            "type": "u64"
+          },
+          {
+            "name": "joined_at",
+            "type": "i64"
+          },
+          {
+            "name": "is_refunded",
+            "type": "bool"
+          },
+          {
+            "name": "coupon_minted",
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Listing",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ListingCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "listing",
+            "type": "pubkey"
+          },
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Location",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": "i32"
+          },
+          {
+            "name": "longitude",
+            "type": "i32"
+          },
+          {
+            "name": "region_code",
+            "type": "u16"
+          },
+          {
+            "name": "country_code",
+            "type": "u16"
+          },
+          {
+            "name": "city_hash",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Marketplace",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_coupons",
+            "type": "u64"
+          },
+          {
+            "name": "total_merchants",
+            "type": "u64"
+          },
+          {
+            "name": "fee_basis_points",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketplaceInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "marketplace",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_basis_points",
+            "type": "u16"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Merchant",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "name": "total_coupons_created",
+            "type": "u64"
+          },
+          {
+            "name": "total_coupons_redeemed",
+            "type": "u64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "location",
+            "type": {
+              "defined": {
+                "name": "Location"
+              }
+            }
+          },
+          {
+            "name": "has_physical_location",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MerchantRated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "rater",
+            "type": "pubkey"
+          },
+          {
+            "name": "rating",
+            "type": "u8"
+          },
+          {
+            "name": "review",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MerchantRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Promotion",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "discount_percentage",
+            "type": "u8"
+          },
+          {
+            "name": "max_supply",
+            "type": "u32"
+          },
+          {
+            "name": "current_supply",
+            "type": "u32"
+          },
+          {
+            "name": "expiry_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "location",
+            "type": {
+              "defined": {
+                "name": "Location"
+              }
+            }
+          },
+          {
+            "name": "geo_cell_id",
+            "type": "u64"
+          },
+          {
+            "name": "radius_meters",
+            "type": "u32"
+          },
+          {
+            "name": "is_location_based",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PromotionCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "discount_percentage",
+            "type": "u8"
+          },
+          {
+            "name": "max_supply",
+            "type": "u32"
+          },
+          {
+            "name": "expiry_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PromotionRated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "stars",
+            "type": "u8"
+          },
+          {
+            "name": "is_update",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rating",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "promotion",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "stars",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RedemptionLocation",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": "i32"
+          },
+          {
+            "name": "longitude",
+            "type": "i32"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RedemptionTicket",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "ticket_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "is_consumed",
+            "type": "bool"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "redemption_location",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "RedemptionLocation"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReputationTier",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Bronze"
+          },
+          {
+            "name": "Silver"
+          },
+          {
+            "name": "Gold"
+          },
+          {
+            "name": "Platinum"
+          },
+          {
+            "name": "Diamond"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RewardsClaimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "staker",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RewardsStaked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "staker",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "duration",
+            "type": "i64"
+          },
+          {
+            "name": "expected_rewards",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_staked",
+            "type": "u64"
+          },
+          {
+            "name": "staked_at",
+            "type": "i64"
+          },
+          {
+            "name": "unlock_at",
+            "type": "i64"
+          },
+          {
+            "name": "duration_days",
+            "type": "u64"
+          },
+          {
+            "name": "rewards_earned",
+            "type": "u64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "claimed_at",
+            "type": {
+              "option": "i64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakingPool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_staked",
+            "type": "u64"
+          },
+          {
+            "name": "total_rewards_distributed",
+            "type": "u64"
+          },
+          {
+            "name": "reward_rate_per_day",
+            "type": "u64"
+          },
+          {
+            "name": "min_stake_duration",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TicketGenerated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ticket",
+            "type": "pubkey"
+          },
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "ticket_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TicketRedeemed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ticket",
+            "type": "pubkey"
+          },
+          {
+            "name": "coupon",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "redeemed_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_purchases",
+            "type": "u32"
+          },
+          {
+            "name": "total_redemptions",
+            "type": "u32"
+          },
+          {
+            "name": "total_ratings_given",
+            "type": "u32"
+          },
+          {
+            "name": "total_comments",
+            "type": "u32"
+          },
+          {
+            "name": "total_listings",
+            "type": "u32"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u64"
+          },
+          {
+            "name": "tier",
+            "type": {
+              "defined": {
+                "name": "ReputationTier"
+              }
+            }
+          },
+          {
+            "name": "badges_earned",
+            "type": "bytes"
+          },
+          {
+            "name": "joined_at",
+            "type": "i64"
+          },
+          {
+            "name": "last_activity",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

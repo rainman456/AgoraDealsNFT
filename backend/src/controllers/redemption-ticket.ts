@@ -361,3 +361,11 @@ export class RedemptionTicketController {
 }
 
 export const redemptionTicketController = new RedemptionTicketController();
+
+// Export individual controller methods for testing
+export const generateRedemptionTicket = redemptionTicketController.generateTicket.bind(redemptionTicketController);
+export const verifyAndRedeemTicket = redemptionTicketController.verifyAndRedeem.bind(redemptionTicketController);
+export const redeemCoupon = redemptionTicketController.verifyAndRedeem.bind(redemptionTicketController);
+export const cancelRedemptionTicket = redemptionTicketController.cancelTicket.bind(redemptionTicketController);
+export const getUserRedemptionTickets = redemptionTicketController.getUserTickets.bind(redemptionTicketController);
+export const getMerchantRedemptionTickets = redemptionTicketController.getMerchantTickets.bind(redemptionTicketController);

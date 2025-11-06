@@ -33,6 +33,7 @@ export default function HeroCarousel({ deals }: HeroCarouselProps) {
   return (
     <div className="relative h-[450px] lg:h-[550px] rounded-2xl overflow-hidden shadow-2xl group">
       {deals.map((deal, index) => {
+        const dealId = deal._id || deal.id || `deal-${index}`;
         const merchantName = deal.merchant?.businessName || deal.merchant?.name || 'Merchant';
         const imageUrl = deal.imageUrl || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=600&fit=crop';
         const originalPrice = deal.originalPrice || 100;
@@ -41,7 +42,7 @@ export default function HeroCarousel({ deals }: HeroCarouselProps) {
         
         return (
           <div
-            key={deal._id}
+            key={dealId}
             className={`absolute inset-0 transition-opacity duration-1000 ${
               index === current ? "opacity-100" : "opacity-0"
             }`}

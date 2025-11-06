@@ -237,9 +237,20 @@ export class BadgeController {
   async getUserBadgeNFTs(req: Request, res: Response): Promise<void> {
     try {
       const { userAddress } = req.params;
+      const walletFromHeader = req.headers['x-wallet-address'] as string;
+      const finalUserAddress = userAddress || walletFromHeader;
+      
+      if (!finalUserAddress) {
+        res.status(400).json({
+          success: false,
+          error: 'User address is required',
+        });
+        return;
+      }
+      
       const { page, limit } = getPaginationParams(req);
 
-      const userPubkey = new PublicKey(userAddress);
+      const userPubkey = new PublicKey(finalUserAddress);
 
       // Fetch all badge NFTs for this user
       const allBadges = await solanaService.program.account.badgeNft.all([

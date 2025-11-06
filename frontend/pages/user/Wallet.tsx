@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { mockDeals, promotionToDeal } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Send, Gift, TrendingUp, Award, Clock, Sparkles, Grid3x3, List, Share2, QrCode, AlertCircle, ArrowUpRight, ArrowDownLeft, CheckCircle, XCircle, DollarSign } from "lucide-react";
+import { Send, Gift, TrendingUp, Award, Clock, Sparkles, Grid3x3, List, Share2, QrCode, AlertCircle, ArrowUpRight, ArrowDownLeft, CheckCircle, XCircle, DollarSign, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { couponsAPI, Coupon, Promotion } from "@/lib/api";
 
 interface Transaction {
   id: string;
@@ -19,49 +19,36 @@ interface Transaction {
 export default function MyDeals() {
   const [activeTab, setActiveTab] = useState<"nfts" | "staking" | "profile">("nfts");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [ownedDeals] = useState(mockDeals.slice(0, 5).map(promotionToDeal) as any);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [stakingYield] = useState(12.5);
-  const [transactions] = useState<Transaction[]>([
-    {
-      id: "1",
-      type: "claim",
-      dealTitle: "50% Off Flight to Tokyo",
-      timestamp: "2025-01-15 14:30",
-      status: "completed"
-    },
-    {
-      id: "2",
-      type: "purchase",
-      dealTitle: "40% Off Luxury Hotel Stay",
-      amount: 29.99,
-      timestamp: "2025-01-14 10:15",
-      status: "completed"
-    },
-    {
-      id: "3",
-      type: "gift",
-      dealTitle: "30% Off Michelin Star Restaurant",
-      recipient: "sarah@example.com",
-      timestamp: "2025-01-13 16:45",
-      status: "completed"
-    },
-    {
-      id: "4",
-      type: "redeem",
-      dealTitle: "25% Off Spa Treatment",
-      timestamp: "2025-01-12 09:20",
-      status: "completed"
-    },
-    {
-      id: "5",
-      type: "list",
-      dealTitle: "20% Off Concert Tickets",
-      amount: 15.00,
-      timestamp: "2025-01-11 18:00",
-      status: "pending"
-    }
-  ]);
+  const [transactions] = useState<Transaction[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadMyCoupons();
+  }, []);
+
+  const loadMyCoupons = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const user = localStorage.getItem('user');
+      if (!user) {
+        setError('Please connect your wallet');
+        return;
+      }
+      const userData = JSON.parse(user);
+      const response = await couponsAPI.getMyCoupons(userData.walletAddress);
+      setCoupons(response.data || []);
+    } catch (err: any) {
+      console.error('Failed to load coupons:', err);
+      setError(err.response?.data?.message || 'Failed to load your deals');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTransfer = (dealId: string) => {
     toast({
@@ -166,15 +153,36 @@ export default function MyDeals() {
 
               {/* Deals Content */}
               <TabsContent value="deals" className="mt-6">
+            {/* Loading State */}
+            {loading && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <span className="ml-3 text-lg">Loading your deals...</span>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <Card className="p-8 text-center border-destructive/50">
+                <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-2">Error Loading Deals</h3>
+                <p className="text-muted-foreground mb-4">{error}</p>
+                <Button onClick={loadMyCoupons}>Try Again</Button>
+              </Card>
+            )}
+
             {/* View Toggle & Stats */}
+            {!loading && !error && (
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <div className="flex items-center gap-4">
                 <div className="bg-primary/10 text-primary px-4 py-2 rounded-lg border border-primary/30">
-                  <span className="text-2xl font-bold">{ownedDeals.length}</span>
+                  <span className="text-2xl font-bold">{coupons.length}</span>
                   <span className="text-sm ml-2">Active Deals</span>
                 </div>
                 <div className="bg-success/10 text-success px-4 py-2 rounded-lg border border-success/30">
-                  <span className="text-2xl font-bold">$247</span>
+                  <span className="text-2xl font-bold">
+                    ${coupons.reduce((sum, c) => sum + ((c.promotion?.originalPrice || 0) - (c.promotion?.discountedPrice || 0)), 0).toFixed(0)}
+                  </span>
                   <span className="text-sm ml-2">Total Savings</span>
                 </div>
               </div>
@@ -198,28 +206,36 @@ export default function MyDeals() {
             </div>
 
             {/* Grid View */}
-            {viewMode === "grid" && (
+            {!loading && !error && viewMode === "grid" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {ownedDeals.map((deal) => {
-                  const daysLeft = getDaysUntilExpiry(deal.expiry);
+                {coupons.map((coupon) => {
+                  const promotion = coupon.promotion;
+                  if (!promotion) return null;
+                  const daysLeft = getDaysUntilExpiry(promotion.endDate);
                   const expiryStatus = getExpiryStatus(daysLeft);
 
                   return (
-                    <Card key={deal.id} className="overflow-hidden border-2 border-border hover:border-primary/50 transition-all duration-200 hover:shadow-xl group">
+                    <Card key={coupon._id} className="overflow-hidden border-2 border-border hover:border-primary/50 transition-all duration-200 hover:shadow-xl group">
                       {/* Deal Image */}
                       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                        <img
-                          src={deal.image}
-                          alt={deal.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
+                        {promotion.imageUrl ? (
+                          <img
+                            src={promotion.imageUrl}
+                            alt={promotion.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
+                            <Sparkles className="w-16 h-16 text-primary/40" />
+                          </div>
+                        )}
                         
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                         
                         {/* Discount Badge */}
                         <div className="absolute top-3 right-3 bg-gradient-to-r from-primary to-accent text-white px-3 py-1.5 rounded-full shadow-lg">
-                          <span className="text-lg font-bold">{deal.discount}%</span>
+                          <span className="text-lg font-bold">{promotion.discountPercentage}%</span>
                           <span className="text-xs ml-1">OFF</span>
                         </div>
 
@@ -231,30 +247,41 @@ export default function MyDeals() {
 
                         {/* Merchant Badge */}
                         <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-card/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold">
-                          {deal.merchant}
+                          {promotion.merchant?.businessName || 'Merchant'}
                         </div>
+
+                        {/* Redeemed Badge */}
+                        {coupon.isRedeemed && (
+                          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                            <div className="bg-success text-white px-4 py-2 rounded-full font-bold">
+                              ✓ REDEEMED
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Content */}
                       <div className="p-4">
-                        <h3 className="font-bold text-lg mb-2 line-clamp-2">{deal.title}</h3>
-                        <p className="text-sm text-foreground/60 mb-4 line-clamp-2">{deal.description}</p>
+                        <h3 className="font-bold text-lg mb-2 line-clamp-2">{promotion.title}</h3>
+                        <p className="text-sm text-foreground/60 mb-4 line-clamp-2">{promotion.description}</p>
 
                         {/* Actions */}
                         <div className="grid grid-cols-2 gap-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleList(deal.id)}
+                            onClick={() => handleList(coupon._id)}
                             className="w-full"
+                            disabled={coupon.isRedeemed}
                           >
                             <TrendingUp className="w-4 h-4 mr-2" />
                             List
                           </Button>
                           <Button
                             size="sm"
-                            onClick={() => handleRedeem(deal.id)}
+                            onClick={() => handleRedeem(coupon._id)}
                             className="w-full bg-primary hover:bg-primary-dark"
+                            disabled={coupon.isRedeemed}
                           >
                             <QrCode className="w-4 h-4 mr-2" />
                             Redeem
@@ -268,33 +295,48 @@ export default function MyDeals() {
             )}
 
             {/* List View */}
-            {viewMode === "list" && (
+            {!loading && !error && viewMode === "list" && (
               <div className="space-y-4">
-                {ownedDeals.map((deal) => {
-                  const daysLeft = getDaysUntilExpiry(deal.expiry);
+                {coupons.map((coupon) => {
+                  const promotion = coupon.promotion;
+                  if (!promotion) return null;
+                  const daysLeft = getDaysUntilExpiry(promotion.endDate);
                   const expiryStatus = getExpiryStatus(daysLeft);
 
                   return (
-                    <Card key={deal.id} className="p-6 hover:shadow-lg transition-all duration-200 border-2 border-transparent hover:border-primary/30">
+                    <Card key={coupon._id} className="p-6 hover:shadow-lg transition-all duration-200 border-2 border-transparent hover:border-primary/30">
                       <div className="flex flex-col md:flex-row gap-6">
                         {/* Image */}
                         <div className="relative w-full md:w-48 aspect-[4/3] rounded-lg overflow-hidden flex-shrink-0">
-                          <img
-                            src={deal.image}
-                            alt={deal.title}
-                            className="w-full h-full object-cover"
-                          />
+                          {promotion.imageUrl ? (
+                            <img
+                              src={promotion.imageUrl}
+                              alt={promotion.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
+                              <Sparkles className="w-12 h-12 text-primary/40" />
+                            </div>
+                          )}
                           <div className="absolute top-2 right-2 bg-gradient-to-r from-primary to-accent text-white px-3 py-1 rounded-full text-sm font-bold">
-                            {deal.discount}% OFF
+                            {promotion.discountPercentage}% OFF
                           </div>
+                          {coupon.isRedeemed && (
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                              <div className="bg-success text-white px-4 py-2 rounded-full font-bold text-sm">
+                                ✓ REDEEMED
+                              </div>
+                            </div>
+                          )}
                         </div>
 
                         {/* Content */}
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h3 className="text-xl font-bold mb-1">{deal.title}</h3>
-                              <p className="text-sm text-foreground/60">{deal.merchant}</p>
+                              <h3 className="text-xl font-bold mb-1">{promotion.title}</h3>
+                              <p className="text-sm text-foreground/60">{promotion.merchant?.businessName || 'Merchant'}</p>
                             </div>
                             <div className={`${expiryStatus.bg} ${expiryStatus.color} px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1`}>
                               <Clock className="w-3 h-3" />
@@ -302,13 +344,14 @@ export default function MyDeals() {
                             </div>
                           </div>
 
-                          <p className="text-foreground/70 mb-4">{deal.description}</p>
+                          <p className="text-foreground/70 mb-4">{promotion.description}</p>
 
                           <div className="flex items-center gap-3 flex-wrap">
                             <Button
                               size="lg"
-                              onClick={() => handleRedeem(deal.id)}
+                              onClick={() => handleRedeem(coupon._id)}
                               className="bg-primary hover:bg-primary-dark"
+                              disabled={coupon.isRedeemed}
                             >
                               <QrCode className="w-4 h-4 mr-2" />
                               Redeem Now
@@ -316,7 +359,8 @@ export default function MyDeals() {
                             <Button
                               variant="outline"
                               size="lg"
-                              onClick={() => handleList(deal.id)}
+                              onClick={() => handleList(coupon._id)}
+                              disabled={coupon.isRedeemed}
                             >
                               <TrendingUp className="w-4 h-4 mr-2" />
                               List for Sale
@@ -324,7 +368,8 @@ export default function MyDeals() {
                             <Button
                               variant="outline"
                               size="lg"
-                              onClick={() => handleGift(deal.id)}
+                              onClick={() => handleGift(coupon._id)}
+                              disabled={coupon.isRedeemed}
                             >
                               <Gift className="w-4 h-4 mr-2" />
                               Gift
@@ -338,17 +383,19 @@ export default function MyDeals() {
               </div>
             )}
 
-            {ownedDeals.length === 0 && (
+            {!loading && !error && coupons.length === 0 && (
               <Card className="p-12 text-center">
                 <div className="w-20 h-20 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
                   <Sparkles className="w-10 h-10 text-muted-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">No deals yet</h3>
                 <p className="text-foreground/60 mb-6">Start exploring and claim your first deal</p>
-                <Button size="lg" className="bg-primary hover:bg-primary-dark">
+                <Button size="lg" className="bg-primary hover:bg-primary-dark" onClick={() => window.location.href = '/'}>
                   Browse Deals
                 </Button>
               </Card>
+            )}
+            )}
             )}
               </TabsContent>
 

@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { externalDealsAPI } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -27,107 +29,6 @@ interface ExternalDeal {
   featured: boolean;
 }
 
-const mockExternalDeals: ExternalDeal[] = [
-  {
-    id: '1',
-    title: 'Round Trip to Paris',
-    description: 'Direct flights from NYC to Paris with premium airlines',
-    source: 'skyscanner',
-    category: 'Travel',
-    image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=400&fit=crop',
-    price: 450,
-    originalPrice: 850,
-    discount: 47,
-    rating: 4.8,
-    reviews: 1250,
-    location: 'New York → Paris',
-    dates: 'Dec 15 - Dec 22',
-    url: 'https://skyscanner.com',
-    featured: true
-  },
-  {
-    id: '2',
-    title: 'Luxury Hotel in Bali',
-    description: '5-star beachfront resort with spa and infinity pool',
-    source: 'booking',
-    category: 'Hotels',
-    image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop',
-    price: 120,
-    originalPrice: 280,
-    discount: 57,
-    rating: 4.9,
-    reviews: 890,
-    location: 'Bali, Indonesia',
-    dates: '3 nights',
-    url: 'https://booking.com',
-    featured: true
-  },
-  {
-    id: '3',
-    title: 'Designer Handbag Collection',
-    description: 'Authentic luxury handbags from top brands',
-    source: 'shopify',
-    category: 'Shopping',
-    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&h=400&fit=crop',
-    price: 299,
-    originalPrice: 599,
-    discount: 50,
-    rating: 4.7,
-    reviews: 456,
-    url: 'https://shopify.com',
-    featured: false
-  },
-  {
-    id: '4',
-    title: 'Wireless Noise-Cancelling Headphones',
-    description: 'Premium audio quality with 30-hour battery life',
-    source: 'amazon',
-    category: 'Products',
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=400&fit=crop',
-    price: 179,
-    originalPrice: 349,
-    discount: 49,
-    rating: 4.6,
-    reviews: 3420,
-    url: 'https://amazon.com',
-    featured: false
-  },
-  {
-    id: '5',
-    title: 'Tokyo City Break',
-    description: 'Explore Tokyo with guided tours and cultural experiences',
-    source: 'skyscanner',
-    category: 'Travel',
-    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&h=400&fit=crop',
-    price: 680,
-    originalPrice: 1200,
-    discount: 43,
-    rating: 4.8,
-    reviews: 678,
-    location: 'Los Angeles → Tokyo',
-    dates: 'Jan 10 - Jan 17',
-    url: 'https://skyscanner.com',
-    featured: true
-  },
-  {
-    id: '6',
-    title: 'Mountain Resort in Switzerland',
-    description: 'Ski resort with panoramic mountain views',
-    source: 'booking',
-    category: 'Hotels',
-    image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&h=400&fit=crop',
-    price: 195,
-    originalPrice: 420,
-    discount: 54,
-    rating: 4.9,
-    reviews: 1120,
-    location: 'Zermatt, Switzerland',
-    dates: '4 nights',
-    url: 'https://booking.com',
-    featured: false
-  }
-];
-
 const sources = [
   { name: 'skyscanner', label: 'Skyscanner', icon: Plane, color: 'text-blue-500' },
   { name: 'booking', label: 'Booking.com', icon: Hotel, color: 'text-purple-500' },
@@ -139,14 +40,41 @@ export default function ExternalDeals() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [deals, setDeals] = useState<ExternalDeal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const filteredDeals = mockExternalDeals.filter(deal => {
+  useEffect(() => {
+    loadDeals();
+  }, [selectedSource, selectedCategory]);
+
+  const loadDeals = async () => {
+    try {
+      setLoading(true);
+      const response = await externalDealsAPI.list({
+        source: selectedSource || undefined,
+        category: selectedCategory || undefined,
+        limit: 50
+      });
+      setDeals(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error('Failed to load external deals:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load external deals",
+        variant: "destructive"
+      });
+      setDeals([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredDeals = Array.isArray(deals) ? deals.filter(deal => {
     const matchesSearch = deal.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          deal.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesSource = !selectedSource || deal.source === selectedSource;
-    const matchesCategory = !selectedCategory || deal.category === selectedCategory;
-    return matchesSearch && matchesSource && matchesCategory;
-  });
+    return matchesSearch;
+  }) : [];
 
   const getSourceIcon = (source: string) => {
     const sourceData = sources.find(s => s.name === source);
@@ -170,7 +98,7 @@ export default function ExternalDeals() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {sources.map((source) => {
             const Icon = source.icon;
-            const count = mockExternalDeals.filter(d => d.source === source.name).length;
+            const count = deals.filter(d => d.source === source.name).length;
             return (
               <Card key={source.name} className="p-4 text-center">
                 <Icon className={`w-6 h-6 mx-auto mb-2 ${source.color}`} />
@@ -255,6 +183,14 @@ export default function ExternalDeals() {
           </div>
         </Card>
 
+        {/* Loading State */}
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading deals...</p>
+          </div>
+        ) : (
+          <>
         {/* Featured Deals */}
         {filteredDeals.some(d => d.featured) && (
           <div className="mb-8">
@@ -339,8 +275,13 @@ export default function ExternalDeals() {
 
         {/* All Deals */}
         <div>
-          <h2 className="text-2xl font-bold mb-4">All Deals ({filteredDeals.length})</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <h2 className="text-2xl font-bold mb-4">All Deals ({filteredDeals.filter(d => !d.featured).length})</h2>
+          {filteredDeals.filter(d => !d.featured).length === 0 ? (
+            <Card className="p-12 text-center">
+              <p className="text-muted-foreground">No deals found matching your criteria</p>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDeals.filter(d => !d.featured).map((deal) => (
               <Card key={deal.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative aspect-video">
@@ -411,16 +352,11 @@ export default function ExternalDeals() {
                 </div>
               </Card>
             ))}
-          </div>
-
-          {filteredDeals.length === 0 && (
-            <Card className="p-12 text-center">
-              <Search className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No deals found</h3>
-              <p className="text-muted-foreground">Try adjusting your filters or search query</p>
-            </Card>
+            </div>
           )}
         </div>
+        </>
+        )}
       </div>
     </main>
   );

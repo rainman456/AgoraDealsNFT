@@ -1,19 +1,59 @@
 import { useState, useEffect } from "react";
-import { mockDeals, promotionToDeal } from "@/lib/mock-data";
+import { couponsAPI, redemptionAPI } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeSVG } from "qrcode.react";
 import { CheckCircle, Loader2, Shield, Clock, AlertTriangle, Sparkles } from "lucide-react";
 
+interface Deal {
+  id: string;
+  title: string;
+  description: string;
+  merchant: string;
+  image: string;
+  price: number;
+  discount: number;
+  expiry: string;
+}
+
 export default function Redemption() {
-  const [selectedDeal, setSelectedDeal] = useState(promotionToDeal(mockDeals[0]) as any);
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRedeemed, setIsRedeemed] = useState(false);
   const [countdown, setCountdown] = useState(30);
   const [showConfetti, setShowConfetti] = useState(false);
   const [brightness, setBrightness] = useState(100);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadDeals();
+  }, []);
+
+  const loadDeals = async () => {
+    try {
+      setLoading(true);
+      const response = await couponsAPI.list({ status: 'active', limit: 50 });
+      const activeDeals = Array.isArray(response.data) ? response.data : [];
+      setDeals(activeDeals);
+      if (activeDeals.length > 0) {
+        setSelectedDeal(activeDeals[0]);
+      }
+    } catch (error) {
+      console.error('Failed to load deals:', error);
+      setDeals([]);
+      toast({
+        title: "Error",
+        description: "Failed to load your deals",
+        variant: "destructive"
+      });
+      setDeals([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Countdown timer for redemption window
   useEffect(() => {
@@ -25,23 +65,37 @@ export default function Redemption() {
 
   // Auto-brightness boost for outdoor scanning
   useEffect(() => {
-    setBrightness(100);
+    if (selectedDeal) {
+      setBrightness(100);
+    }
   }, [selectedDeal]);
 
   const handleScanAtMerchant = async () => {
-    setIsVerifying(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsVerifying(false);
-    setIsRedeemed(true);
-    setShowConfetti(true);
+    if (!selectedDeal) return;
     
-    toast({
-      title: "🎉 Deal Redeemed!",
-      description: "Enjoy your savings!",
-    });
+    try {
+      setIsVerifying(true);
+      await redemptionAPI.redeem(selectedDeal.id);
+      setIsVerifying(false);
+      setIsRedeemed(true);
+      setShowConfetti(true);
+      
+      toast({
+        title: "🎉 Deal Redeemed!",
+        description: "Enjoy your savings!",
+      });
 
-    // Hide confetti after animation
-    setTimeout(() => setShowConfetti(false), 3000);
+      // Hide confetti after animation
+      setTimeout(() => setShowConfetti(false), 3000);
+    } catch (error) {
+      console.error('Failed to redeem deal:', error);
+      setIsVerifying(false);
+      toast({
+        title: "Error",
+        description: "Failed to redeem deal. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleRefreshCode = () => {
@@ -52,7 +106,7 @@ export default function Redemption() {
     });
   };
 
-  const daysUntilExpiry = Math.ceil((new Date(selectedDeal.expiry).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+  const daysUntilExpiry = selectedDeal ? Math.ceil((new Date(selectedDeal.expiry).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 0;
 
   return (
     <div className="min-h-screen py-8 px-4 bg-gradient-to-br from-background via-background to-primary/5">
@@ -98,9 +152,17 @@ export default function Redemption() {
                 <Sparkles className="w-5 h-5 text-primary" />
                 Your Active Deals
               </h3>
-              <div className="space-y-2">
-                {mockDeals.slice(0, 5).map((promo) => {
-                  const deal = promotionToDeal(promo);
+              {loading ? (
+                <div className="text-center py-8">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+                </div>
+              ) : deals.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-sm text-muted-foreground">No active deals</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                {Array.isArray(deals) && deals.slice(0, 5).map((deal) => {
                   return (
                     <button
                       key={deal.id}
@@ -110,7 +172,7 @@ export default function Redemption() {
                         setCountdown(30);
                       }}
                       className={`w-full p-3 rounded-xl text-left transition-all duration-200 ${
-                        selectedDeal.id === deal.id
+                        selectedDeal?.id === deal.id
                           ? "bg-primary/20 border-2 border-primary text-primary shadow-lg scale-105"
                           : "bg-card border border-border hover:border-primary/50 hover:shadow-md"
                       }`}
@@ -123,13 +185,26 @@ export default function Redemption() {
                     </button>
                   );
                 })}
-              </div>
+                </div>
+              )}
             </Card>
           </div>
 
           {/* Main QR Code & Verification */}
           <div className="lg:col-span-2">
-            <Card className="holographic-card p-6 md:p-10 relative overflow-hidden">
+            {loading ? (
+              <Card className="p-12 text-center">
+                <Loader2 className="w-16 h-16 animate-spin mx-auto mb-4 text-primary" />
+                <p className="text-muted-foreground">Loading redemption details...</p>
+              </Card>
+            ) : !selectedDeal ? (
+              <Card className="p-12 text-center">
+                <Sparkles className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No deals available</h3>
+                <p className="text-muted-foreground">Claim some deals to redeem them here</p>
+              </Card>
+            ) : (
+              <Card className="holographic-card p-6 md:p-10 relative overflow-hidden">
               {/* Security Indicator */}
               <div className="absolute top-4 right-4 flex items-center gap-2 bg-success/10 text-success px-3 py-1.5 rounded-full border border-success/30">
                 <Shield className="w-4 h-4" />
@@ -267,7 +342,8 @@ export default function Redemption() {
                   </p>
                 </div>
               </div>
-            </Card>
+              </Card>
+            )}
           </div>
         </div>
       </div>

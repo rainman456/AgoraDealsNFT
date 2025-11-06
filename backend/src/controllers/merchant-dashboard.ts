@@ -17,8 +17,9 @@ export class MerchantDashboardController {
       const { merchantAddress } = req.params;
       const { startDate, endDate } = req.query;
 
+      // Try to find merchant by wallet address or onChainAddress (not by _id since it's a Solana address)
       const merchant = await Merchant.findOne({
-        $or: [{ _id: merchantAddress }, { onChainAddress: merchantAddress }, { walletAddress: merchantAddress }],
+        $or: [{ onChainAddress: merchantAddress }, { walletAddress: merchantAddress }],
       });
 
       if (!merchant) {
@@ -26,6 +27,7 @@ export class MerchantDashboardController {
           success: false,
           error: 'Merchant not found',
         });
+        return;
       }
 
       const dateFilter: any = {};
@@ -175,7 +177,7 @@ export class MerchantDashboardController {
       const limit = parseInt(req.query.limit as string) || 50;
 
       const merchant = await Merchant.findOne({
-        $or: [{ _id: merchantAddress }, { onChainAddress: merchantAddress }],
+        $or: [{ onChainAddress: merchantAddress }, { walletAddress: merchantAddress }],
       });
 
       if (!merchant) {

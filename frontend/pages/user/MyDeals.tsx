@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { mockDeals, promotionToDeal } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
+import { couponsAPI, userStatsAPI } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -21,59 +21,85 @@ interface Transaction {
   sponsored?: boolean;
 }
 
+interface Deal {
+  id: string;
+  title: string;
+  description: string;
+  merchant: string;
+  image: string;
+  price: number;
+  discount: number;
+  expiry: string;
+}
+
+interface UserStats {
+  dealsClaimed: number;
+  dealsRedeemed: number;
+  totalSavings: number;
+  referrals: number;
+  rewardsRate: number;
+  pointsEarned: number;
+  memberTier: string;
+}
+
 export default function MyDeals() {
   const [activeTab, setActiveTab] = useState<"nfts" | "staking" | "profile">("nfts");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [ownedDeals] = useState(mockDeals.slice(0, 5).map(promotionToDeal) as any);
-  const [stakingYield] = useState(12.5);
+  const [ownedDeals, setOwnedDeals] = useState<Deal[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [userStats, setUserStats] = useState<UserStats>({
+    dealsClaimed: 0,
+    dealsRedeemed: 0,
+    totalSavings: 0,
+    referrals: 0,
+    rewardsRate: 0,
+    pointsEarned: 0,
+    memberTier: 'Bronze'
+  });
+  const [loading, setLoading] = useState(true);
   const [advancedMode, setAdvancedMode] = useState(false);
   const [showAddFunds, setShowAddFunds] = useState(false);
   const [fundAmount, setFundAmount] = useState("");
   const [walletBalance] = useState(50.00);
   const [freeTransactionsLeft] = useState(3);
-  const [transactions] = useState<Transaction[]>([
-    {
-      id: "1",
-      type: "claim",
-      dealTitle: "50% Off Flight to Tokyo",
-      timestamp: "2025-01-15 14:30",
-      status: "completed",
-      sponsored: true
-    },
-    {
-      id: "2",
-      type: "purchase",
-      dealTitle: "40% Off Luxury Hotel Stay",
-      amount: 29.99,
-      timestamp: "2025-01-14 10:15",
-      status: "completed"
-    },
-    {
-      id: "3",
-      type: "gift",
-      dealTitle: "30% Off Michelin Star Restaurant",
-      recipient: "sarah@example.com",
-      timestamp: "2025-01-13 16:45",
-      status: "completed",
-      sponsored: true
-    },
-    {
-      id: "4",
-      type: "redeem",
-      dealTitle: "25% Off Spa Treatment",
-      timestamp: "2025-01-12 09:20",
-      status: "completed"
-    },
-    {
-      id: "5",
-      type: "list",
-      dealTitle: "20% Off Concert Tickets",
-      amount: 15.00,
-      timestamp: "2025-01-11 18:00",
-      status: "pending"
-    }
-  ]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      setLoading(true);
+      const [couponsResponse, statsResponse] = await Promise.all([
+        couponsAPI.list({ status: 'active', limit: 50 }),
+        userStatsAPI.get()
+      ]);
+      
+      if (couponsResponse.success && Array.isArray(couponsResponse.data)) {
+        setOwnedDeals(couponsResponse.data);
+      } else {
+        setOwnedDeals([]);
+      }
+      
+      if (statsResponse.success && statsResponse.data) {
+        setUserStats(statsResponse.data);
+      }
+      // Load transactions if available
+      // setTransactions(transactionsResponse.data || []);
+    } catch (error) {
+      console.error('Failed to load user data:', error);
+      setOwnedDeals([]);
+      toast({
+        title: "Error",
+        description: "Failed to load your deals",
+        variant: "destructive"
+      });
+      setOwnedDeals([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
   const [selectedDealForTransfer, setSelectedDealForTransfer] = useState<string | null>(null);
@@ -334,6 +360,13 @@ export default function MyDeals() {
 
               {/* Deals Content */}
               <TabsContent value="deals" className="mt-6">
+            {loading ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Loading your deals...</p>
+              </div>
+            ) : (
+              <>
             {/* View Toggle & Stats */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <div className="flex items-center gap-4">
@@ -342,7 +375,7 @@ export default function MyDeals() {
                   <span className="text-sm ml-2">Active Deals</span>
                 </div>
                 <div className="bg-success/10 text-success px-4 py-2 rounded-lg border border-success/30">
-                  <span className="text-2xl font-bold">$247</span>
+                  <span className="text-2xl font-bold">${userStats.totalSavings}</span>
                   <span className="text-sm ml-2">Total Savings</span>
                 </div>
               </div>
@@ -518,6 +551,8 @@ export default function MyDeals() {
                 </Button>
               </Card>
             )}
+              </>
+            )}
               </TabsContent>
 
               {/* Transaction History Content */}
@@ -623,17 +658,17 @@ export default function MyDeals() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="text-center p-6 bg-card rounded-xl border border-border">
                   <TrendingUp className="w-12 h-12 text-success mx-auto mb-3" />
-                  <p className="text-3xl font-bold text-success mb-1">{stakingYield}%</p>
+                  <p className="text-3xl font-bold text-success mb-1">{userStats.rewardsRate}%</p>
                   <p className="text-sm text-foreground/60">Rewards Rate</p>
                 </div>
                 <div className="text-center p-6 bg-card rounded-xl border border-border">
                   <Award className="w-12 h-12 text-primary mx-auto mb-3" />
-                  <p className="text-3xl font-bold text-primary mb-1">2,450</p>
+                  <p className="text-3xl font-bold text-primary mb-1">{userStats.pointsEarned}</p>
                   <p className="text-sm text-foreground/60">Points Earned</p>
                 </div>
                 <div className="text-center p-6 bg-card rounded-xl border border-border">
                   <Sparkles className="w-12 h-12 text-secondary mx-auto mb-3" />
-                  <p className="text-3xl font-bold text-secondary mb-1">Gold</p>
+                  <p className="text-3xl font-bold text-secondary mb-1">{userStats.memberTier}</p>
                   <p className="text-sm text-foreground/60">Member Tier</p>
                 </div>
               </div>
@@ -719,19 +754,19 @@ export default function MyDeals() {
                   <h3 className="text-xl font-bold mb-4">Your Activity</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center p-4 bg-primary/10 rounded-lg">
-                      <p className="text-2xl font-bold text-primary">12</p>
+                      <p className="text-2xl font-bold text-primary">{userStats.dealsClaimed}</p>
                       <p className="text-xs text-foreground/60">Deals Claimed</p>
                     </div>
                     <div className="text-center p-4 bg-success/10 rounded-lg">
-                      <p className="text-2xl font-bold text-success">8</p>
+                      <p className="text-2xl font-bold text-success">{userStats.dealsRedeemed}</p>
                       <p className="text-xs text-foreground/60">Redeemed</p>
                     </div>
                     <div className="text-center p-4 bg-secondary/10 rounded-lg">
-                      <p className="text-2xl font-bold text-secondary">$247</p>
+                      <p className="text-2xl font-bold text-secondary">${userStats.totalSavings}</p>
                       <p className="text-xs text-foreground/60">Saved</p>
                     </div>
                     <div className="text-center p-4 bg-accent/10 rounded-lg">
-                      <p className="text-2xl font-bold text-accent">3</p>
+                      <p className="text-2xl font-bold text-accent">{userStats.referrals}</p>
                       <p className="text-xs text-foreground/60">Referrals</p>
                     </div>
                   </div>

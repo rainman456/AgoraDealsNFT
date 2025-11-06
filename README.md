@@ -22,11 +22,11 @@ AgoraDeals flips the script with a decentralized platform that's built for real-
 Our stack keeps things lean and scalable:
 
 ```
-┌─────────────┐      ┌─────────────┐      ┌──────────────┐
-│   Next.js   │ ───► │   MongoDB   │      │    Solana    │
-│  Frontend   │      │   Database  │      │  Smart       │
-│   + API     │ ──────────────────────► │  Contracts   │
-└─────────────┘                           └──────────────┘
+┌─────────────┐      ┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│   Frontend  │ ───► │   Backend   │ ───► │   Solana     │      │  External   │
+│  (Next.js)  │ ◄─── │  (Node.js)  │ ◄─── │  Smart       │      │  APIs       │
+│             │      │   + MongoDB │      │  Contracts   │      │  (Deals)    │
+└─────────────┘      └─────────────┘      └──────────────┘      └─────────────┘
 ```
 
 ## See It in Action

@@ -108,8 +108,19 @@ export class StakingController {
    */
   async getUserStakes(req: Request, res: Response): Promise<void> {
     try {
-      const { userAddress } = req.params;
-      const { page, limit } = getPaginationParams(req);
+      const userAddress = req.params.userAddress || req.query.userAddress as string;
+      const { page, limit } = getPaginationParams(req.query);
+      
+      if (!userAddress) {
+        res.json({
+          success: true,
+          data: {
+            stakes: [],
+            pagination: createPaginationResult(0, page, limit),
+          },
+        });
+        return;
+      }
 
       const userPubkey = new PublicKey(userAddress);
 

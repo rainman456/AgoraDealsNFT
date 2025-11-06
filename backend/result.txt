@@ -1,0 +1,451 @@
+
+> @discount-platform/backend@1.0.0 test
+> vitest
+
+
+ DEV  v1.6.1 /workspaces/AgoraDealsNFT/backend
+
+ ❯ src/__tests__/services/solana.service.test.ts  (0 test)
+ ❯ src/__tests__/controllers/external.controller.test.ts  (11 tests | 7 failed) 18ms
+   ❯ src/__tests__/controllers/external.controller.test.ts > External Deals Controller > getExternalDeals > should get flight deals successfully
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   ObjectContaining {
+-     "data": ObjectContaining {
+-       "deals": ArrayContaining [
+-         ObjectContaining {
+-           "dealType": "Flight",
+-           "price": Any<Number>,
+-           "title": Any<String>,
+-         },
+-       ],
+-     },
+-     "success": true,
++   Object {
++     "error": "Cannot read properties of undefined (reading 'map')",
++     "success": false,
+    },
+  ]
+
+
+Number of calls: 1
+
+   ❯ src/__tests__/controllers/external.controller.test.ts > External Deals Controller > getExternalDeals > should get hotel deals successfully
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   ObjectContaining {
+-     "data": ObjectContaining {
+-       "deals": ArrayContaining [
+-         ObjectContaining {
+-           "dealType": "Hotel",
+-           "price": Any<Number>,
+-           "title": Any<String>,
+-         },
+-       ],
+-     },
+-     "success": true,
++   Object {
++     "error": "Cannot read properties of undefined (reading 'map')",
++     "success": false,
+    },
+  ]
+
+
+Number of calls: 1
+
+   ❯ src/__tests__/controllers/external.controller.test.ts > External Deals Controller > getExternalDeals > should handle missing deal type
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/external.controller.test.ts > External Deals Controller > getExternalDeals > should handle invalid deal type
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/external.controller.test.ts > External Deals Controller > getExternalDeals > should handle API errors
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/external.controller.test.ts > External Deals Controller > syncExternalDeals > should sync deals to blockchain successfully
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/external.controller.test.ts > External Deals Controller > syncExternalDeals > should handle partial sync failures gracefully
+     → expected "spy" to be called at least once
+ ❯ src/__tests__/controllers/redemption.controller.test.ts  (13 tests | 13 failed) 34ms
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > generateRedemptionQR > should generate QR code successfully
+     → generateRedemptionQR is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > generateRedemptionQR > should handle missing required fields
+     → generateRedemptionQR is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > generateRedemptionQR > should handle invalid addresses
+     → generateRedemptionQR is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > generateRedemptionQR > should handle coupon not found
+     → generateRedemptionQR is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > generateRedemptionQR > should handle already redeemed coupon
+     → generateRedemptionQR is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > verifyRedemptionQR > should verify QR code successfully
+     → verifyRedemptionQR is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > verifyRedemptionQR > should handle missing QR data
+     → verifyRedemptionQR is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > verifyRedemptionQR > should handle invalid QR data
+     → Cannot read properties of undefined (reading 'mockReturnValue')
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > verifyRedemptionQR > should handle expired QR code
+     → Cannot read properties of undefined (reading 'mockReturnValue')
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > redeemCoupon > should redeem coupon successfully
+     → redeemCoupon is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > redeemCoupon > should handle missing required fields
+     → redeemCoupon is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > redeemCoupon > should handle invalid addresses
+     → redeemCoupon is not a function
+   ❯ src/__tests__/controllers/redemption.controller.test.ts > Redemption Controller > redeemCoupon > should update coupon status in database
+     → redeemCoupon is not a function
+ ❯ src/__tests__/controllers/promotion.controller.test.ts  (13 tests | 13 failed) 31ms
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > createPromotion > should create promotion successfully
+     → expected "spy" to be called with arguments: [ 201 ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   201,
++   400,
+  ]
+
+  2nd spy call:
+
+  Array [
+-   201,
++   500,
+  ]
+
+
+Number of calls: 2
+
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > createPromotion > should handle missing required fields
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > createPromotion > should validate discount percentage range
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > createPromotion > should validate date range
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > createPromotion > should handle merchant not found
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > getPromotion > should get promotion by address successfully
+     → getPromotion is not a function
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > getPromotion > should handle invalid promotion address
+     → getPromotion is not a function
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > getPromotions > should get promotions with pagination
+     → getPromotions is not a function
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > getPromotions > should filter promotions by category
+     → getPromotions is not a function
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > getPromotions > should filter promotions by merchant
+     → getPromotions is not a function
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > getPromotions > should filter active promotions only
+     → getPromotions is not a function
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > getPromotions > should filter by location
+     → getPromotions is not a function
+   ❯ src/__tests__/controllers/promotion.controller.test.ts > Promotion Controller > getPromotions > should search promotions by title
+     → getPromotions is not a function
+ ❯ src/__tests__/controllers/coupon.controller.test.ts  (13 tests | 11 failed) 30090ms
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > mintCoupon > should mint coupon successfully
+     → expected "spy" to be called with arguments: [ 201 ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   201,
++   400,
+  ]
+
+  2nd spy call:
+
+  Array [
+-   201,
++   404,
+  ]
+
+  3rd spy call:
+
+  Array [
+-   201,
++   500,
+  ]
+
+
+Number of calls: 3
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > mintCoupon > should handle missing required fields
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > mintCoupon > should handle invalid wallet address
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > mintCoupon > should handle promotion not found
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > transferCoupon > should transfer coupon successfully
+     → Invalid public key input
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > transferCoupon > should handle missing required fields
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > transferCoupon > should handle invalid addresses
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > getCoupon > should get coupon by address successfully
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   ObjectContaining {
+-     "data": ObjectContaining {
+-       "offchain": Any<Object>,
+-       "onchain": Any<Object>,
+-     },
+-     "success": true,
++   Object {
++     "error": "Operation `merchants.findOne()` buffering timed out after 10000ms",
++     "success": false,
+    },
+  ]
+
+
+Number of calls: 1
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > getCoupon > should handle invalid coupon address
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > getUserCoupons > should get user coupons with pagination
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   ObjectContaining {
+-     "data": ObjectContaining {
+-       "data": Any<Array>,
+-       "pagination": Any<Object>,
+-     },
+-     "success": true,
++   Object {
++     "error": "Missing walletAddress",
++     "success": false,
+    },
+  ]
+
+  2nd spy call:
+
+  Array [
+-   ObjectContaining {
+-     "data": ObjectContaining {
+-       "data": Any<Array>,
+-       "pagination": Any<Object>,
+-     },
+-     "success": true,
++   Object {
++     "error": "Coupon.find(...).skip is not a function",
++     "success": false,
+    },
+  ]
+
+
+Number of calls: 2
+
+   ❯ src/__tests__/controllers/coupon.controller.test.ts > Coupon Controller > getUserCoupons > should handle invalid wallet address
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+ ❯ src/__tests__/controllers/merchant.controller.test.ts  (12 tests | 12 failed) 33ms
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > registerMerchant > should register merchant successfully
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   ObjectContaining {
+-     "data": ObjectContaining {
+-       "merchant": Any<Object>,
+-       "signature": "mock-signature",
+-     },
+-     "success": true,
++   Object {
++     "error": "Cannot read properties of undefined (reading '_id')",
++     "success": false,
+    },
+  ]
+
+
+Number of calls: 1
+
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > registerMerchant > should handle missing required fields
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > registerMerchant > should handle invalid wallet address
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > registerMerchant > should handle blockchain errors
+     → expected "spy" to be called with arguments: [ Any<Error> ]
+
+Received: 
+
+
+
+Number of calls: 0
+
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > getMerchant > should get merchant by address successfully
+     → getMerchant is not a function
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > getMerchant > should handle invalid merchant address
+     → getMerchant is not a function
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > getMerchant > should handle merchant not found
+     → getMerchant is not a function
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > getMerchants > should get merchants with pagination
+     → getMerchants is not a function
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > getMerchants > should filter merchants by category
+     → getMerchants is not a function
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > getMerchants > should filter merchants by location
+     → getMerchants is not a function
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > getMerchants > should search merchants by name
+     → getMerchants is not a function
+   ❯ src/__tests__/controllers/merchant.controller.test.ts > Merchant Controller > getMerchants > should handle database errors
+     → getMerchants is not a function
+ ❯ src/__tests__/controllers/marketplace.controller.test.ts  (0 test)
+ ❯ src/__tests__/utils/qr-generator.test.ts  (9 tests | 4 failed) 12ms
+   ❯ src/__tests__/utils/qr-generator.test.ts > QR Generator Utils > verifyQRCode > should verify valid QR code data
+     → expected false to be true // Object.is equality
+   ❯ src/__tests__/utils/qr-generator.test.ts > QR Generator Utils > verifyQRCode > should reject expired QR codes
+     → expected 'Missing required fields' to be 'QR code expired' // Object.is equality
+   ❯ src/__tests__/utils/qr-generator.test.ts > QR Generator Utils > verifyQRCode > should accept QR codes within validity period
+     → expected false to be true // Object.is equality
+   ❯ src/__tests__/utils/qr-generator.test.ts > QR Generator Utils > verifyQRCode > should reject QR codes with future timestamps
+     → expected 'Missing required fields' to be 'Invalid QR code data' // Object.is equality
+ ✓ src/__tests__/utils/distance.test.ts  (11 tests) 4ms
+ ✓ src/__tests__/utils/pagination.test.ts  (11 tests) 5ms
+
+ Test Files  8 failed | 2 passed (10)
+      Tests  60 failed | 33 passed (93)
+   Start at  18:23:01
+   Duration  36.35s (transform 471ms, setup 78ms, collect 2.70s, tests 30.23s, environment 1ms, prepare 958ms)
+
+
+ FAIL  Tests failed. Watching for file changes...
+       press h to show help, press q to quit
+Cancelling test run. Press CTRL+c again to exit forcefully.
+

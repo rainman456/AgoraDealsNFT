@@ -3,6 +3,9 @@ import { couponController } from '../controllers/coupon';
 
 const router = Router();
 
+// GET /api/v1/coupons - List all coupons
+router.get('/', couponController.list.bind(couponController));
+
 // POST /api/v1/coupons/mint
 router.post('/mint', couponController.mint.bind(couponController));
 

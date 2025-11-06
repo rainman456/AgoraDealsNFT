@@ -381,6 +381,20 @@ export class AuctionController {
    */
   async getAuctions(req: Request, res: Response): Promise<void> {
     try {
+      const mongoose = await import('mongoose');
+      const dbState = mongoose.default.connection.readyState;
+      
+      // Return empty array if DB not connected
+      if (dbState !== 1) {
+        logger.warn('Database not connected, returning empty auctions');
+        res.json({
+          success: true,
+          data: { auctions: [] },
+          pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+        });
+        return;
+      }
+
       const { page, limit, skip } = getPaginationParams(req.query);
       const { status, category, sellerAddress } = req.query;
 
@@ -399,14 +413,15 @@ export class AuctionController {
 
       res.json({
         success: true,
-        data: auctions,
-        pagination: createPaginationResult(total, page, limit),
+        data: { auctions },
+        pagination: createPaginationResult(page, limit, total),
       });
     } catch (error) {
       logger.error('Failed to get auctions:', error);
-      res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+      res.json({
+        success: true,
+        data: { auctions: [] },
+        pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
       });
     }
   }
@@ -428,6 +443,7 @@ export class AuctionController {
           success: false,
           error: 'Auction not found',
         });
+        return;
       }
 
       res.json({

@@ -176,3 +176,8 @@ export class MerchantController {
 }
 
 export const merchantController = new MerchantController();
+
+// Export individual controller methods for testing
+export const registerMerchant = merchantController.register.bind(merchantController);
+export const getMerchantProfile = merchantController.getProfile.bind(merchantController);
+export const listMerchants = merchantController.list.bind(merchantController);

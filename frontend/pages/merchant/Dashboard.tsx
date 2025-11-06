@@ -1,56 +1,51 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import NotificationBar from "@/components/shared/NotificationBar";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, TrendingUp, Users, Zap, DollarSign, Target, BarChart3, Eye, ArrowUpRight, Sparkles, QrCode, Printer, Download } from "lucide-react";
+import { Plus, TrendingUp, Users, Zap, DollarSign, Target, BarChart3, Eye, ArrowUpRight, Sparkles, QrCode, Printer, Download, Loader2, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-
-interface Promotion {
-  id: string;
-  title: string;
-  discount: number;
-  expiry: string;
-  status: "active" | "pending" | "expired";
-  nftsMinted: number;
-  revenue: number;
-  views: number;
-}
+import { promotionsAPI, Promotion } from "@/lib/api";
 
 export default function Dashboard() {
-  const [promotions] = useState<Promotion[]>([
-    {
-      id: "1",
-      title: "Summer Flight Sale",
-      discount: 50,
-      expiry: "2025-12-31",
-      status: "active",
-      nftsMinted: 1250,
-      revenue: 15600,
-      views: 8940,
-    },
-    {
-      id: "2",
-      title: "Hotel Booking Promo",
-      discount: 40,
-      expiry: "2025-11-30",
-      status: "active",
-      nftsMinted: 890,
-      revenue: 12340,
-      views: 5620,
-    },
-  ]);
+  const [promotions, setPromotions] = useState<Promotion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null);
   const qrPrintRef = useRef<HTMLDivElement>(null);
 
   const { toast } = useToast();
 
+  useEffect(() => {
+    loadMerchantPromotions();
+  }, []);
+
+  const loadMerchantPromotions = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const merchant = localStorage.getItem('merchant');
+      if (!merchant) {
+        setError('Please connect your wallet as a merchant');
+        return;
+      }
+      const merchantData = JSON.parse(merchant);
+      const response = await promotionsAPI.list({ merchantId: merchantData._id });
+      setPromotions(response.data || []);
+    } catch (err: any) {
+      console.error('Failed to load promotions:', err);
+      setError(err.response?.data?.message || 'Failed to load your promotions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const stats = {
-    totalRevenue: 47850,
-    activeDeals: promotions.filter(p => p.status === "active").length,
-    totalCustomers: 1247,
+    totalRevenue: promotions.reduce((sum, p) => sum + (p.discountedPrice * p.currentSupply), 0),
+    activeDeals: promotions.filter(p => p.isActive).length,
+    totalCustomers: promotions.reduce((sum, p) => sum + p.currentSupply, 0),
     avgROI: 340,
   };
 
@@ -292,39 +287,58 @@ export default function Dashboard() {
               </div>
             </div>
 
+            {/* Loading State */}
+            {loading && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <span className="ml-3 text-lg">Loading your deals...</span>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <div className="text-center py-12">
+                <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-2">Error Loading Deals</h3>
+                <p className="text-muted-foreground mb-4">{error}</p>
+                <Button onClick={loadMerchantPromotions}>Try Again</Button>
+              </div>
+            )}
+
+            {!loading && !error && (
             <div className="space-y-4">
               {promotions.map((promo) => (
-                <Card key={promo.id} className="p-6 hover:shadow-lg transition-all duration-200 border-2 border-transparent hover:border-primary/30">
+                <Card key={promo._id} className="p-6 hover:shadow-lg transition-all duration-200 border-2 border-transparent hover:border-primary/30">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     {/* Left: Deal Info */}
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
                         <h3 className="text-xl font-bold">{promo.title}</h3>
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          promo.status === "active" 
+                          promo.isActive 
                             ? "bg-success/20 text-success" 
                             : "bg-warning/20 text-warning"
                         }`}>
-                          {promo.status.toUpperCase()}
+                          {promo.isActive ? 'ACTIVE' : 'INACTIVE'}
                         </span>
                       </div>
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
                           <p className="text-xs text-foreground/60 mb-1">Discount</p>
-                          <p className="text-lg font-bold text-primary">{promo.discount}%</p>
+                          <p className="text-lg font-bold text-primary">{promo.discountPercentage}%</p>
                         </div>
                         <div>
                           <p className="text-xs text-foreground/60 mb-1">Claimed</p>
-                          <p className="text-lg font-bold">{promo.nftsMinted.toLocaleString()}</p>
+                          <p className="text-lg font-bold">{promo.currentSupply.toLocaleString()}</p>
                         </div>
                         <div>
                           <p className="text-xs text-foreground/60 mb-1">Revenue</p>
-                          <p className="text-lg font-bold text-success">${promo.revenue.toLocaleString()}</p>
+                          <p className="text-lg font-bold text-success">${(promo.discountedPrice * promo.currentSupply).toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-xs text-foreground/60 mb-1">Views</p>
-                          <p className="text-lg font-bold text-secondary">{promo.views.toLocaleString()}</p>
+                          <p className="text-xs text-foreground/60 mb-1">Available</p>
+                          <p className="text-lg font-bold text-secondary">{promo.maxSupply - promo.currentSupply}</p>
                         </div>
                       </div>
                     </div>
@@ -351,20 +365,21 @@ export default function Dashboard() {
                   <div className="mt-4">
                     <div className="flex items-center justify-between text-xs text-foreground/60 mb-2">
                       <span>Performance</span>
-                      <span>Expires: {promo.expiry}</span>
+                      <span>Expires: {new Date(promo.endDate).toLocaleDateString()}</span>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500"
-                        style={{ width: `${(promo.nftsMinted / 2000) * 100}%` }}
+                        style={{ width: `${(promo.currentSupply / promo.maxSupply) * 100}%` }}
                       />
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
+            )}
 
-            {promotions.length === 0 && (
+            {!loading && !error && promotions.length === 0 && (
               <div className="text-center py-12">
                 <div className="w-20 h-20 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
                   <Sparkles className="w-10 h-10 text-muted-foreground" />
@@ -417,11 +432,11 @@ export default function Dashboard() {
             {/* Print Preview */}
             <div ref={qrPrintRef} className="print-container">
               <h1>{selectedPromo.title}</h1>
-              <div className="discount">{selectedPromo.discount}% OFF</div>
+              <div className="discount">{selectedPromo.discountPercentage}% OFF</div>
               
               <div className="qr-code" id="qr-canvas">
                 <QRCodeSVG
-                  value={`deal-${selectedPromo.id}-merchant-redemption`}
+                  value={`deal-${selectedPromo._id}-merchant-redemption`}
                   size={300}
                   level="H"
                   includeMargin={true}
@@ -435,7 +450,7 @@ export default function Dashboard() {
                 <p>3. Verify and redeem at checkout</p>
               </div>
 
-              <div className="deal-id">Deal ID: {selectedPromo.id}</div>
+              <div className="deal-id">Deal ID: {selectedPromo._id}</div>
             </div>
 
             {/* Action Buttons */}

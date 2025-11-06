@@ -21,9 +21,12 @@ export default function DealCard({ deal, isOwned = false, onClaim, onLike }: Dea
   // Transaction sponsorship logic
   const transactionCount = parseInt(localStorage.getItem('transaction_count') || '0');
   const isFreeTransaction = transactionCount < 5;
-  const isSponsoredByMerchant = deal._id.charCodeAt(0) % 3 === 0;
+  const isSponsoredByMerchant = deal._id ? deal._id.charCodeAt(0) % 3 === 0 : false;
   
-  const merchantName = deal.merchant?.businessName || deal.merchant?.name || 'Merchant';
+  // Safely extract merchant name - handle both string and object types
+  const merchantName = typeof deal.merchant === 'string' 
+    ? deal.merchant 
+    : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant');
   const imageUrl = deal.imageUrl || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop';
 
   const handleLike = (e: React.MouseEvent) => {
@@ -44,10 +47,12 @@ export default function DealCard({ deal, isOwned = false, onClaim, onLike }: Dea
   const discountedPrice = deal.discountedPrice || (deal.originalPrice || 100) * (100 - deal.discountPercentage) / 100;
   const currentPrice = discountedPrice.toFixed(2);
   const savings = ((deal.originalPrice || 100) - discountedPrice).toFixed(2);
+  
+  const dealId = deal._id || deal.id || '';
 
   return (
     <Card className="overflow-hidden border border-border/50 shadow-sm hover:shadow-xl group cursor-pointer transition-all duration-300 hover:-translate-y-1 bg-card rounded-2xl">
-      <Link to={`/deals/${deal._id}`} className="block">
+      <Link to={`/deals/${dealId}`} className="block">
         {/* Hero Image - Airbnb-inspired beautiful imagery */}
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           <img
@@ -72,7 +77,9 @@ export default function DealCard({ deal, isOwned = false, onClaim, onLike }: Dea
           <div className="absolute bottom-3 left-3 flex flex-wrap gap-2">
             <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900 px-2.5 py-1.5 rounded-lg shadow-lg">
               <Verified className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground">{merchantName}</span>
+              <span className="text-xs font-medium text-foreground">
+                {typeof merchantName === 'string' ? merchantName : 'Merchant'}
+              </span>
             </div>
             {isFreeTransaction && (
               <TransactionBadge type="subsidized" />
@@ -135,16 +142,16 @@ export default function DealCard({ deal, isOwned = false, onClaim, onLike }: Dea
             </div>
           </div>
 
-          {/* Transaction Info - Show if available */}
+          {/* Verification Info - Show if available */}
           {deal.transactionSignature && (
             <div className="mb-4 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-700">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Transaction</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Verified Deal</label>
                   <p className="text-xs font-mono truncate text-foreground mt-0.5">{deal.transactionSignature}</p>
                 </div>
                 <a
-                  href={`https://explorer.solana.com/tx/${deal.transactionSignature}?cluster=custom&customUrl=http://localhost:8899`}
+                  href={`#`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="ml-2 p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors"

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Store, 
   FileCheck, 
@@ -53,18 +54,38 @@ export default function MerchantOnboarding() {
   const [phone, setPhone] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { registerMerchant } = useAuth();
 
-  const handleBusinessInfo = (e: React.FormEvent) => {
+  const handleBusinessInfo = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!businessName || !email) return;
-    // Skip verification for prototype - go directly to first deal
-    setStep("first-deal");
-    toast({
-      title: "Welcome aboard! 🎉",
-      description: "Your merchant account is ready",
-    });
+    if (!businessName || !email || !businessType) return;
+    
+    setIsRegistering(true);
+    try {
+      await registerMerchant({
+        name: businessName,
+        email: email,
+        category: businessType,
+        description: `${businessType} business`,
+      });
+      setStep("first-deal");
+      toast({
+        title: "Welcome aboard! 🎉",
+        description: "Your merchant account is ready",
+      });
+    } catch (error) {
+      console.error('Merchant registration failed:', error);
+      toast({
+        title: "Registration failed",
+        description: "Please try again",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRegistering(false);
+    }
   };
 
   const handleVerification = () => {
@@ -102,7 +123,7 @@ export default function MerchantOnboarding() {
             </div>
             <h1 className="text-4xl font-heading font-bold mb-4">Welcome to DealChain for Business</h1>
             <p className="text-lg text-foreground/70 mb-8">
-              Reach more customers, boost sales, and build loyalty with blockchain-powered deals
+              Reach more customers, boost sales, and build loyalty with digital deals
             </p>
 
             {/* Value Props */}
@@ -214,10 +235,11 @@ export default function MerchantOnboarding() {
 
               <Button
                 type="submit"
+                disabled={isRegistering}
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-primary py-6"
                 size="lg"
               >
-                Continue
+                {isRegistering ? "Creating account..." : "Continue"}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </form>

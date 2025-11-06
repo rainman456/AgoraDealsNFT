@@ -1,7 +1,14 @@
+import * as anchor from '@coral-xyz/anchor';
 import { Connection, PublicKey, Keypair } from '@solana/web3.js';
 import { AnchorProvider, Program, Wallet } from '@coral-xyz/anchor';
-import { IDL } from '../idl/discount_platform';
 import type { DiscountPlatform } from '../idl/discount_platform';
+import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export class SolanaConfig {
   private static instance: SolanaConfig;
@@ -12,34 +19,129 @@ export class SolanaConfig {
   public wallet: Wallet;
 
   private constructor() {
-    const rpcUrl = process.env.RPC_URL || 'https://api.devnet.solana.com';
-    const programIdStr = process.env.PROGRAM_ID || 'kCBLrJxrFgB7yf8R8tMKZmsyaRDRq8YmdJSG9yjrSNe';
-    
+    // Initialize connection
+    const rpcUrl = process.env.ANCHOR_PROVIDER_URL || process.env.SOLANA_RPC_URL || 'http://localhost:8899';
     this.connection = new Connection(rpcUrl, 'confirmed');
-    this.programId = new PublicKey(programIdStr);
 
-    // Initialize wallet from private key
-    const privateKeyStr = process.env.WALLET_PRIVATE_KEY;
-    if (!privateKeyStr) {
-      throw new Error('WALLET_PRIVATE_KEY not set in environment');
-    }
+    // Initialize wallet
+    const walletPath = process.env.ANCHOR_WALLET;
+    let keypair: Keypair;
     
-    const privateKeyArray = JSON.parse(privateKeyStr);
-    const keypair = Keypair.fromSecretKey(Uint8Array.from(privateKeyArray));
+    if (walletPath && fs.existsSync(walletPath)) {
+      const walletData = JSON.parse(fs.readFileSync(walletPath, 'utf-8'));
+      keypair = Keypair.fromSecretKey(new Uint8Array(walletData));
+    } else if (process.env.WALLET_PRIVATE_KEY) {
+      const privateKeyArray = JSON.parse(process.env.WALLET_PRIVATE_KEY);
+      keypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+    } else {
+      throw new Error('No wallet found. Set ANCHOR_WALLET or WALLET_PRIVATE_KEY');
+    }
+
     this.wallet = new Wallet(keypair);
 
-    // Create provider
+    // Initialize provider
     this.provider = new AnchorProvider(
       this.connection,
       this.wallet,
       { commitment: 'confirmed' }
     );
+    anchor.setProvider(this.provider);
 
-    // Initialize program
-    this.program = new Program<DiscountPlatform>(
-      IDL,
-      this.provider
-    );
+    // Load IDL
+    const idlPath = path.join(__dirname, '../idl/discount_platform.json');
+    if (!fs.existsSync(idlPath)) {
+      throw new Error(`IDL file not found at ${idlPath}. Run 'anchor build' and copy the IDL.`);
+    }
+
+    try {
+      const idlContent = fs.readFileSync(idlPath, 'utf-8');
+      const rawIdl = JSON.parse(idlContent);
+      
+      // Detect IDL format and extract program address
+      let programAddress: string;
+      let idlName: string;
+      let idlVersion: string;
+      
+      // New format (Anchor 0.30+): has address at root and metadata nested
+      if (rawIdl.address) {
+        console.log('Detected new Anchor IDL format (0.30+)');
+        programAddress = rawIdl.address;
+        idlName = rawIdl.metadata?.name || 'discount_platform';
+        idlVersion = rawIdl.metadata?.version || '0.1.0';
+        
+        // For new format, the Program constructor will read the address from the IDL
+        // So we don't need to modify the IDL structure
+      } 
+      // Old format (Anchor 0.29): may have metadata.address or programId field
+      else if (rawIdl.metadata?.address) {
+        console.log('Detected old Anchor IDL format (0.29) with metadata.address');
+        programAddress = rawIdl.metadata.address;
+        idlName = rawIdl.name || 'discount_platform';
+        idlVersion = rawIdl.version || '0.1.0';
+      }
+      else {
+        // Fallback to environment variable
+        const envProgramId = process.env.PROGRAM_ID;
+        if (!envProgramId) {
+          throw new Error(
+            'Could not find program address in IDL and PROGRAM_ID not set in environment. ' +
+            'Please set PROGRAM_ID in your .env file.'
+          );
+        }
+        console.log('Using PROGRAM_ID from environment');
+        programAddress = envProgramId;
+        idlName = rawIdl.name || 'discount_platform';
+        idlVersion = rawIdl.version || '0.1.0';
+      }
+      
+      // Validate program address
+      try {
+        this.programId = new PublicKey(programAddress);
+      } catch (error) {
+        throw new Error(`Invalid program address: ${programAddress}`);
+      }
+      
+      // Validate IDL structure
+      if (!rawIdl.instructions || !Array.isArray(rawIdl.instructions)) {
+        throw new Error('IDL is missing instructions array. Please ensure your Anchor program is properly built.');
+      }
+      
+      if (!rawIdl.accounts || !Array.isArray(rawIdl.accounts)) {
+        throw new Error('IDL is missing accounts array. Please ensure your Anchor program is properly built.');
+      }
+
+      console.log(`Loaded IDL: ${idlName} v${idlVersion}`);
+      console.log(`- Instructions: ${rawIdl.instructions.length}`);
+      console.log(`- Accounts: ${rawIdl.accounts.length}`);
+      console.log(`- Program ID: ${this.programId.toString()}`);
+
+      // Create program
+      // The new Anchor version (0.30+) can infer the program ID from the IDL
+      // but we can still pass it explicitly for compatibility
+      try {
+        this.program = new Program(
+          rawIdl as anchor.Idl,
+          this.provider
+        ) as Program<DiscountPlatform>;
+        
+        // Verify the program ID matches
+        if (this.program.programId.toString() !== this.programId.toString()) {
+          console.warn(`⚠️  Program ID mismatch detected:`);
+          console.warn(`   Expected: ${this.programId.toString()}`);
+          console.warn(`   Got:      ${this.program.programId.toString()}`);
+          console.warn(`   Using program ID from IDL...`);
+          this.programId = this.program.programId;
+        }
+      } catch (error: any) {
+        throw new Error(`Failed to create Program instance: ${error.message}`);
+      }
+
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new Error(`Invalid JSON in IDL file at ${idlPath}: ${error.message}`);
+      }
+      throw error;
+    }
   }
 
   public static getInstance(): SolanaConfig {
@@ -120,97 +222,45 @@ export class SolanaConfig {
     );
   }
 
-  public getRedemptionTicketPDA(coupon: PublicKey, user: PublicKey, nonce: number): [PublicKey, number] {
-    const buffer = Buffer.alloc(8);
-    buffer.writeBigUInt64LE(BigInt(nonce));
+  public getBadgePDA(user: PublicKey, badgeType: string): [PublicKey, number] {
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('ticket'), coupon.toBuffer(), user.toBuffer(), buffer],
+      [Buffer.from('badge'), user.toBuffer(), Buffer.from(badgeType)],
       this.programId
     );
   }
 
-  public getAuctionPDA(coupon: PublicKey, auctionId: number): [PublicKey, number] {
-    const buffer = Buffer.alloc(8);
-    buffer.writeBigUInt64LE(BigInt(auctionId));
+  public getStakingAccountPDA(user: PublicKey): [PublicKey, number] {
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('auction'), coupon.toBuffer(), buffer],
+      [Buffer.from('staking'), user.toBuffer()],
       this.programId
     );
   }
 
-  public getAuctionEscrowPDA(auction: PublicKey): [PublicKey, number] {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('auction_escrow'), auction.toBuffer()],
-      this.programId
-    );
-  }
-
-  public getBidPDA(auction: PublicKey, bidder: PublicKey, bidCount: number): [PublicKey, number] {
-    const buffer = Buffer.alloc(4);
-    buffer.writeUInt32LE(bidCount);
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('bid'), auction.toBuffer(), bidder.toBuffer(), buffer],
-      this.programId
-    );
-  }
-
-  public getGroupDealPDA(promotion: PublicKey, dealId: number): [PublicKey, number] {
+  public getGroupDealPDA(merchant: PublicKey, dealId: number): [PublicKey, number] {
     const buffer = Buffer.alloc(8);
     buffer.writeBigUInt64LE(BigInt(dealId));
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('group_deal'), promotion.toBuffer(), buffer],
+      [Buffer.from('group_deal'), merchant.toBuffer(), buffer],
       this.programId
     );
   }
 
-  public getGroupEscrowPDA(groupDeal: PublicKey): [PublicKey, number] {
+  public getAuctionPDA(merchant: PublicKey, auctionId: number): [PublicKey, number] {
+    const buffer = Buffer.alloc(8);
+    buffer.writeBigUInt64LE(BigInt(auctionId));
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('group_escrow'), groupDeal.toBuffer()],
+      [Buffer.from('auction'), merchant.toBuffer(), buffer],
       this.programId
     );
   }
 
-  public getGroupParticipantPDA(groupDeal: PublicKey, user: PublicKey): [PublicKey, number] {
+  public getRedemptionTicketPDA(coupon: PublicKey, user: PublicKey): [PublicKey, number] {
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('participant'), groupDeal.toBuffer(), user.toBuffer()],
-      this.programId
-    );
-  }
-
-  public getGroupCouponPDA(groupDeal: PublicKey, user: PublicKey): [PublicKey, number] {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('group_coupon'), groupDeal.toBuffer(), user.toBuffer()],
-      this.programId
-    );
-  }
-
-  public getStakingPoolPDA(): [PublicKey, number] {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('staking_pool')],
-      this.programId
-    );
-  }
-
-  public getStakeAccountPDA(coupon: PublicKey, user: PublicKey): [PublicKey, number] {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('stake'), coupon.toBuffer(), user.toBuffer()],
-      this.programId
-    );
-  }
-
-  public getStakeVaultPDA(nftMint: PublicKey): [PublicKey, number] {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('stake_vault'), nftMint.toBuffer()],
-      this.programId
-    );
-  }
-
-  public getCommentLikePDA(user: PublicKey, comment: PublicKey): [PublicKey, number] {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('comment_like'), user.toBuffer(), comment.toBuffer()],
+      [Buffer.from('redemption_ticket'), coupon.toBuffer(), user.toBuffer()],
       this.programId
     );
   }
 }
 
+// Export singleton getter
 export const getSolanaConfig = () => SolanaConfig.getInstance();

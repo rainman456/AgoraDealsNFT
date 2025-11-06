@@ -3,9 +3,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X, Search, Palette, ShoppingBag, Check, Menu, ChevronDown, Wallet, Plus, LogOut, User } from "lucide-react";
-import { EmbeddedWallet } from "@/components/wallet/EmbeddedWallet";
-import { FiatOnRamp } from "@/components/wallet/FiatOnRamp";
+import { X, Search, Palette, ShoppingBag, Check, Menu, ChevronDown, Wallet, Plus, LogOut, User, Share2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,8 +17,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
   const [theme, setTheme] = useState("lime-dark");
   const [mounted, setMounted] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
-  const [showWallet, setShowWallet] = useState(false);
-  const [showFiatOnRamp, setShowFiatOnRamp] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { toast } = useToast();
   const { user, merchant, isAuthenticated, logout } = useAuth();
@@ -48,19 +44,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
     { value: "midnight", label: "Midnight Blue", mode: "light" },
   ];
 
-  const signInProviders = [
-    { name: "Google", icon: "https://www.google.com/favicon.ico" },
-    { name: "Email", icon: "@" },
-    { name: "Apple", icon: "https://www.apple.com/favicon.ico" },
-    { name: "Facebook", icon: "https://www.facebook.com/favicon.ico" },
-  ];
 
-  const handleSignIn = (provider: string) => {
-    toast({
-      title: "Account Connected",
-      description: `Signed in with ${provider}`,
-    });
-  };
 
   const applyTheme = (themeName: string) => {
     const html = document.documentElement;
@@ -81,6 +65,38 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
     localStorage.setItem("theme", newTheme);
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: 'Check out these amazing deals!',
+      text: 'I found incredible deals on AgoraDeals - save up to 80% on top brands! 🎉',
+      url: window.location.origin
+    };
+
+    try {
+      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+        toast({
+          title: "Thanks for sharing! 🎉",
+          description: "Help your friends save money too!",
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.origin);
+        toast({
+          title: "Link copied! 📋",
+          description: "Share it with your friends to unlock group deals!",
+        });
+      }
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') {
+        await navigator.clipboard.writeText(window.location.origin);
+        toast({
+          title: "Link copied! 📋",
+          description: "Share it with your friends to unlock group deals!",
+        });
+      }
+    }
+  };
+
   if (!mounted) return null;
 
   return (
@@ -90,10 +106,11 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
         <div className="flex h-20 items-center justify-between gap-8">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 flex-shrink-0 group">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg group-hover:shadow-primary/20 transition-all">
-              <ShoppingBag className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div className="neon-text text-[28px] font-black tracking-tight">AgoraDeals</div>
+            <img 
+              src="/logo.svg" 
+              alt="AgoraDeals" 
+              className="h-12 w-auto transition-all duration-300 group-hover:scale-105"
+            />
           </Link>
 
           {/* Desktop Navigation - Centered */}
@@ -187,19 +204,20 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
               </Select>
             </div>
 
+            {/* Share Button - Viral Feature */}
+            <Button 
+              variant="outline" 
+              onClick={handleShare}
+              className="font-medium px-4 py-2.5 text-base rounded-xl hover:bg-primary/5 border-primary/20 hover:border-primary/40"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
+            </Button>
+
             {/* Auth Buttons */}
             <div className="flex items-center gap-3">
               {isAuthenticated ? (
                 <>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowFiatOnRamp(true)}
-                    className="font-medium px-5 py-2.5 text-base rounded-xl hover:bg-primary/5"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Funds
-                  </Button>
-                  
                   {/* User Menu Dropdown */}
                   <div className="relative">
                     <Button 
@@ -216,13 +234,13 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                         <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
                         <div className="absolute top-full mt-2 right-0 w-56 bg-card border border-border rounded-xl shadow-xl z-50 py-2">
                           <Link 
-                            to="/profile" 
+                            to={merchant ? "/merchant/dashboard" : "/profile"}
                             className="block px-4 py-2 text-sm hover:bg-primary/5 transition-all"
                             onClick={() => setShowUserMenu(false)}
                           >
                             <div className="flex items-center gap-2">
                               <User className="w-4 h-4" />
-                              Profile
+                              {merchant ? 'Dashboard' : 'Profile'}
                             </div>
                           </Link>
                           <div className="border-t border-border my-1" />
@@ -252,13 +270,13 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 <>
                   <Button 
                     variant="ghost" 
-                    onClick={() => setShowWallet(true)}
+                    onClick={() => navigate('/user/login')}
                     className="font-medium px-5 py-2.5 text-base rounded-xl hover:bg-primary/5"
                   >
                     Sign In
                   </Button>
                   <Button 
-                    onClick={() => setShowWallet(true)}
+                    onClick={() => navigate('/user/login')}
                     className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 font-semibold px-6 py-2.5 text-base rounded-xl shadow-lg hover:shadow-primary/20 transition-all"
                   >
                     Sign Up Free
@@ -280,17 +298,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
         </div>
       </div>
     </nav>
-    
-    <EmbeddedWallet 
-      isOpen={showWallet} 
-      onClose={() => setShowWallet(false)}
-      onSuccess={() => {}}
-    />
-    
-    <FiatOnRamp 
-      isOpen={showFiatOnRamp} 
-      onClose={() => setShowFiatOnRamp(false)}
-    />
     </>
   );
 }

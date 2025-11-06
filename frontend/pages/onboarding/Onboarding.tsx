@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Sparkles, 
   Gift, 
@@ -19,7 +20,7 @@ type OnboardingStep = "splash" | "value-props" | "signup" | "verify" | "first-de
 const GIFT_DEAL = {
   id: "welcome-gift",
   title: "Welcome Gift: 20% Off Your First Purchase",
-  merchant: "DealChain Partners",
+  merchant: "AgoraDeals Partners",
   discount: 20,
   image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=800&auto=format&fit=crop",
   description: "Redeem at any participating merchant"
@@ -29,10 +30,13 @@ export default function Onboarding() {
   const [step, setStep] = useState<OnboardingStep>("splash");
   const [valuePropIndex, setValuePropIndex] = useState(0);
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [isMinting, setIsMinting] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { registerUser } = useAuth();
 
   // Auto-advance splash screen
   useEffect(() => {
@@ -63,18 +67,31 @@ export default function Onboarding() {
     }
   ];
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !username) return;
     
-    // Simulate instant signup
-    setTimeout(() => {
-      setStep("verify");
+    setIsRegistering(true);
+    try {
+      await registerUser(username, email);
       toast({
-        title: "Check your email!",
-        description: `We sent a code to ${email}`,
+        title: "Welcome! 🎉",
+        description: "You're all set to start saving",
       });
-    }, 100);
+      // Redirect to welcome page after successful registration
+      setTimeout(() => {
+        navigate('/');
+      }, 500);
+    } catch (error) {
+      console.error('Registration failed:', error);
+      toast({
+        title: "Registration failed",
+        description: "Please try again",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRegistering(false);
+    }
   };
 
   const handleVerify = (e: React.FormEvent) => {
@@ -96,10 +113,10 @@ export default function Onboarding() {
   };
 
   const handleComplete = () => {
-    navigate("/home");
+    navigate("/deals");
     toast({
-      title: "Welcome to DealChain! 🎉",
-      description: "Start exploring amazing deals",
+      title: "Let's find you some deals! 🎉",
+      description: "Explore exclusive offers near you",
     });
   };
 
@@ -108,9 +125,9 @@ export default function Onboarding() {
     return (
       <div className="min-h-screen gradient-hero flex items-center justify-center">
         <div className="text-center animate-pulse">
-          <div className="text-6xl mb-4">🎁</div>
-          <h1 className="text-4xl font-heading font-bold text-white">DealChain</h1>
-          <p className="text-white/80 mt-2">Save money on things you love</p>
+          <div className="text-6xl mb-4">💰</div>
+          <h1 className="text-4xl font-heading font-bold text-white">AgoraDeals</h1>
+          <p className="text-white/80 mt-2">Amazing deals, right in your neighborhood</p>
         </div>
       </div>
     );
@@ -195,13 +212,13 @@ export default function Onboarding() {
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="max-w-md w-full animate-slide-up">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-heading font-bold mb-2">Create Your Account</h2>
-              <p className="text-foreground/70">Join thousands saving money every day</p>
+              <h2 className="text-3xl font-heading font-bold mb-2">Get Started</h2>
+              <p className="text-foreground/70">It only takes 10 seconds</p>
             </div>
 
             <form onSubmit={handleSignup} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Email address</label>
+                <label className="block text-sm font-medium mb-2">Email</label>
                 <Input
                   type="email"
                   value={email}
@@ -211,17 +228,27 @@ export default function Onboarding() {
                   required
                   autoFocus
                 />
-                <p className="text-xs text-foreground/60 mt-2">
-                  We'll send you a verification code
-                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Name</label>
+                <Input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="John Doe"
+                  className="py-6 text-base"
+                  required
+                />
               </div>
 
               <Button
                 type="submit"
+                disabled={isRegistering}
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-primary py-6"
                 size="lg"
               >
-                Continue
+                {isRegistering ? "Creating account..." : "Continue"}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </form>
@@ -411,26 +438,25 @@ export default function Onboarding() {
             </div>
           </div>
 
-          <h2 className="text-4xl font-heading font-bold mb-4">You're All Set!</h2>
+          <h2 className="text-4xl font-heading font-bold mb-4">You're In! 🎉</h2>
           <p className="text-xl text-white/90 mb-8">
-            Your first deal is ready to use.<br />
-            Start exploring and saving!
+            Let's find you some amazing deals nearby
           </p>
 
           {/* Quick Stats */}
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8">
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <div className="text-2xl font-bold">1</div>
-                <div className="text-sm text-white/80">Deal Owned</div>
+                <div className="text-2xl font-bold">100+</div>
+                <div className="text-sm text-white/80">Local Deals</div>
               </div>
               <div>
-                <div className="text-2xl font-bold">20%</div>
-                <div className="text-sm text-white/80">Discount</div>
+                <div className="text-2xl font-bold">50%</div>
+                <div className="text-sm text-white/80">Avg Savings</div>
               </div>
               <div>
-                <div className="text-2xl font-bold">$0</div>
-                <div className="text-sm text-white/80">Saved (so far)</div>
+                <div className="text-2xl font-bold">Free</div>
+                <div className="text-sm text-white/80">To Join</div>
               </div>
             </div>
           </div>

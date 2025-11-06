@@ -63,61 +63,29 @@ router.post('/register/user', async (req, res) => {
  */
 router.post('/register/merchant', async (req, res): Promise<void> => {
   try {
-    const { name, category, description, location } = req.body;
+    const { name, email, category, description, location } = req.body;
 
-    if (!name || !category) {
+    if (!name || !email || !category) {
       res.status(400).json({
         success: false,
-        error: 'Name and category are required',
+        error: 'Name, email, and category are required',
       });
       return;
     }
 
-    // Generate wallet
-    const walletData = walletService.createWalletData();
-    const publicKey = new PublicKey(walletData.publicKey);
-
-    // Airdrop SOL for testing
-    try {
-      await walletService.airdropSol(publicKey, 5);
-    } catch (airdropError) {
-      logger.warn('Airdrop failed (may not be on localnet):', airdropError);
+    // Check if merchant already exists
+    const existingMerchant = await Merchant.findOne({ email });
+    if (existingMerchant) {
+      res.status(400).json({
+        success: false,
+        error: 'Merchant with this email already exists',
+      });
+      return;
     }
 
-    // Register merchant on-chain
-    const config = getSolanaConfig();
-    const [merchantPDA] = config.getMerchantPDA(publicKey);
-
-    // Restore keypair to sign transaction
-    const merchantKeypair = walletService.restoreKeypair({
-      encryptedPrivateKey: walletData.encryptedPrivateKey,
-      iv: walletData.iv,
-      authTag: walletData.authTag,
-    });
-
-    const tx = await config.program.methods
-      .registerMerchant(
-        name,
-        category,
-        location?.latitude ?? null,
-        location?.longitude ?? null
-      )
-      .accounts({
-        merchant: merchantPDA,
-        authority: publicKey,
-        systemProgram: PublicKey.default,
-      } as any)
-      .signers([merchantKeypair])
-      .rpc();
-
-    // Create merchant in database
+    // Create merchant in database (simplified - no blockchain)
     const merchant = new Merchant({
-      walletAddress: walletData.publicKey,
-      encryptedPrivateKey: walletData.encryptedPrivateKey,
-      iv: walletData.iv,
-      authTag: walletData.authTag,
-      authority: walletData.publicKey,
-      onChainAddress: merchantPDA.toString(),
+      email,
       name,
       category,
       description,
@@ -130,11 +98,9 @@ router.post('/register/merchant', async (req, res): Promise<void> => {
       success: true,
       data: {
         merchantId: merchant._id,
-        walletAddress: merchant.walletAddress,
-        onChainAddress: merchant.onChainAddress,
+        email: merchant.email,
         name: merchant.name,
         category: merchant.category,
-        transactionSignature: tx,
       },
     });
   } catch (error: any) {

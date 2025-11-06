@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
   test: {
@@ -18,5 +19,10 @@ export default defineConfig({
       ],
     },
     testTimeout: 30000,
+  },
+  resolve: {
+    alias: {
+      'bn.js': 'bn.js',
+    },
   },
 });

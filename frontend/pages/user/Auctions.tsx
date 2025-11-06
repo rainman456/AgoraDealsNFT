@@ -1,15 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import AuctionCard from "@/components/shared/AuctionCard";
-import { mockAuctions } from "@/lib/mock-data";
+import { auctionsAPI } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AuctionsPage() {
   const [activeTab, setActiveTab] = useState("live");
+  const [auctions, setAuctions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const liveAuctions = mockAuctions.filter((a) => a.status === "live");
-  const endedAuctions = mockAuctions.filter((a) => a.status === "ended");
+  useEffect(() => {
+    loadAuctions();
+  }, [activeTab]);
 
-  const displayAuctions = activeTab === "live" ? liveAuctions : endedAuctions;
+  const loadAuctions = async () => {
+    try {
+      setLoading(true);
+      const response = await auctionsAPI.list({ 
+        status: activeTab === "live" ? "active" : "ended",
+        limit: 50 
+      });
+      
+      if (response.success && Array.isArray(response.data)) {
+        setAuctions(response.data);
+      } else {
+        setAuctions([]);
+      }
+    } catch (error) {
+      console.error('Failed to load auctions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load auctions",
+        variant: "destructive"
+      });
+      setAuctions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const displayAuctions = auctions;
 
   return (
     <main className="min-h-screen bg-background">
@@ -54,11 +85,18 @@ export default function AuctionsPage() {
         </div>
 
         {/* Auctions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayAuctions.map((auction) => (
-            <AuctionCard key={auction.id} auction={auction} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading auctions...</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {displayAuctions.map((auction) => (
+              <AuctionCard key={auction._id || auction.id} auction={auction} />
+            ))}
+          </div>
+        )}
 
         {displayAuctions.length === 0 && (
           <div className="text-center py-16">

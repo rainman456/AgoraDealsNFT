@@ -7,7 +7,9 @@ import BN from 'bn.js';
 const METADATA_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
 
 export class SolanaService {
-  private config = getSolanaConfig();
+  private get config() {
+    return getSolanaConfig();
+  }
   
   // Expose program for direct access
   get program() {

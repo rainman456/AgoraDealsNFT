@@ -105,3 +105,49 @@ backend/src/__tests__/
 - All external dependencies are mocked
 - Tests run in isolated environment
 - No actual blockchain or database connections required
+
+
+
+## Curl Requests
+curl http://localhost:3001/health
+
+
+curl http://localhost:3001/api/v1/promotions
+
+
+
+# Filter by category
+curl "http://localhost:3001/api/v1/promotions?category=Food%20%26%20Dining"
+
+# Search promotions
+curl "http://localhost:3001/api/v1/promotions?search=pizza"
+
+# With pagination
+curl "http://localhost:3001/api/v1/promotions?page=1&limit=10"
+
+# With minimum discount
+curl "http://localhost:3001/api/v1/promotions?minDiscount=20"
+
+# Sort by discount
+curl "http://localhost:3001/api/v1/promotions?sortBy=discount&sortOrder=desc"
+
+
+
+
+# Replace {promotionId} with actual ID from list response
+curl http://localhost:3001/api/v1/promotions/{promotionId}
+
+
+
+curl http://localhost:3001/api/v1/merchants
+
+
+# Replace {merchantId} with actual ID from list response
+curl http://localhost:3001/api/v1/merchants/{merchantId}
+
+
+
+curl http://localhost:3001/api/v1/external/deals
+
+
+curl http://localhost:3001/api/v1/promotions | jq '.'

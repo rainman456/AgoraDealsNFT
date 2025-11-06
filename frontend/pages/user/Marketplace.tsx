@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { mockDeals, mockAuctions, type Deal, type Auction, promotionToDeal } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
+import { marketplaceAPI, auctionsAPI } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,14 +8,74 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingBag, DollarSign, Gavel, Clock, TrendingUp, Star, Users, Verified } from "lucide-react";
 
+interface Deal {
+  id: string;
+  title: string;
+  merchant: string;
+  image: string;
+  price: number;
+  discount: number;
+  nftMetadata?: {
+    transferable?: boolean;
+  };
+}
+
+interface Auction {
+  id: string;
+  title: string;
+  merchant: string;
+  image: string;
+  currentBid: number;
+  bids: number;
+  highestBidder: string;
+  timeRemaining: string;
+  status: string;
+}
+
 export default function Marketplace() {
-  const [deals, setDeals] = useState<Deal[]>(mockDeals.map(promotionToDeal).filter((d) => d.nftMetadata.transferable) as any);
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [auctions, setAuctions] = useState<Auction[]>([]);
   const [activeTab, setActiveTab] = useState('buy');
   const [ownedDeals, setOwnedDeals] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const resaleDeals = deals.slice(0, 6);
-  const liveAuctions = mockAuctions.filter(a => a.status === 'live');
+  useEffect(() => {
+    loadMarketplaceData();
+  }, []);
+
+  const loadMarketplaceData = async () => {
+    try {
+      setLoading(true);
+      const [dealsResponse, auctionsResponse] = await Promise.all([
+        marketplaceAPI.list({ limit: 50 }).catch(() => ({ success: false, data: [] })),
+        auctionsAPI.list({ status: 'active', limit: 20 }).catch(() => ({ success: false, data: [] }))
+      ]);
+      
+      if (dealsResponse.success) {
+        const dealsData = dealsResponse.data?.listings || dealsResponse.data || [];
+        setDeals(Array.isArray(dealsData) ? dealsData : []);
+      } else {
+        setDeals([]);
+      }
+      
+      if (auctionsResponse.success) {
+        const auctionsData = auctionsResponse.data?.auctions || auctionsResponse.data || [];
+        setAuctions(Array.isArray(auctionsData) ? auctionsData : []);
+      } else {
+        setAuctions([]);
+      }
+    } catch (error) {
+      console.error('Failed to load marketplace data:', error);
+      setDeals([]);
+      setAuctions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resaleDeals = Array.isArray(deals) ? deals.slice(0, 6) : [];
+  const liveAuctions = Array.isArray(auctions) ? auctions.filter(a => a.status === 'live') : [];
 
   const handleBuy = (dealId: string) => {
     setOwnedDeals([...ownedDeals, dealId]);
@@ -67,14 +127,26 @@ export default function Marketplace() {
                 Purchase deals from other users at great prices
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {loading ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Loading deals...</p>
+              </div>
+            ) : resaleDeals.length === 0 ? (
+              <Card className="p-12 text-center">
+                <ShoppingBag className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No deals available</h3>
+                <p className="text-muted-foreground">Check back later for new listings</p>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {resaleDeals.map((deal) => {
                 const originalPrice = deal.price ? (deal.price / (1 - deal.discount / 100)).toFixed(2) : null;
                 const savings = originalPrice && deal.price ? (Number(originalPrice) - deal.price).toFixed(2) : null;
                 
                 return (
                   <Card
-                    key={deal.id}
+                    key={`marketplace-deal-${deal.id}`}
                     className="overflow-hidden group hover:border-primary/50 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 bg-card border-border/50"
                   >
                     {/* Image - Beautiful imagery */}
@@ -151,7 +223,8 @@ export default function Marketplace() {
                   </Card>
                 );
               })}
-            </div>
+              </div>
+            )}
           </TabsContent>
 
           {/* Sell Tab - Simplified */}
@@ -190,10 +263,22 @@ export default function Marketplace() {
                 Bid on exclusive deals ending soon
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {loading ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Loading auctions...</p>
+              </div>
+            ) : liveAuctions.length === 0 ? (
+              <Card className="p-12 text-center">
+                <Gavel className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No live auctions</h3>
+                <p className="text-muted-foreground">Check back later for new auctions</p>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {liveAuctions.map((auction) => (
                 <Card
-                  key={auction.id}
+                  key={`auction-${auction.id}`}
                   className="overflow-hidden group hover:border-primary/60 transition-all duration-300 hover:shadow-lg"
                 >
                   {/* Image */}
@@ -242,7 +327,8 @@ export default function Marketplace() {
                   </div>
                 </Card>
               ))}
-            </div>
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>

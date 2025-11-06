@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { auctionsAPI } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,104 +39,52 @@ interface Auction {
   merchantName: string;
 }
 
-const mockAuctions: Auction[] = [
-  {
-    id: '1',
-    title: '70% Off Luxury Spa Package',
-    description: 'Premium spa day with massage, facial, and pool access',
-    category: 'Wellness',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=400&fit=crop',
-    couponDiscount: 70,
-    startingPrice: 10,
-    currentBid: 45,
-    reservePrice: 30,
-    buyNowPrice: 80,
-    timeLeft: 3600,
-    totalBids: 12,
-    status: 'live',
-    extendOnBid: true,
-    extensionTime: 300,
-    merchantName: 'Zen Wellness Spa',
-    bids: [
-      { bidder: '0x1234...5678', amount: 45, timestamp: new Date(Date.now() - 120000).toISOString() },
-      { bidder: '0xabcd...efgh', amount: 42, timestamp: new Date(Date.now() - 240000).toISOString() },
-      { bidder: '0x9876...5432', amount: 38, timestamp: new Date(Date.now() - 360000).toISOString() }
-    ]
-  },
-  {
-    id: '2',
-    title: '50% Off Michelin Star Dinner',
-    description: '5-course tasting menu for two at award-winning restaurant',
-    category: 'Dining',
-    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop',
-    couponDiscount: 50,
-    startingPrice: 20,
-    currentBid: 65,
-    reservePrice: 50,
-    buyNowPrice: 100,
-    timeLeft: 1800,
-    totalBids: 18,
-    status: 'ending_soon',
-    extendOnBid: true,
-    extensionTime: 300,
-    merchantName: 'Culinary Delights',
-    bids: [
-      { bidder: '0xdef0...1234', amount: 65, timestamp: new Date(Date.now() - 60000).toISOString() },
-      { bidder: '0x5678...9abc', amount: 60, timestamp: new Date(Date.now() - 180000).toISOString() }
-    ]
-  },
-  {
-    id: '3',
-    title: '60% Off Adventure Park Tickets',
-    description: 'Full day access with fast passes for 4 people',
-    category: 'Entertainment',
-    image: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600&h=400&fit=crop',
-    couponDiscount: 60,
-    startingPrice: 15,
-    currentBid: 55,
-    reservePrice: 40,
-    buyNowPrice: 90,
-    timeLeft: 7200,
-    totalBids: 9,
-    status: 'live',
-    extendOnBid: true,
-    extensionTime: 300,
-    merchantName: 'Adventure World',
-    bids: [
-      { bidder: '0xaaa1...bbb2', amount: 55, timestamp: new Date(Date.now() - 300000).toISOString() }
-    ]
-  },
-  {
-    id: '4',
-    title: '80% Off Luxury Hotel Stay',
-    description: '2-night stay in presidential suite with breakfast',
-    category: 'Travel',
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop',
-    couponDiscount: 80,
-    startingPrice: 50,
-    currentBid: 120,
-    reservePrice: 100,
-    buyNowPrice: 200,
-    timeLeft: 0,
-    totalBids: 24,
-    status: 'ended',
-    extendOnBid: false,
-    extensionTime: 0,
-    merchantName: 'Grand Hotel',
-    winner: '0x1234...5678',
-    bids: [
-      { bidder: '0x1234...5678', amount: 120, timestamp: new Date(Date.now() - 600000).toISOString() },
-      { bidder: '0xabcd...efgh', amount: 115, timestamp: new Date(Date.now() - 720000).toISOString() }
-    ]
-  }
-];
+
 
 export default function AuctionsEnhanced() {
-  const [auctions, setAuctions] = useState(mockAuctions);
+  const [auctions, setAuctions] = useState<Auction[]>([]);
   const [filter, setFilter] = useState<'all' | 'live' | 'ending_soon' | 'ended'>('all');
   const [selectedAuction, setSelectedAuction] = useState<Auction | null>(null);
   const [bidAmount, setBidAmount] = useState('');
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    loadAuctions();
+  }, [filter]);
+
+  const loadAuctions = async () => {
+    try {
+      setLoading(true);
+      const statusMap = {
+        'all': undefined,
+        'live': 'active',
+        'ending_soon': 'active',
+        'ended': 'ended'
+      };
+      const response = await auctionsAPI.list({ 
+        status: statusMap[filter],
+        limit: 50 
+      });
+      
+      if (response.success && Array.isArray(response.data)) {
+        setAuctions(response.data);
+      } else {
+        setAuctions([]);
+      }
+    } catch (error) {
+      console.error('Failed to load auctions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load auctions",
+        variant: "destructive"
+      });
+      setAuctions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -160,7 +110,7 @@ export default function AuctionsEnhanced() {
     return `${secs}s`;
   };
 
-  const handlePlaceBid = (auctionId: string) => {
+  const handlePlaceBid = async (auctionId: string) => {
     const amount = parseFloat(bidAmount);
     const auction = auctions.find(a => a.id === auctionId);
     
@@ -175,50 +125,78 @@ export default function AuctionsEnhanced() {
       return;
     }
 
-    setAuctions(prev => prev.map(a => 
-      a.id === auctionId 
-        ? {
-            ...a,
-            currentBid: amount,
-            totalBids: a.totalBids + 1,
-            timeLeft: a.extendOnBid && a.timeLeft < a.extensionTime ? a.timeLeft + a.extensionTime : a.timeLeft,
-            bids: [
-              { bidder: '0xYou...1234', amount, timestamp: new Date().toISOString() },
-              ...a.bids
-            ]
-          }
-        : a
-    ));
+    if (!user?.walletAddress) {
+      toast({
+        title: "Wallet Required",
+        description: "Please connect your wallet to place a bid",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    toast({
-      title: "🎉 Bid Placed!",
-      description: `Your bid of $${amount} has been placed successfully`
-    });
+    try {
+      await auctionsAPI.placeBid(auctionId, {
+        amount,
+        walletAddress: user.walletAddress
+      });
 
-    setBidAmount('');
-    setSelectedAuction(null);
+      toast({
+        title: "🎉 Bid Placed!",
+        description: `Your bid of $${amount} has been placed successfully`
+      });
+
+      setBidAmount('');
+      setSelectedAuction(null);
+      loadAuctions();
+    } catch (error) {
+      console.error('Failed to place bid:', error);
+      toast({
+        title: "Error",
+        description: "Failed to place bid",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleBuyNow = (auctionId: string) => {
+  const handleBuyNow = async (auctionId: string) => {
     const auction = auctions.find(a => a.id === auctionId);
     if (!auction) return;
 
-    toast({
-      title: "🎊 Purchase Successful!",
-      description: `You bought the coupon for $${auction.buyNowPrice}`
-    });
+    if (!user?.walletAddress) {
+      toast({
+        title: "Wallet Required",
+        description: "Please connect your wallet",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    setAuctions(prev => prev.map(a => 
-      a.id === auctionId 
-        ? { ...a, status: 'settled' as const, winner: '0xYou...1234' }
-        : a
-    ));
-    setSelectedAuction(null);
+    try {
+      await auctionsAPI.placeBid(auctionId, {
+        amount: auction.buyNowPrice,
+        walletAddress: user.walletAddress
+      });
+
+      toast({
+        title: "🎊 Purchase Successful!",
+        description: `You bought the coupon for $${auction.buyNowPrice}`
+      });
+
+      setSelectedAuction(null);
+      loadAuctions();
+    } catch (error) {
+      console.error('Failed to buy now:', error);
+      toast({
+        title: "Error",
+        description: "Failed to complete purchase",
+        variant: "destructive"
+      });
+    }
   };
 
-  const filteredAuctions = auctions.filter(a => 
+  const filteredAuctions = Array.isArray(auctions) ? auctions.filter(a => 
     filter === 'all' || a.status === filter
-  );
+  ) : [];
 
   const getStatusBadge = (status: string) => {
     const variants = {

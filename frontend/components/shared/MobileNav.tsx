@@ -1,11 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Compass, Wallet, User, Store, ShoppingBag, Menu } from "lucide-react";
+import { Home, Compass, Wallet, User, Store, ShoppingBag, Menu, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function MobileNav() {
   const location = useLocation();
   const [showMore, setShowMore] = useState(false);
+  const { toast } = useToast();
 
   const userNavItems = [
     { path: "/", icon: Home, label: "Home" },
@@ -34,6 +36,38 @@ export default function MobileNav() {
 
   const isMerchantRoute = location.pathname.startsWith("/merchant");
   const navItems = isMerchantRoute ? merchantNavItems : userNavItems;
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'Check out these amazing deals!',
+      text: 'I found incredible deals on AgoraDeals - save up to 80% on top brands! 🎉',
+      url: window.location.origin
+    };
+
+    try {
+      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+        toast({
+          title: "Thanks for sharing! 🎉",
+          description: "Help your friends save money too!",
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.origin);
+        toast({
+          title: "Link copied! 📋",
+          description: "Share it with your friends to unlock group deals!",
+        });
+      }
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') {
+        await navigator.clipboard.writeText(window.location.origin);
+        toast({
+          title: "Link copied! 📋",
+          description: "Share it with your friends to unlock group deals!",
+        });
+      }
+    }
+  };
 
   return (
     <>
@@ -73,7 +107,7 @@ export default function MobileNav() {
 
       {/* Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border shadow-lg">
-        <div className="flex items-center justify-around h-16 px-2">
+        <div className="flex items-center justify-around h-16 px-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -117,11 +151,24 @@ export default function MobileNav() {
             );
           })}
           
+          {/* Share Button - Viral Feature */}
+          <button
+            onClick={handleShare}
+            className="flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-xl transition-all duration-300 min-w-[56px] text-muted-foreground hover:text-foreground hover:scale-105 active:scale-95"
+          >
+            <div className="relative transition-all duration-300">
+              <Share2 className="w-6 h-6 transition-all duration-300" />
+            </div>
+            <span className="text-[10px] font-medium transition-all duration-300">
+              Share
+            </span>
+          </button>
+          
           {/* More Button */}
           <button
             onClick={() => setShowMore(!showMore)}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-all duration-300 min-w-[60px]",
+              "flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-xl transition-all duration-300 min-w-[56px]",
               showMore
                 ? "text-primary scale-110"
                 : "text-muted-foreground hover:text-foreground hover:scale-105"

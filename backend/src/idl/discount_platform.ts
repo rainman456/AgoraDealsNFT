@@ -5068,16 +5068,3 @@ export type DiscountPlatform = {
     }
   ]
 };
-
-export const IDL: DiscountPlatform = {
-  "address": "9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3",
-  "metadata": {
-    "name": "discountPlatform",
-    "version": "1.0.0",
-    "spec": "0.1.0",
-    "description": "Web3-powered discount marketplace with NFT coupons"
-  },
-  "instructions": [],
-  "accounts": [],
-  "types": []
-} as any;

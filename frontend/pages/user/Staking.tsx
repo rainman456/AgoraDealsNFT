@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
+import { stakingAPI } from '@/lib/api';
 import {
   Coins, TrendingUp, Lock, Unlock, Gift, Zap,
   Clock, DollarSign, Percent, Award, ArrowUp, Calendar
@@ -36,62 +37,49 @@ const rewardTiers: RewardTier[] = [
   { days: 180, apy: 40, bonus: 'Diamond Hands' }
 ];
 
-const mockStakedCoupons: StakedCoupon[] = [
-  {
-    id: '1',
-    title: '50% Off Spa Package',
-    merchant: 'Zen Wellness',
-    discount: 50,
-    stakedAmount: 100,
-    stakedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-    lockPeriod: 30,
-    unlockDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
-    rewardsEarned: 4.93,
-    apy: 12,
-    status: 'active'
-  },
-  {
-    id: '2',
-    title: '70% Off Restaurant',
-    merchant: 'Culinary Delights',
-    discount: 70,
-    stakedAmount: 250,
-    stakedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-    lockPeriod: 90,
-    unlockDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    rewardsEarned: 41.10,
-    apy: 25,
-    status: 'active'
-  },
-  {
-    id: '3',
-    title: '60% Off Gym Membership',
-    merchant: 'Fitness Pro',
-    discount: 60,
-    stakedAmount: 150,
-    stakedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
-    lockPeriod: 7,
-    unlockDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    rewardsEarned: 0.58,
-    apy: 5,
-    status: 'unlocked'
-  }
-];
-
-const mockStats = {
+export default function Staking() {
+  const [stakedCoupons, setStakedCoupons] = useState<StakedCoupon[]>([]);
+  const [stats, setStats] = useState({
   totalStaked: 500,
   totalRewards: 46.61,
   activeStakes: 2,
   averageAPY: 18.5,
-  lifetimeRewards: 125.40
-};
-
-export default function Staking() {
-  const [stakedCoupons, setStakedCoupons] = useState(mockStakedCoupons);
+    lifetimeRewards: 0
+  });
   const [selectedTier, setSelectedTier] = useState<RewardTier | null>(null);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const handleUnstake = (couponId: string) => {
+  useEffect(() => {
+    loadStakingData();
+  }, []);
+
+  const loadStakingData = async () => {
+    try {
+      setLoading(true);
+      const walletAddress = localStorage.getItem('walletAddress') || '';
+      const response = await stakingAPI.getStakingInfo(walletAddress);
+      setStakedCoupons(response.data?.stakedCoupons || []);
+      setStats(response.data?.stats || {
+        totalStaked: 0,
+        totalRewards: 0,
+        activeStakes: 0,
+        averageAPY: 0,
+        lifetimeRewards: 0
+      });
+    } catch (error) {
+      console.error('Failed to load staking data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load staking data",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUnstake = async (couponId: string) => {
     const coupon = stakedCoupons.find(c => c.id === couponId);
     if (!coupon) return;
 
@@ -104,26 +92,48 @@ export default function Staking() {
       return;
     }
 
-    toast({
-      title: "🎉 Unstaked Successfully!",
-      description: `Claimed ${coupon.rewardsEarned.toFixed(2)} tokens in rewards`
-    });
-
-    setStakedCoupons(prev => prev.filter(c => c.id !== couponId));
+    try {
+      const walletAddress = localStorage.getItem('walletAddress') || '';
+      await stakingAPI.unstake({ couponId, walletAddress });
+      toast({
+        title: "🎉 Unstaked Successfully!",
+        description: `Claimed ${coupon.rewardsEarned.toFixed(2)} tokens in rewards`
+      });
+      setStakedCoupons(prev => prev.filter(c => c.id !== couponId));
+      loadStakingData();
+    } catch (error) {
+      console.error('Failed to unstake:', error);
+      toast({
+        title: "Error",
+        description: "Failed to unstake coupon",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleClaimRewards = (couponId: string) => {
+  const handleClaimRewards = async (couponId: string) => {
     const coupon = stakedCoupons.find(c => c.id === couponId);
     if (!coupon) return;
 
-    toast({
-      title: "💰 Rewards Claimed!",
-      description: `Claimed ${coupon.rewardsEarned.toFixed(2)} tokens`
-    });
-
-    setStakedCoupons(prev => prev.map(c => 
-      c.id === couponId ? { ...c, rewardsEarned: 0 } : c
-    ));
+    try {
+      const walletAddress = localStorage.getItem('walletAddress') || '';
+      await stakingAPI.claimRewards({ walletAddress });
+      toast({
+        title: "💰 Rewards Claimed!",
+        description: `Claimed ${coupon.rewardsEarned.toFixed(2)} tokens`
+      });
+      setStakedCoupons(prev => prev.map(c => 
+        c.id === couponId ? { ...c, rewardsEarned: 0 } : c
+      ));
+      loadStakingData();
+    } catch (error) {
+      console.error('Failed to claim rewards:', error);
+      toast({
+        title: "Error",
+        description: "Failed to claim rewards",
+        variant: "destructive"
+      });
+    }
   };
 
   const getDaysRemaining = (unlockDate: string) => {
@@ -155,27 +165,27 @@ export default function Staking() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card className="p-5 text-center">
             <Lock className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">${mockStats.totalStaked}</p>
+            <p className="text-2xl font-bold">${stats.totalStaked}</p>
             <p className="text-xs text-muted-foreground">Total Staked</p>
           </Card>
           <Card className="p-5 text-center">
             <Gift className="w-6 h-6 text-green-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">${mockStats.totalRewards.toFixed(2)}</p>
+            <p className="text-2xl font-bold">${stats.totalRewards.toFixed(2)}</p>
             <p className="text-xs text-muted-foreground">Pending Rewards</p>
           </Card>
           <Card className="p-5 text-center">
             <Zap className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">{mockStats.activeStakes}</p>
+            <p className="text-2xl font-bold">{stats.activeStakes}</p>
             <p className="text-xs text-muted-foreground">Active Stakes</p>
           </Card>
           <Card className="p-5 text-center">
             <Percent className="w-6 h-6 text-purple-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">{mockStats.averageAPY}%</p>
+            <p className="text-2xl font-bold">{stats.averageAPY}%</p>
             <p className="text-xs text-muted-foreground">Avg APY</p>
           </Card>
           <Card className="p-5 text-center">
             <Award className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold">${mockStats.lifetimeRewards.toFixed(2)}</p>
+            <p className="text-2xl font-bold">${stats.lifetimeRewards.toFixed(2)}</p>
             <p className="text-xs text-muted-foreground">Lifetime Rewards</p>
           </Card>
         </div>

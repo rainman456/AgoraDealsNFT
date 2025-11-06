@@ -273,3 +273,9 @@ export class MarketplaceController {
 }
 
 export const marketplaceController = new MarketplaceController();
+
+// Export individual controller methods for testing
+export const listCouponForSale = marketplaceController.listCoupon.bind(marketplaceController);
+export const purchaseCoupon = marketplaceController.buyCoupon.bind(marketplaceController);
+export const getListings = marketplaceController.getListings.bind(marketplaceController);
+export const cancelListing = marketplaceController.cancelListing.bind(marketplaceController);

@@ -6,9 +6,12 @@ interface AuthContextType {
   merchant: Merchant | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  loginUser: (email: string) => Promise<void>;
+  loginMerchant: (email: string) => Promise<void>;
   registerUser: (username: string, email: string) => Promise<void>;
   registerMerchant: (data: {
     name: string;
+    email: string;
     category: string;
     description?: string;
     location?: {
@@ -57,22 +60,61 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(false);
   }, []);
 
+  const loginUser = async (email: string) => {
+    try {
+      // Simple email-based login - create or retrieve user
+      const userData = {
+        _id: `user_${Date.now()}`,
+        walletAddress: '',
+        name: email.split('@')[0],
+        email: email,
+        role: 'user' as const,
+        createdAt: new Date().toISOString(),
+      };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  };
+
+  const loginMerchant = async (email: string) => {
+    try {
+      // Simple email-based login - create or retrieve merchant
+      const merchantData = {
+        _id: `merchant_${Date.now()}`,
+        name: email.split('@')[0],
+        email: email,
+        walletAddress: '',
+        businessName: '',
+        description: '',
+        category: '',
+        location: undefined,
+        verified: false,
+        createdAt: new Date().toISOString(),
+      };
+      setMerchant(merchantData);
+      localStorage.setItem('merchant', JSON.stringify(merchantData));
+    } catch (error) {
+      console.error('Merchant login error:', error);
+      throw error;
+    }
+  };
+
   const registerUser = async (username: string, email: string) => {
     try {
-      const response = await authAPI.registerUser({ username, email });
-      
-      if (response.success) {
-        const userData = {
-          _id: response.data.userId,
-          walletAddress: response.data.walletAddress,
-          name: response.data.username,
-          email: response.data.email,
-          role: 'user' as const,
-          createdAt: new Date().toISOString(),
-        };
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-      }
+      // Simple registration - create user locally
+      const userData = {
+        _id: `user_${Date.now()}`,
+        walletAddress: '',
+        name: username,
+        email: email,
+        role: 'user' as const,
+        createdAt: new Date().toISOString(),
+      };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error('Registration error:', error);
       throw error;
@@ -81,6 +123,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const registerMerchant = async (data: {
     name: string;
+    email: string;
     category: string;
     description?: string;
     location?: {
@@ -99,8 +142,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const merchantData = {
           _id: response.data.merchantId,
           name: response.data.name,
-          email: '',
-          walletAddress: response.data.walletAddress,
+          email: response.data.email || data.email,
+          walletAddress: response.data.walletAddress || '',
           businessName: response.data.name,
           description: data.description,
           category: response.data.category,
@@ -129,6 +172,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     merchant,
     isAuthenticated: !!(user || merchant),
     isLoading,
+    loginUser,
+    loginMerchant,
     registerUser,
     registerMerchant,
     logout,

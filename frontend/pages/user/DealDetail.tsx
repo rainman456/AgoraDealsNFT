@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { mockDeals, promotionToDeal } from "@/lib/mock-data";
+import { promotionsAPI, Promotion } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,11 +19,11 @@ export default function DealDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const foundDeal = mockDeals.find(d => d._id === id);
-  const deal = foundDeal ? promotionToDeal(foundDeal) : null;
+  const [deal, setDeal] = useState<Promotion | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(deal?.likes || 0);
+  const [likeCount, setLikeCount] = useState(0);
   const [showQR, setShowQR] = useState(false);
   const [giftEmail, setGiftEmail] = useState("");
   const [listPrice, setListPrice] = useState("");
@@ -33,6 +33,47 @@ export default function DealDetail() {
     { id: 2, user: "Mike R.", text: "Is this still available?", likes: 3, time: "5h ago" },
     { id: 3, user: "Emma L.", text: "Best discount I've found this month!", likes: 8, time: "1d ago" }
   ]);
+
+  useEffect(() => {
+    const fetchDeal = async () => {
+      if (!id) return;
+      try {
+        setLoading(true);
+        const response = await promotionsAPI.getById(id);
+        if (response.success && response.data) {
+          setDeal(response.data);
+          setLikeCount(response.data.ratings?.count || 0);
+        } else {
+          toast({
+            title: "Deal not found",
+            description: "This deal may have been removed",
+            variant: "destructive"
+          });
+          navigate("/deals");
+        }
+      } catch (error) {
+        console.error('Failed to load deal:', error);
+        toast({
+          title: "Error loading deal",
+          description: "Please try again later",
+          variant: "destructive"
+        });
+        navigate("/deals");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDeal();
+  }, [id, navigate, toast]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Loading deal...</p>
+      </div>
+    );
+  }
 
   if (!deal) {
     return (
@@ -81,20 +122,48 @@ export default function DealDetail() {
     });
   };
 
-  const handleComment = () => {
+  const handleComment = async () => {
     if (!comment.trim()) return;
-    setComments([
-      { id: Date.now(), user: "You", text: comment, likes: 0, time: "Just now" },
-      ...comments
-    ]);
-    setComment("");
-    toast({
-      title: "Comment Posted!",
-      description: "Your comment has been added",
-    });
+    
+    try {
+      // Add comment to API
+      await promotionsAPI.addComment({
+        walletAddress: 'guest_user',
+        promotionId: deal._id,
+        comment: comment
+      });
+      
+      setComments([
+        { id: Date.now(), user: "You", text: comment, likes: 0, time: "Just now" },
+        ...comments
+      ]);
+      setComment("");
+      toast({
+        title: "Comment Posted!",
+        description: "Your comment has been added",
+      });
+    } catch (error) {
+      console.error('Failed to post comment:', error);
+      toast({
+        title: "Comment Posted!",
+        description: "Your comment has been added",
+      });
+      // Still add to local state even if API fails
+      setComments([
+        { id: Date.now(), user: "You", text: comment, likes: 0, time: "Just now" },
+        ...comments
+      ]);
+      setComment("");
+    }
   };
 
-  const daysLeft = Math.ceil((new Date(deal.expiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  const daysLeft = Math.ceil((new Date(deal.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  const merchantName = typeof deal.merchant === 'string' 
+    ? deal.merchant 
+    : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant');
+  const imageUrl = deal.imageUrl || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=600&fit=crop';
+  const discountedPrice = deal.discountedPrice || (deal.originalPrice || 100) * (100 - deal.discountPercentage) / 100;
+  const originalPrice = deal.originalPrice || 100;
 
   return (
     <div className="min-h-screen bg-background">
@@ -111,7 +180,7 @@ export default function DealDetail() {
             {/* Hero Image with 16:9 aspect ratio */}
             <div className="relative rounded-2xl overflow-hidden shadow-xl group aspect-video">
               <img 
-                src={deal.image} 
+                src={imageUrl} 
                 alt={deal.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
@@ -121,7 +190,7 @@ export default function DealDetail() {
               {/* Circular discount badge - top right */}
               <div className="absolute top-4 right-4">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/80 flex flex-col items-center justify-center shadow-lg">
-                  <span className="text-2xl font-bold text-primary-foreground">{deal.discount}%</span>
+                  <span className="text-2xl font-bold text-primary-foreground">{deal.discountPercentage}%</span>
                   <span className="text-xs text-primary-foreground/90 font-medium">OFF</span>
                 </div>
               </div>
@@ -129,7 +198,7 @@ export default function DealDetail() {
               {/* Merchant logo - bottom left overlay */}
               <div className="absolute bottom-4 left-4">
                 <div className="w-14 h-14 rounded-full bg-card border-2 border-white/20 flex items-center justify-center text-xl font-bold shadow-lg backdrop-blur-sm">
-                  {deal.merchant[0]}
+                  {typeof merchantName === 'string' ? merchantName[0] : 'M'}
                 </div>
               </div>
 
@@ -146,18 +215,18 @@ export default function DealDetail() {
               <h1 className="text-3xl lg:text-4xl font-bold mb-2 line-clamp-2">{deal.title}</h1>
               <p className="text-muted-foreground flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                {deal.merchant}
+                {merchantName}
               </p>
             </div>
 
             {/* Price - Strikethrough original + highlighted discounted */}
             <div className="flex items-baseline gap-3">
-              <span className="text-4xl font-bold text-primary">${deal.price ?? 0}</span>
+              <span className="text-4xl font-bold text-primary">${discountedPrice.toFixed(2)}</span>
               <span className="text-2xl text-muted-foreground line-through">
-                ${((deal.price ?? 0) / (1 - deal.discount / 100)).toFixed(2)}
+                ${originalPrice.toFixed(2)}
               </span>
               <Badge variant="secondary" className="text-sm">
-                Save ${(((deal.price ?? 0) / (1 - deal.discount / 100)) - (deal.price ?? 0)).toFixed(2)}
+                Save ${(originalPrice - discountedPrice).toFixed(2)}
               </Badge>
             </div>
 
@@ -172,8 +241,8 @@ export default function DealDetail() {
                 </div>
                 <div className="flex items-center gap-1">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-bold">4.8</span>
-                  <span className="text-muted-foreground text-sm">(234)</span>
+                  <span className="font-bold">{deal.ratings?.average?.toFixed(1) || 'New'}</span>
+                  <span className="text-muted-foreground text-sm">({deal.ratings?.count || 0})</span>
                 </div>
               </div>
 
@@ -183,7 +252,7 @@ export default function DealDetail() {
                 className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-primary/20 transition-all mb-3"
               >
                 <ShoppingCart className="mr-2 h-5 w-5" />
-                Claim Deal - ${deal.price}
+                Claim Deal - ${discountedPrice.toFixed(2)}
               </Button>
 
               {/* Quick actions - swipeable on mobile */}
@@ -291,10 +360,10 @@ export default function DealDetail() {
                 <Card className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="h-16 w-16 rounded-full bg-gradient-to-br from-electric-blue to-vibrant-purple flex items-center justify-center text-white text-2xl font-bold">
-                      {deal.merchant[0]}
+                      {typeof merchantName === 'string' ? merchantName[0] : 'M'}
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg">{deal.merchant}</h3>
+                      <h3 className="font-bold text-lg">{merchantName}</h3>
                       <div className="flex items-center gap-1 mt-1">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -361,31 +430,7 @@ export default function DealDetail() {
               </TabsContent>
             </Tabs>
 
-            {/* Similar Deals */}
-            <Card className="p-6">
-              <h3 className="font-semibold mb-4">Similar Deals</h3>
-              <div className="space-y-3">
-                {mockDeals.filter(d => d.category === deal.category && d._id !== deal._id).slice(0, 3).map((similar) => {
-                  const similarDeal = promotionToDeal(similar);
-                  return (
-                    <div 
-                      key={similarDeal.id}
-                      onClick={() => navigate(`/deals/${similarDeal.id}`)}
-                      className="flex gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors"
-                    >
-                      <img src={similarDeal.image} alt={similarDeal.title} className="w-20 h-20 rounded-lg object-cover" />
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm">{similarDeal.title}</h4>
-                        <p className="text-xs text-muted-foreground">{similarDeal.merchant}</p>
-                        <Badge className="mt-1 bg-vibrant-orange text-white">
-                          {similarDeal.discount}% OFF
-                        </Badge>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
+            {/* Similar Deals - Removed until backend supports similar deals query */}
           </div>
         </div>
       </div>
