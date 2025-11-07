@@ -111,7 +111,7 @@ export default function UserStats() {
       }
       
       const [statsResponse, badgesResponse] = await Promise.all([
-        userStatsAPI.getStats(walletAddress),
+        userStatsAPI.getUserStats(walletAddress),
         badgesAPI.getUserBadges(walletAddress)
       ]);
       setStats(statsResponse.data || {

@@ -29,13 +29,8 @@ export function GeoDiscoveryMap({ onClose, className }: GeoDiscoveryMapProps) {
   const [mapCenter, setMapCenter] = useState({ lat: 37.7749, lng: -122.4194 });
 
   // Mock deals data with coordinates
-  const deals: Deal[] = [
-    { id: 1, title: 'Coffee & Pastry', merchant: 'Brew Haven', discount: 25, distance: 0.3, lat: 37.7750, lng: -122.4190, category: 'Food', expiresIn: '2h', rating: 4.8 },
-    { id: 2, title: 'Lunch Special', merchant: 'Poke Bowl', discount: 30, distance: 0.5, lat: 37.7755, lng: -122.4200, category: 'Food', expiresIn: '5h', rating: 4.6 },
-    { id: 3, title: 'Yoga Class', merchant: 'Zen Studio', discount: 40, distance: 0.8, lat: 37.7760, lng: -122.4180, category: 'Wellness', expiresIn: '1d', rating: 4.9 },
-    { id: 4, title: 'Happy Hour', merchant: 'The Lounge', discount: 50, distance: 1.2, lat: 37.7740, lng: -122.4210, category: 'Dining', expiresIn: '3h', rating: 4.5 },
-    { id: 5, title: 'Spa Treatment', merchant: 'Relax Spa', discount: 35, distance: 1.5, lat: 37.7765, lng: -122.4175, category: 'Wellness', expiresIn: '2d', rating: 4.7 },
-  ];
+  // Deals will be loaded from API based on user location
+  const deals: Deal[] = [];
 
   const filteredDeals = deals.filter(deal => {
     if (filter === 'nearby') return deal.distance < 1;
@@ -162,7 +157,11 @@ export function GeoDiscoveryMap({ onClose, className }: GeoDiscoveryMapProps) {
                 </div>
               </div>
               <h4 className="font-semibold text-lg">{selectedDeal.title}</h4>
-              <p className="text-sm text-muted-foreground">{selectedDeal.merchant}</p>
+              <p className="text-sm text-muted-foreground">
+                {typeof selectedDeal.merchant === 'string' 
+                  ? selectedDeal.merchant 
+                  : (selectedDeal.merchant?.businessName || selectedDeal.merchant?.name || 'Merchant')}
+              </p>
               <div className="flex items-center gap-4 mt-2 text-sm">
                 <span className="flex items-center gap-1">
                   <MapPin className="w-3 h-3" />

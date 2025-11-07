@@ -22,34 +22,10 @@ interface RatingsReviewsProps {
   reviews?: Review[];
 }
 
-const mockReviews: Review[] = [
-  {
-    id: '1',
-    user: '0x1234...5678',
-    rating: 5,
-    comment: 'Amazing deal! Totally worth it. The service was excellent and I saved a lot of money.',
-    timestamp: new Date(Date.now() - 86400000).toISOString(),
-    helpful: 12
-  },
-  {
-    id: '2',
-    user: '0xabcd...efgh',
-    rating: 4,
-    comment: 'Great value for money. Would recommend to friends.',
-    timestamp: new Date(Date.now() - 172800000).toISOString(),
-    helpful: 8
-  },
-  {
-    id: '3',
-    user: '0x9876...5432',
-    rating: 5,
-    comment: 'Best deal I\'ve found on this platform. Quick redemption process too!',
-    timestamp: new Date(Date.now() - 259200000).toISOString(),
-    helpful: 15
-  }
-];
+// Mock data removed - reviews should be loaded from API
+const mockReviews: Review[] = [];
 
-export default function RatingsReviews({ dealId, averageRating, totalRatings, reviews = mockReviews }: RatingsReviewsProps) {
+export default function RatingsReviews({ dealId, averageRating, totalRatings, reviews = [] }: RatingsReviewsProps) {
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [reviewText, setReviewText] = useState('');

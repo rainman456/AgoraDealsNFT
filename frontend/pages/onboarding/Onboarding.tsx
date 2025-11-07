@@ -17,14 +17,8 @@ import {
 
 type OnboardingStep = "splash" | "value-props" | "signup" | "verify" | "first-deal" | "success";
 
-const GIFT_DEAL = {
-  id: "welcome-gift",
-  title: "Welcome Gift: 20% Off Your First Purchase",
-  merchant: "AgoraDeals Partners",
-  discount: 20,
-  image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=800&auto=format&fit=crop",
-  description: "Redeem at any participating merchant"
-};
+// Welcome gift deal will be loaded from API
+const GIFT_DEAL = null;
 
 export default function Onboarding() {
   const [step, setStep] = useState<OnboardingStep>("splash");

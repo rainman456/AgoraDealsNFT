@@ -37,7 +37,7 @@ export default function Profile() {
 
       try {
         // Fetch user stats
-        const statsResponse = await userStatsAPI.getStats(user.walletAddress);
+        const statsResponse = await userStatsAPI.getUserStats(user.walletAddress);
         if (statsResponse.success) {
           setUserStats(statsResponse.data);
         }
@@ -72,7 +72,7 @@ export default function Profile() {
 
         // Fetch staking info
         setLoadingStaking(true);
-        const stakingResponse = await stakingAPI.getStakingInfo(user.walletAddress);
+        const stakingResponse = await stakingAPI.getUserStakes(user.walletAddress);
         if (stakingResponse.success) {
           setStakingInfo(stakingResponse.data);
         }
@@ -502,14 +502,8 @@ export default function Profile() {
                   <div>
                     <h3 className="text-lg md:text-xl font-bold mb-4">Available Badges</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                      {[
-                        { icon: '🎯', name: 'First Deal', desc: 'Claim your first deal', progress: 0, total: 1 },
-                        { icon: '🔥', name: 'Hot Streak', desc: 'Claim 5 deals in a week', progress: 0, total: 5 },
-                        { icon: '💎', name: 'Super Saver', desc: 'Save $500 total', progress: 0, total: 500 },
-                        { icon: '⭐', name: 'VIP Member', desc: 'Reach Level 10', progress: 0, total: 10 },
-                        { icon: '🏆', name: 'Elite Saver', desc: 'Save $2,000 total', progress: 0, total: 2000 },
-                        { icon: '👑', name: 'Deal Master', desc: 'Claim 100 deals', progress: 0, total: 100 },
-                      ].map((badge, i) => (
+                      {/* Badges would be loaded from API */}
+                      {[].map((badge: any, i: number) => (
                         <Card key={i} className="p-3 md:p-4 text-center opacity-60 hover:opacity-100 transition-opacity border-dashed">
                           <div className="text-3xl md:text-4xl mb-2 grayscale">{badge.icon}</div>
                           <h4 className="font-bold text-xs md:text-sm mb-1">{badge.name}</h4>

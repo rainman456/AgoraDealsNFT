@@ -589,14 +589,8 @@ export default function MyDeals() {
                 <Card className="p-6">
                   <h3 className="text-xl font-bold mb-4">Achievements</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {[
-                      { icon: "🎯", name: "First Deal", desc: "Claimed your first deal" },
-                      { icon: "🔥", name: "Hot Streak", desc: "5 deals in a week" },
-                      { icon: "💎", name: "Big Saver", desc: "Saved over $200" },
-                      { icon: "🌟", name: "Early Adopter", desc: "Joined in beta" },
-                      { icon: "🤝", name: "Social Butterfly", desc: "Referred 3 friends" },
-                      { icon: "⚡", name: "Speed Demon", desc: "Redeemed within 1 hour" },
-                    ].map((achievement, i) => (
+                    {/* Achievements would be loaded from API */}
+                    {[].map((achievement: any, i: number) => (
                       <div key={i} className="p-4 bg-muted rounded-lg text-center hover:bg-primary/10 transition-colors cursor-pointer">
                         <div className="text-3xl mb-2">{achievement.icon}</div>
                         <p className="font-semibold text-sm mb-1">{achievement.name}</p>

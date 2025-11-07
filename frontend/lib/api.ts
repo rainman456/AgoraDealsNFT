@@ -59,23 +59,34 @@ export interface Merchant {
 }
 
 export interface Promotion {
-  _id: string;
-  merchantId: string;
-  merchant?: Merchant;
+  _id?: string;
+  id?: string;
+  onChainAddress?: string;
+  merchantId?: string;
+  merchant?: string | Merchant;
   title: string;
   description: string;
   discountPercentage: number;
-  originalPrice: number;
-  discountedPrice: number;
+  originalPrice?: number;
+  price: number;
+  discountedPrice?: number;
   category: string;
   imageUrl?: string;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
+  expiryTimestamp?: string;
   maxSupply: number;
   currentSupply: number;
   isActive: boolean;
-  promotionAccount: string;
+  promotionAccount?: string;
   transactionSignature?: string;
+  stats?: {
+    totalMinted: number;
+    totalRedeemed: number;
+    averageRating: number;
+    totalRatings: number;
+    totalComments: number;
+  };
   ratings?: {
     average: number;
     count: number;
@@ -108,6 +119,58 @@ export interface RedemptionTicket {
   ticketAccount: string;
   status: 'pending' | 'approved' | 'rejected';
   qrCode?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExternalDeal {
+  _id: string;
+  onChainAddress: string;
+  source: string;
+  externalId: string;
+  title: string;
+  description: string;
+  originalPrice: number;
+  discountedPrice: number;
+  discountPercentage: number;
+  category: string;
+  imageUrl: string;
+  affiliateUrl: string;
+  expiryTimestamp: string;
+  isVerified: boolean;
+  verificationCount: number;
+  createdAt: string;
+}
+
+export interface Listing {
+  _id: string;
+  onChainAddress: string;
+  coupon: string;
+  seller: string;
+  price: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface Comment {
+  _id: string;
+  onChainAddress: string;
+  user: string;
+  promotion: string;
+  content: string;
+  likes: number;
+  isMerchantReply: boolean;
+  parentComment?: string;
+  createdAt: string;
+}
+
+export interface Rating {
+  _id: string;
+  onChainAddress: string;
+  user: string;
+  promotion: string;
+  merchant: string;
+  stars: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -161,6 +224,43 @@ export const promotionsAPI = {
     return response.data;
   },
   
+  // Comments API
+  getComments: async (promotionId: string, params?: { page?: number; limit?: number }) => {
+    const response = await api.get(`/promotions/${promotionId}/comments`, { params });
+    return response.data;
+  },
+  
+  createComment: async (promotionId: string, content: string) => {
+    const response = await api.post(`/promotions/${promotionId}/comments`, { content });
+    return response.data;
+  },
+  
+  likeComment: async (commentId: string) => {
+    const response = await api.post(`/comments/${commentId}/like`);
+    return response.data;
+  },
+  
+  deleteComment: async (commentId: string) => {
+    const response = await api.delete(`/comments/${commentId}`);
+    return response.data;
+  },
+  
+  // Ratings API
+  getRatings: async (promotionId: string, params?: { page?: number; limit?: number }) => {
+    const response = await api.get(`/promotions/${promotionId}/ratings`, { params });
+    return response.data;
+  },
+  
+  createRating: async (promotionId: string, stars: number) => {
+    const response = await api.post(`/promotions/${promotionId}/ratings`, { stars });
+    return response.data;
+  },
+  
+  getRatingStats: async (promotionId: string) => {
+    const response = await api.get(`/promotions/${promotionId}/ratings/stats`);
+    return response.data;
+  },
+  
   getDetails: async (promotionId: string) => {
     const response = await api.get(`/promotions/${promotionId}`);
     return response.data;
@@ -172,14 +272,17 @@ export const promotionsAPI = {
   },
   
   create: async (data: {
-    walletAddress: string;
+    walletAddress?: string;
+    email?: string;
     title: string;
     description: string;
     discountPercentage: number;
     price: number;
     category: string;
     maxSupply: number;
-    expiryDays: number;
+    expiryDays?: number;
+    expiryTimestamp?: string;
+    imageUrl?: string;
   }) => {
     const response = await api.post('/promotions', data);
     return response.data;
@@ -199,7 +302,11 @@ export const promotionsAPI = {
     promotionId: string;
     comment: string;
   }) => {
-    const response = await api.post('/promotions/comment', data);
+    const response = await api.post('/promotions/comment', {
+      walletAddress: data.walletAddress,
+      promotionId: data.promotionId,
+      content: data.comment
+    });
     return response.data;
   },
   
@@ -218,13 +325,84 @@ export const promotionsAPI = {
     return response.data;
   },
   
-  pause: async (promotionId: string) => {
-    const response = await api.patch(`/promotions/${promotionId}/pause`);
+  pause: async (promotionId: string, walletAddress?: string) => {
+    const response = await api.patch(`/promotions/${promotionId}/pause`, { walletAddress });
     return response.data;
   },
   
-  resume: async (promotionId: string) => {
-    const response = await api.patch(`/promotions/${promotionId}/resume`);
+  resume: async (promotionId: string, walletAddress?: string) => {
+    const response = await api.patch(`/promotions/${promotionId}/resume`, { walletAddress });
+    return response.data;
+  },
+  
+  uploadImage: async (file: File, type: string = 'promotions') => {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await api.post(`/upload/${type}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+  
+  deleteImage: async (filename: string, type: string = 'promotions') => {
+    const response = await api.delete(`/upload/${type}/${filename}`);
+    return response.data;
+  },
+};
+
+// External Deals API
+export const externalDealsAPI = {
+  list: async (params?: {
+    category?: string;
+    source?: string;
+    verified?: boolean;
+    page?: number;
+    limit?: number;
+  }) => {
+    const response = await api.get('/external-deals', { params });
+    return response.data;
+  },
+  
+  getById: async (dealId: string) => {
+    const response = await api.get(`/external-deals/${dealId}`);
+    return response.data;
+  },
+};
+
+// Marketplace Listings API
+export const listingsAPI = {
+  list: async (params?: {
+    seller?: string;
+    active?: boolean;
+    page?: number;
+    limit?: number;
+  }) => {
+    const response = await api.get('/listings', { params });
+    return response.data;
+  },
+  
+  getById: async (listingId: string) => {
+    const response = await api.get(`/listings/${listingId}`);
+    return response.data;
+  },
+  
+  create: async (data: {
+    couponAddress: string;
+    price: number;
+  }) => {
+    const response = await api.post('/listings', data);
+    return response.data;
+  },
+  
+  deactivate: async (listingId: string) => {
+    const response = await api.patch(`/listings/${listingId}/deactivate`);
+    return response.data;
+  },
+  
+  delete: async (listingId: string) => {
+    const response = await api.delete(`/listings/${listingId}`);
     return response.data;
   },
 };
@@ -281,200 +459,91 @@ export const redemptionAPI = {
     return response.data;
   },
   
-  approveTicket: async (data: {
+  verifyTicket: async (data: {
     merchantWalletAddress: string;
-    ticketAccount: string;
+    ticketId: string;
   }) => {
-    const response = await api.post('/redemption/approve', data);
+    const response = await api.post('/redemption/verify-ticket', data);
     return response.data;
   },
   
-  rejectTicket: async (data: {
-    merchantWalletAddress: string;
-    ticketAccount: string;
-  }) => {
-    const response = await api.post('/redemption/reject', data);
+  getMyTickets: async (walletAddress: string) => {
+    const response = await api.get(`/redemption/tickets/${walletAddress}`);
+    return response.data;
+  },
+};
+
+// Redemption Tickets API
+export const redemptionTicketsAPI = {
+  generate: async (data: { couponId: string; userAddress: string }) => {
+    const response = await api.post('/redemption-tickets/generate', data);
     return response.data;
   },
   
-  listTickets: async (params?: {
-    limit?: number;
-    status?: string;
-  }) => {
-    const walletAddress = localStorage.getItem('walletAddress') || '';
+  verifyAndRedeem: async (data: { ticketId: string; merchantAddress: string }) => {
+    const response = await api.post('/redemption-tickets/verify-and-redeem', data);
+    return response.data;
+  },
+  
+  cancel: async (ticketId: string) => {
+    const response = await api.post(`/redemption-tickets/${ticketId}/cancel`);
+    return response.data;
+  },
+  
+  getUserTickets: async (userAddress: string) => {
+    const response = await api.get(`/redemption-tickets/user/${userAddress}`);
+    return response.data;
+  },
+  
+  getMerchantTickets: async (merchantAddress: string) => {
+    const response = await api.get(`/redemption-tickets/merchant/${merchantAddress}`);
+    return response.data;
+  },
+  
+  listTickets: async (params?: { limit?: number; status?: string }) => {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      return { success: false, data: [] };
+    }
+    const userData = JSON.parse(user);
+    const walletAddress = userData.walletAddress || '';
     if (!walletAddress) {
-      return { success: false, data: [], error: 'Wallet address required' };
+      return { success: false, data: [] };
     }
     const response = await api.get(`/redemption-tickets/user/${walletAddress}`, { params });
     return response.data;
   },
-  
-  getMyTickets: async (userWalletAddress: string) => {
-    const response = await api.get('/redemption/my-tickets', {
-      params: { userWalletAddress },
-    });
-    return response.data;
-  },
-  
-  getMerchantTickets: async (merchantWalletAddress: string, status?: string) => {
-    const response = await api.get('/redemption/merchant-tickets', {
-      params: { merchantWalletAddress, status },
-    });
-    return response.data;
-  },
 };
 
-// Merchants API
-export const merchantsAPI = {
-  list: async (params?: { 
-    category?: string;
-    verified?: boolean;
-    page?: number;
-    limit?: number;
-  }) => {
-    const response = await api.get('/merchants', { params });
+// Social API
+export const socialAPI = {
+  trackShare: async (data: { promotionId?: string; couponId?: string; platform: string }) => {
+    const response = await api.post('/social/share', data);
     return response.data;
   },
   
-  getProfile: async (merchantId: string) => {
-    const response = await api.get(`/merchants/${merchantId}`);
-    return response.data;
-  },
-};
-
-// Marketplace API
-export const marketplaceAPI = {
-  list: async (params?: {
-    page?: number;
-    limit?: number;
-  }) => {
-    const response = await api.get('/marketplace/listings', { params });
+  trackView: async (data: { promotionId?: string; couponId?: string }) => {
+    const response = await api.post('/social/view', data);
     return response.data;
   },
   
-  listForSale: async (data: {
-    couponId: string;
-    price: number;
-    walletAddress: string;
-  }) => {
-    const response = await api.post('/marketplace/list', data);
+  getTrending: async (params?: { limit?: number; category?: string }) => {
+    const response = await api.get('/social/trending', { params });
     return response.data;
   },
   
-  buy: async (data: {
-    listingId: string;
-    walletAddress: string;
-  }) => {
-    const response = await api.post('/marketplace/buy', data);
+  getPopular: async (params?: { category?: string; limit?: number }) => {
+    const response = await api.get('/social/popular', { params });
     return response.data;
   },
   
-  getListings: async (params?: {
-    page?: number;
-    limit?: number;
-  }) => {
-    const response = await api.get('/marketplace/listings', { params });
+  rateCoupon: async (data: { couponId: string; rating: number }) => {
+    const response = await api.post('/social/rate', data);
     return response.data;
   },
   
-  cancelListing: async (data: {
-    listingId: string;
-    walletAddress: string;
-  }) => {
-    const response = await api.post('/marketplace/cancel', data);
-    return response.data;
-  },
-};
-
-// External Deals API
-export const externalDealsAPI = {
-  list: async (params?: {
-    category?: string;
-    page?: number;
-    limit?: number;
-  }) => {
-    const response = await api.get('/external/deals', { params });
-    return response.data;
-  },
-  
-  searchFlights: async (params: {
-    origin: string;
-    destination: string;
-    departureDate: string;
-    returnDate?: string;
-    adults?: number;
-  }) => {
-    const response = await api.get('/external/flights', { params });
-    return response.data;
-  },
-  
-  searchHotels: async (params: {
-    city: string;
-    checkIn: string;
-    checkOut: string;
-    adults?: number;
-  }) => {
-    const response = await api.get('/external/hotels', { params });
-    return response.data;
-  },
-};
-
-// Upload API
-export const uploadAPI = {
-  uploadImage: async (file: File) => {
-    const formData = new FormData();
-    formData.append('image', file);
-    
-    const response = await api.post('/upload/image', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
-  },
-};
-
-// Auctions API
-export const auctionsAPI = {
-  create: async (data: {
-    couponId: string;
-    title: string;
-    description: string;
-    category: string;
-    startingPrice: number;
-    reservePrice?: number;
-    buyNowPrice?: number;
-    durationDays: number;
-    extendOnBid?: boolean;
-    extensionTime?: number;
-    walletAddress: string;
-  }) => {
-    const response = await api.post('/auctions/create', data);
-    return response.data;
-  },
-  
-  placeBid: async (auctionId: string, data: {
-    amount: number;
-    walletAddress: string;
-  }) => {
-    const response = await api.post(`/auctions/${auctionId}/bid`, data);
-    return response.data;
-  },
-  
-  settle: async (auctionId: string, data: {
-    walletAddress: string;
-  }) => {
-    const response = await api.post(`/auctions/${auctionId}/settle`, data);
-    return response.data;
-  },
-  
-  list: async (params?: { status?: string; limit?: number }) => {
-    const response = await api.get('/auctions', { params });
-    return response.data;
-  },
-  
-  getDetails: async (auctionId: string) => {
-    const response = await api.get(`/auctions/${auctionId}`);
+  getFeed: async (params?: { page?: number; limit?: number }) => {
+    const response = await api.get('/social/feed', { params });
     return response.data;
   },
 };
@@ -483,60 +552,31 @@ export const auctionsAPI = {
 export const groupDealsAPI = {
   create: async (data: {
     promotionId: string;
-    title: string;
-    description: string;
-    category: string;
-    tiers: Array<{
-      minParticipants: number;
-      discountPercentage: number;
-      pricePerUnit: number;
-    }>;
-    targetParticipants: number;
+    minParticipants: number;
     maxParticipants: number;
-    durationDays: number;
-    walletAddress: string;
+    discountTiers: Array<{ participants: number; discount: number }>;
+    endTime: string;
   }) => {
     const response = await api.post('/group-deals/create', data);
     return response.data;
   },
   
-  join: async (dealId: string, data: {
-    quantity: number;
-    walletAddress?: string;
-  }) => {
-    // Make walletAddress optional - use from localStorage if not provided
-    const user = localStorage.getItem('user');
-    const merchant = localStorage.getItem('merchant');
-    const walletAddress = data.walletAddress || 
-      (user ? JSON.parse(user).walletAddress : '') || 
-      (merchant ? JSON.parse(merchant).walletAddress : '') || 
-      'guest_user';
-    
-    const response = await api.post(`/group-deals/${dealId}/join`, {
-      ...data,
-      walletAddress
-    });
+  join: async (dealId: string, data: { userAddress: string }) => {
+    const response = await api.post(`/group-deals/${dealId}/join`, data);
     return response.data;
   },
   
-  finalize: async (dealId: string, data: {
-    walletAddress: string;
-  }) => {
+  finalize: async (dealId: string, data: { merchantAddress: string }) => {
     const response = await api.post(`/group-deals/${dealId}/finalize`, data);
     return response.data;
   },
   
-  list: async (params?: {
-    status?: string;
-    category?: string;
-    page?: number;
-    limit?: number;
-  }) => {
+  list: async (params?: { status?: string; page?: number; limit?: number }) => {
     const response = await api.get('/group-deals', { params });
     return response.data;
   },
   
-  getDetails: async (dealId: string) => {
+  getById: async (dealId: string) => {
     const response = await api.get(`/group-deals/${dealId}`);
     return response.data;
   },
@@ -544,41 +584,18 @@ export const groupDealsAPI = {
 
 // User Stats API
 export const userStatsAPI = {
-  getStats: async (walletAddress: string) => {
-    const response = await api.get(`/user-stats/${walletAddress}`);
+  getUserStats: async (userAddress: string) => {
+    const response = await api.get(`/user-stats/${userAddress}`);
     return response.data;
   },
   
-  get: async () => {
-    const user = localStorage.getItem('user');
-    const merchant = localStorage.getItem('merchant');
-    const walletAddress = 
-      (user ? JSON.parse(user).walletAddress : '') || 
-      (merchant ? JSON.parse(merchant).walletAddress : '') || 
-      'guest_user';
-    
-    if (!walletAddress || walletAddress === 'guest_user') {
-      // Return mock data for users without wallet
-      return {
-        success: true,
-        data: {
-          dealsClaimed: 0,
-          dealsRedeemed: 0,
-          totalSavings: 0,
-          referrals: 0,
-          rewardsRate: 0,
-          pointsEarned: 0,
-          memberTier: 'Bronze'
-        }
-      };
-    }
-    
-    const response = await api.get(`/user-stats/${walletAddress}`);
+  getLeaderboard: async (params?: { tier?: string; page?: number; limit?: number }) => {
+    const response = await api.get('/user-stats/leaderboard', { params });
     return response.data;
   },
   
-  getLeaderboard: async () => {
-    const response = await api.get('/user-stats/leaderboard');
+  getUserBadges: async (userAddress: string) => {
+    const response = await api.get(`/user-stats/${userAddress}/badges`);
     return response.data;
   },
   
@@ -588,192 +605,114 @@ export const userStatsAPI = {
   },
 };
 
-// Badges API
-export const badgesAPI = {
-  getUserBadges: async (walletAddress: string) => {
-    const response = await api.get(`/badges/user/${walletAddress}`);
-    return response.data;
-  },
-};
-
-// Staking API
-export const stakingAPI = {
-  getStakingInfo: async (walletAddress?: string) => {
-    const user = localStorage.getItem('user');
-    const merchant = localStorage.getItem('merchant');
-    const address = walletAddress || 
-      (user ? JSON.parse(user).walletAddress : '') || 
-      (merchant ? JSON.parse(merchant).walletAddress : '') || 
-      'guest_user';
-    
-    if (!address || address === 'guest_user') {
-      // Return mock data for users without wallet
-      return {
-        success: true,
-        data: {
-          stakes: [],
-          totalStaked: 0,
-          totalRewards: 0
-        }
-      };
-    }
-    
-    const response = await api.get(`/staking/user/${address}`);
-    return response.data;
-  },
-  
-  list: async (params?: {
-    userAddress?: string;
-    page?: number;
-    limit?: number;
-  }) => {
-    const response = await api.get('/staking', { params });
-    return response.data;
-  },
-  
-  stake: async (data: {
+// Auctions API
+export const auctionsAPI = {
+  create: async (data: {
     couponId: string;
-    walletAddress: string;
+    startingPrice: number;
+    reservePrice?: number;
+    duration: number;
   }) => {
-    const response = await api.post('/staking/stake', data);
+    const response = await api.post('/auctions/create', data);
     return response.data;
   },
   
-  unstake: async (data: {
-    couponId: string;
-    walletAddress: string;
-  }) => {
-    const response = await api.post('/staking/unstake', data);
+  placeBid: async (auctionId: string, data: { bidAmount: number; bidderAddress: string }) => {
+    const response = await api.post(`/auctions/${auctionId}/bid`, data);
     return response.data;
   },
   
-  claimRewards: async (data: {
-    walletAddress: string;
-  }) => {
-    const response = await api.post('/staking/claim-rewards', data);
-    return response.data;
-  },
-};
-
-
-
-// Redemption Tickets API
-export const redemptionTicketsAPI = {
-  generate: async (data: {
-    couponId: string;
-    walletAddress: string;
-    latitude?: number;
-    longitude?: number;
-  }) => {
-    const response = await api.post('/redemption-tickets/generate', data);
+  settle: async (auctionId: string, data: { settlerAddress: string }) => {
+    const response = await api.post(`/auctions/${auctionId}/settle`, data);
     return response.data;
   },
   
-  verifyAndRedeem: async (data: {
-    ticketId: string;
-    ticketHash: string;
-    walletAddress: string;
-    latitude?: number;
-    longitude?: number;
-  }) => {
-    const response = await api.post('/redemption-tickets/verify-and-redeem', data);
+  list: async (params?: { status?: string; page?: number; limit?: number }) => {
+    const response = await api.get('/auctions', { params });
     return response.data;
   },
   
-  cancel: async (ticketId: string, data: {
-    walletAddress: string;
-  }) => {
-    const response = await api.post(`/redemption-tickets/${ticketId}/cancel`, data);
-    return response.data;
-  },
-  
-  getUserTickets: async (userAddress: string, params?: {
-    status?: string;
-  }) => {
-    const response = await api.get(`/redemption-tickets/user/${userAddress}`, { params });
-    return response.data;
-  },
-  
-  getMerchantTickets: async (merchantAddress: string, params?: {
-    status?: string;
-  }) => {
-    const response = await api.get(`/redemption-tickets/merchant/${merchantAddress}`, { params });
-    return response.data;
-  },
-};
-
-// Social API
-export const socialAPI = {
-  trackShare: async (data: {
-    itemId: string;
-    itemType: string;
-    platform: string;
-    walletAddress: string;
-  }) => {
-    const response = await api.post('/social/share', data);
-    return response.data;
-  },
-  
-  trackView: async (data: {
-    itemId: string;
-    itemType: string;
-  }) => {
-    const response = await api.post('/social/view', data);
-    return response.data;
-  },
-  
-  getTrending: async (params?: {
-    category?: string;
-    timeframe?: string;
-    limit?: number;
-  }) => {
-    const response = await api.get('/social/trending', { params });
-    return response.data;
-  },
-  
-  getPopular: async (params?: {
-    category?: string;
-    limit?: number;
-  }) => {
-    const response = await api.get('/social/popular', { params });
-    return response.data;
-  },
-  
-  rate: async (data: {
-    couponId: string;
-    rating: number;
-    review?: string;
-    walletAddress: string;
-  }) => {
-    const response = await api.post('/social/rate', data);
-    return response.data;
-  },
-  
-  getFeed: async (params?: {
-    category?: string;
-    limit?: number;
-  }) => {
-    const response = await api.get('/social/feed', { params });
+  getById: async (auctionId: string) => {
+    const response = await api.get(`/auctions/${auctionId}`);
     return response.data;
   },
 };
 
 // Merchant Dashboard API
 export const merchantDashboardAPI = {
-  getAnalytics: async (merchantAddress: string, params?: {
-    startDate?: string;
-    endDate?: string;
-  }) => {
+  getAnalytics: async (merchantAddress: string, params?: { startDate?: string; endDate?: string }) => {
     const response = await api.get(`/merchant-dashboard/${merchantAddress}/analytics`, { params });
     return response.data;
   },
   
-  getRecentActivity: async (merchantAddress: string, params?: {
-    limit?: number;
-  }) => {
+  getRecentActivity: async (merchantAddress: string, params?: { limit?: number }) => {
     const response = await api.get(`/merchant-dashboard/${merchantAddress}/recent-activity`, { params });
     return response.data;
   },
 };
+
+
+
+// Badges API
+export const badgesAPI = {
+  getTypes: async () => {
+    const response = await api.get('/badges/types');
+    return response.data;
+  },
+  
+  mint: async (data: { userAddress: string; badgeType: string }) => {
+    const response = await api.post('/badges/mint', data);
+    return response.data;
+  },
+  
+  autoAward: async (data: { userAddress: string }) => {
+    const response = await api.post('/badges/auto-award', data);
+    return response.data;
+  },
+  
+  getUserBadges: async (userAddress?: string) => {
+    const endpoint = userAddress ? `/badges/user/${userAddress}` : '/badges/user';
+    const response = await api.get(endpoint);
+    return response.data;
+  },
+  
+  checkEligibility: async (userAddress: string) => {
+    const response = await api.get(`/badges/check-eligibility/${userAddress}`);
+    return response.data;
+  },
+};
+
+// Staking API
+export const stakingAPI = {
+  getPool: async () => {
+    const response = await api.get('/staking/pool');
+    return response.data;
+  },
+  
+  stake: async (data: { couponId: string; userAddress: string; amount: number }) => {
+    const response = await api.post('/staking/stake', data);
+    return response.data;
+  },
+  
+  claimRewards: async (data: { userAddress: string; couponId?: string }) => {
+    const response = await api.post('/staking/claim', data);
+    return response.data;
+  },
+  
+  getUserStakes: async (userAddress: string) => {
+    if (!userAddress) {
+      throw new Error('User address is required');
+    }
+    const response = await api.get(`/staking/user/${userAddress}`);
+    return response.data;
+  },
+  
+  getCouponStake: async (couponId: string) => {
+    const response = await api.get(`/staking/coupon/${couponId}`);
+    return response.data;
+  },
+};
+
+
 
 export default api;

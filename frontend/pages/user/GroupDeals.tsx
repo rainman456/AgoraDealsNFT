@@ -99,7 +99,7 @@ export default function GroupDeals() {
     }
 
     try {
-      await groupDealsAPI.join(dealId, { quantity: 1, walletAddress: user.walletAddress });
+      await groupDealsAPI.join(dealId, { userAddress: user.walletAddress });
       setJoinedDeals(prev => new Set(prev).add(dealId));
       loadDeals();
 
@@ -242,7 +242,11 @@ export default function GroupDeals() {
                 <div className="p-6">
                   <div className="mb-4">
                     <h3 className="text-xl font-bold mb-1">{deal.title}</h3>
-                    <p className="text-sm text-foreground/60 mb-2">{deal.merchant}</p>
+                    <p className="text-sm text-foreground/60 mb-2">
+                      {typeof deal.merchant === 'string' 
+                        ? deal.merchant 
+                        : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant')}
+                    </p>
                     <p className="text-sm text-foreground/70 line-clamp-2">{deal.description}</p>
                   </div>
 

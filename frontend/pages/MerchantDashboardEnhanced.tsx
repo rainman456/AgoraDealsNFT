@@ -38,101 +38,28 @@ interface RecentActivity {
   amount?: number;
 }
 
-const mockDailyStats: DailyStats[] = [
-  { date: '2024-01-01', coupons: 45, redemptions: 32, revenue: 1250, tickets: 28 },
-  { date: '2024-01-02', coupons: 52, redemptions: 38, revenue: 1480, tickets: 35 },
-  { date: '2024-01-03', coupons: 48, redemptions: 35, revenue: 1320, tickets: 31 },
-  { date: '2024-01-04', coupons: 61, redemptions: 42, revenue: 1680, tickets: 39 },
-  { date: '2024-01-05', coupons: 58, redemptions: 45, revenue: 1750, tickets: 42 },
-  { date: '2024-01-06', coupons: 67, redemptions: 51, revenue: 1920, tickets: 48 },
-  { date: '2024-01-07', coupons: 72, redemptions: 58, revenue: 2150, tickets: 54 }
-];
+// Mock data removed - all data now loaded from database
+const mockDailyStats: DailyStats[] = [];
 
-const mockPromotions: Promotion[] = [
-  {
-    id: '1',
-    title: '50% Off Spa Package',
-    category: 'Wellness',
-    discount: 50,
-    totalMinted: 156,
-    totalRedeemed: 98,
-    revenue: 4850,
-    rating: 4.8,
-    status: 'active'
-  },
-  {
-    id: '2',
-    title: '70% Off Dinner for Two',
-    category: 'Dining',
-    discount: 70,
-    totalMinted: 234,
-    totalRedeemed: 187,
-    revenue: 7320,
-    rating: 4.9,
-    status: 'active'
-  },
-  {
-    id: '3',
-    title: '30% Off Gym Membership',
-    category: 'Fitness',
-    discount: 30,
-    totalMinted: 89,
-    totalRedeemed: 45,
-    revenue: 2340,
-    rating: 4.5,
-    status: 'paused'
-  }
-];
+// Mock data removed - all data now loaded from database
+const mockPromotions: Promotion[] = [];
 
-const mockRecentActivity: RecentActivity[] = [
-  {
-    id: '1',
-    type: 'mint',
-    user: '0x1234...5678',
-    promotion: '50% Off Spa Package',
-    timestamp: new Date(Date.now() - 300000).toISOString(),
-    amount: 25
-  },
-  {
-    id: '2',
-    type: 'redeem',
-    user: '0xabcd...efgh',
-    promotion: '70% Off Dinner for Two',
-    timestamp: new Date(Date.now() - 600000).toISOString()
-  },
-  {
-    id: '3',
-    type: 'review',
-    user: '0x9876...5432',
-    promotion: '50% Off Spa Package',
-    timestamp: new Date(Date.now() - 900000).toISOString()
-  },
-  {
-    id: '4',
-    type: 'share',
-    user: '0xdef0...1234',
-    promotion: '70% Off Dinner for Two',
-    timestamp: new Date(Date.now() - 1200000).toISOString()
-  }
-];
+// Mock data removed - all data now loaded from database
+const mockRecentActivity: RecentActivity[] = [];
 
+// Mock data removed - all data now loaded from database
 const mockAnalytics = {
   overview: {
-    totalPromotions: 12,
-    activePromotions: 8,
-    totalCoupons: 1247,
-    totalRedemptions: 856,
-    redemptionRate: 68.6,
-    totalRevenue: 45230,
-    auctionRevenue: 8450,
-    groupDealRevenue: 12300
+    totalPromotions: 0,
+    activePromotions: 0,
+    totalCoupons: 0,
+    totalRedemptions: 0,
+    redemptionRate: 0,
+    totalRevenue: 0,
+    auctionRevenue: 0,
+    groupDealRevenue: 0
   },
-  categoryBreakdown: {
-    Wellness: { promotions: 3, coupons: 340, redemptions: 245 },
-    Dining: { promotions: 4, coupons: 520, redemptions: 398 },
-    Fitness: { promotions: 2, coupons: 187, redemptions: 98 },
-    Entertainment: { promotions: 3, coupons: 200, redemptions: 115 }
-  }
+  categoryBreakdown: {}
 };
 
 export default function MerchantDashboardEnhanced() {

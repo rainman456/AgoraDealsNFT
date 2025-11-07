@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { marketplaceAPI, auctionsAPI } from "@/lib/api";
+import { listingsAPI, auctionsAPI } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -48,8 +48,14 @@ export default function Marketplace() {
     try {
       setLoading(true);
       const [dealsResponse, auctionsResponse] = await Promise.all([
-        marketplaceAPI.list({ limit: 50 }).catch(() => ({ success: false, data: [] })),
-        auctionsAPI.list({ status: 'active', limit: 20 }).catch(() => ({ success: false, data: [] }))
+        listingsAPI.list({ limit: 50 }).catch((err) => {
+          console.error('Listings API error:', err?.response?.status || err.message);
+          return { success: false, data: [] };
+        }),
+        auctionsAPI.list({ status: 'active', limit: 20 }).catch((err) => {
+          console.error('Auctions API error:', err?.response?.status || err.message);
+          return { success: false, data: [] };
+        })
       ]);
       
       if (dealsResponse.success) {
@@ -69,6 +75,7 @@ export default function Marketplace() {
       console.error('Failed to load marketplace data:', error);
       setDeals([]);
       setAuctions([]);
+      toast.error('Unable to load marketplace data. Backend service may be unavailable.');
     } finally {
       setLoading(false);
     }
@@ -161,7 +168,11 @@ export default function Marketplace() {
                       {/* Verified merchant badge */}
                       <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-white dark:bg-gray-900 px-2.5 py-1.5 rounded-lg shadow-lg">
                         <Verified className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-xs font-medium text-foreground">{deal.merchant}</span>
+                        <span className="text-xs font-medium text-foreground">
+                          {typeof deal.merchant === 'string' 
+                            ? deal.merchant 
+                            : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant')}
+                        </span>
                       </div>
                     </div>
 
@@ -297,7 +308,11 @@ export default function Marketplace() {
                   {/* Content */}
                   <div className="p-4">
                     <h3 className="font-semibold mb-2 line-clamp-2">{auction.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-3">{auction.merchant}</p>
+                    <p className="text-muted-foreground text-sm mb-3">
+                      {typeof auction.merchant === 'string' 
+                        ? auction.merchant 
+                        : (auction.merchant?.businessName || auction.merchant?.name || 'Merchant')}
+                    </p>
 
                     {/* Bid Info */}
                     <div className="mb-4 space-y-2">

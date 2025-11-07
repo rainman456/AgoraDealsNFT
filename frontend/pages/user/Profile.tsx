@@ -54,105 +54,11 @@ export default function Profile() {
     reputation: 4.8,
   };
 
-  const achievements: Achievement[] = [
-    {
-      id: "1",
-      title: "Early Adopter",
-      description: "Joined during launch week",
-      icon: Sparkles,
-      earned: true,
-      earnedDate: "2024-01-15",
-      rarity: "legendary",
-    },
-    {
-      id: "2",
-      title: "Deal Hunter",
-      description: "Claimed 10 deals",
-      icon: Target,
-      earned: true,
-      earnedDate: "2024-02-01",
-      rarity: "common",
-    },
-    {
-      id: "3",
-      title: "Savings Master",
-      description: "Saved over $1000",
-      icon: Trophy,
-      earned: true,
-      earnedDate: "2024-02-20",
-      rarity: "epic",
-    },
-    {
-      id: "4",
-      title: "Social Butterfly",
-      description: "Shared 5 deals with friends",
-      icon: Users,
-      earned: true,
-      earnedDate: "2024-01-28",
-      rarity: "rare",
-    },
-    {
-      id: "5",
-      title: "Week Warrior",
-      description: "7-day streak",
-      icon: Flame,
-      earned: true,
-      earnedDate: "2024-03-01",
-      rarity: "rare",
-    },
-    {
-      id: "6",
-      title: "VIP Member",
-      description: "Reach level 10",
-      icon: Crown,
-      earned: true,
-      earnedDate: "2024-02-15",
-      rarity: "epic",
-    },
-    {
-      id: "7",
-      title: "Speed Demon",
-      description: "Claim a deal within 1 minute of posting",
-      icon: Zap,
-      earned: false,
-      rarity: "legendary",
-    },
-    {
-      id: "8",
-      title: "Generous Gifter",
-      description: "Gift 3 deals to friends",
-      icon: Gift,
-      earned: false,
-      rarity: "rare",
-    },
-  ];
+  // Achievements will be loaded from API
+  const achievements: Achievement[] = [];
 
-  const nftGallery: NFTGalleryItem[] = [
-    {
-      id: "1",
-      image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400",
-      title: "50% Off Gourmet Burger",
-      merchant: "The Burger Joint",
-      discount: 50,
-      claimed: "2024-02-28",
-    },
-    {
-      id: "2",
-      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400",
-      title: "30% Off Flight to Paris",
-      merchant: "SkyHigh Airlines",
-      discount: 30,
-      claimed: "2024-02-25",
-    },
-    {
-      id: "3",
-      image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400",
-      title: "Buy 1 Get 1 Free Shoes",
-      merchant: "Urban Footwear",
-      discount: 50,
-      claimed: "2024-02-20",
-    },
-  ];
+  // NFT Gallery will be loaded from API
+  const nftGallery: NFTGalleryItem[] = [];
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -377,7 +283,9 @@ export default function Profile() {
 
                     {/* Merchant */}
                     <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-card/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold">
-                      {nft.merchant}
+                      {typeof nft.merchant === 'string' 
+                        ? nft.merchant 
+                        : (nft.merchant?.businessName || nft.merchant?.name || 'Merchant')}
                     </div>
 
                     {/* Favorite Icon */}

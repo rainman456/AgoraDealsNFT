@@ -9,38 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { merchantDashboardAPI, promotionsAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 
-const mockPromotions = [
-  {
-    id: '1',
-    title: 'Gourmet Burger Combo',
-    status: 'active',
-    sold: 67,
-    total: 100,
-    revenue: 837.50,
-    redemptions: 45,
-    isActive: true,
-  },
-  {
-    id: '2',
-    title: 'Spa Day Package',
-    status: 'active',
-    sold: 89,
-    total: 150,
-    revenue: 6408,
-    redemptions: 72,
-    isActive: true,
-  },
-  {
-    id: '3',
-    title: 'Coffee & Pastry Deal',
-    status: 'paused',
-    sold: 156,
-    total: 200,
-    revenue: 936,
-    redemptions: 143,
-    isActive: false,
-  },
-];
+// Mock data removed - all data now loaded from database
 
 export default function MerchantDashboard() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -54,25 +23,28 @@ export default function MerchantDashboard() {
 
   useEffect(() => {
     const loadDashboardData = async () => {
-      if (!merchant?.walletAddress) {
+      if (!merchant?._id) {
         setLoading(false);
+        setShowOnboarding(true);
         return;
       }
 
       try {
         setLoading(true);
         
-        // Load analytics
-        const analyticsResponse = await merchantDashboardAPI.getAnalytics(
-          merchant.walletAddress,
-          {
-            startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-            endDate: new Date().toISOString(),
+        // Load analytics only if walletAddress exists
+        if (merchant.walletAddress) {
+          const analyticsResponse = await merchantDashboardAPI.getAnalytics(
+            merchant.walletAddress,
+            {
+              startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+              endDate: new Date().toISOString(),
+            }
+          ).catch(() => ({ success: false, data: null }));
+          
+          if (analyticsResponse.success) {
+            setAnalytics(analyticsResponse.data);
           }
-        );
-        
-        if (analyticsResponse.success) {
-          setAnalytics(analyticsResponse.data);
         }
 
         // Load promotions
@@ -80,16 +52,17 @@ export default function MerchantDashboard() {
           merchantId: merchant._id,
           page: 1,
           limit: 50,
-        });
+        }).catch(() => ({ success: false, data: [] }));
         
         if (promotionsResponse.success) {
-          setPromotions(promotionsResponse.data);
+          const promotionsData = promotionsResponse.data?.promotions || promotionsResponse.data || [];
+          setPromotions(Array.isArray(promotionsData) ? promotionsData : []);
         } else {
-          setPromotions(mockPromotions);
+          setPromotions([]);
         }
       } catch (error) {
         console.error('Failed to load dashboard data:', error);
-        setPromotions(mockPromotions);
+        setPromotions([]);
       } finally {
         setLoading(false);
       }
@@ -173,6 +146,17 @@ export default function MerchantDashboard() {
       setActionLoading(null);
     }
   };
+
+  // If no merchant registered, show onboarding without back button
+  if (!merchant?._id) {
+    return (
+      <main className="min-h-screen bg-background">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-12">
+          <MerchantOnboarding />
+        </div>
+      </main>
+    );
+  }
 
   if (showOnboarding) {
     return (
@@ -322,13 +306,8 @@ export default function MerchantDashboard() {
                   Recent Redemptions
                 </h3>
                 <div className="space-y-3">
-                  {[
-                    { name: 'Sarah M.', deal: 'Gourmet Burger Combo', amount: 12.50, time: '2h ago' },
-                    { name: 'Mike R.', deal: 'Spa Day Package', amount: 72.00, time: '3h ago' },
-                    { name: 'Emma L.', deal: 'Coffee & Pastry', amount: 6.00, time: '5h ago' },
-                    { name: 'David K.', deal: 'Gourmet Burger Combo', amount: 12.50, time: '6h ago' },
-                    { name: 'Lisa P.', deal: 'Spa Day Package', amount: 72.00, time: '8h ago' },
-                  ].map((redemption, i) => (
+                  {/* Recent redemptions would be loaded from API */}
+                  {[].map((redemption: any, i: number) => (
                     <div key={i} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm">
@@ -385,7 +364,7 @@ export default function MerchantDashboard() {
               )}
             </div>
 
-            {(promotions.length > 0 ? promotions : mockPromotions).map((promo) => (
+            {promotions.map((promo) => (
               <Card key={promo.id} className="border-2 hover:border-primary/50 transition-all">
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-start justify-between mb-4 gap-4">
@@ -457,7 +436,7 @@ export default function MerchantDashboard() {
               </Card>
             ))}
 
-            {promotions.length === 0 && mockPromotions.length === 0 && (
+            {promotions.length === 0 && (
               <Card className="p-8 md:p-12 text-center bg-gradient-to-br from-card to-muted/20">
                 <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 bg-gradient-to-br from-muted to-muted/50 rounded-full flex items-center justify-center">
                   <Gift className="w-10 h-10 md:w-12 md:h-12 text-muted-foreground" />

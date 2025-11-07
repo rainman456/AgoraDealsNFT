@@ -118,17 +118,28 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4">
-              <Link to={isAuthenticated ? "/deals" : "/user/login"} className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 font-bold shadow-lg hover:shadow-xl transition-all text-base md:text-lg px-8 py-6 rounded-2xl">
-                  {isAuthenticated ? "Browse Deals" : "Start Saving Now"}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-              <Link to="/merchant/login" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto font-bold text-base md:text-lg px-8 py-6 rounded-2xl border-2 hover:bg-primary/5">
-                  For Merchants
-                </Button>
-              </Link>
+              {!isAuthenticated ? (
+                <>
+                  <Link to="/user/login" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 font-bold shadow-lg hover:shadow-xl transition-all text-base md:text-lg px-8 py-6 rounded-2xl">
+                      Start Saving Now
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </Link>
+                  <Link to="/merchant/login" className="w-full sm:w-auto">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto font-bold text-base md:text-lg px-8 py-6 rounded-2xl border-2 hover:bg-primary/5">
+                      For Merchants
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <Link to="/deals" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 font-bold shadow-lg hover:shadow-xl transition-all text-base md:text-lg px-8 py-6 rounded-2xl">
+                    Browse Deals
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+              )}
             </div>
 
             {/* Trust Badges */}

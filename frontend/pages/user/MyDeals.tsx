@@ -71,10 +71,20 @@ export default function MyDeals() {
   const loadUserData = async () => {
     try {
       setLoading(true);
-      const [couponsResponse, statsResponse] = await Promise.all([
-        couponsAPI.list({ status: 'active', limit: 50 }),
-        userStatsAPI.get()
-      ]);
+      const walletAddress = localStorage.getItem('walletAddress') || '';
+      
+      // Load coupons
+      const couponsResponse = await couponsAPI.list({ status: 'active', limit: 50 });
+      
+      // Load user stats only if wallet address exists
+      let statsResponse = null;
+      if (walletAddress && walletAddress.trim()) {
+        try {
+          statsResponse = await userStatsAPI.getUserStats(walletAddress.trim());
+        } catch (statsError) {
+          console.warn('Failed to load user stats:', statsError);
+        }
+      }
       
       if (couponsResponse.success && Array.isArray(couponsResponse.data)) {
         setOwnedDeals(couponsResponse.data);
@@ -82,7 +92,7 @@ export default function MyDeals() {
         setOwnedDeals([]);
       }
       
-      if (statsResponse.success && statsResponse.data) {
+      if (statsResponse?.success && statsResponse?.data) {
         setUserStats(statsResponse.data);
       }
       // Load transactions if available
@@ -432,7 +442,9 @@ export default function MyDeals() {
 
                         {/* Merchant Badge */}
                         <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-card/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold">
-                          {deal.merchant}
+                          {typeof deal.merchant === 'string' 
+                            ? deal.merchant 
+                            : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant')}
                         </div>
                       </div>
 
@@ -495,7 +507,11 @@ export default function MyDeals() {
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <h3 className="text-xl font-bold mb-1">{deal.title}</h3>
-                              <p className="text-sm text-foreground/60">{deal.merchant}</p>
+                              <p className="text-sm text-foreground/60">
+                                {typeof deal.merchant === 'string' 
+                                  ? deal.merchant 
+                                  : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant')}
+                              </p>
                             </div>
                             <div className={`${expiryStatus.bg} ${expiryStatus.color} px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1`}>
                               <Clock className="w-3 h-3" />
@@ -775,14 +791,8 @@ export default function MyDeals() {
                 <Card className="p-6">
                   <h3 className="text-xl font-bold mb-4">Achievements</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {[
-                      { icon: "🎯", name: "First Deal", desc: "Claimed your first deal" },
-                      { icon: "🔥", name: "Hot Streak", desc: "5 deals in a week" },
-                      { icon: "💎", name: "Big Saver", desc: "Saved over $200" },
-                      { icon: "🌟", name: "Early Adopter", desc: "Joined in beta" },
-                      { icon: "🤝", name: "Social Butterfly", desc: "Referred 3 friends" },
-                      { icon: "⚡", name: "Speed Demon", desc: "Redeemed within 1 hour" },
-                    ].map((achievement, i) => (
+                    {/* Achievements would be loaded from API */}
+                    {[].map((achievement: any, i: number) => (
                       <div key={i} className="p-4 bg-muted rounded-lg text-center hover:bg-primary/10 transition-colors cursor-pointer">
                         <div className="text-3xl mb-2">{achievement.icon}</div>
                         <p className="font-semibold text-sm mb-1">{achievement.name}</p>

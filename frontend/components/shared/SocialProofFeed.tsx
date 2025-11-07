@@ -12,71 +12,11 @@ interface Activity {
   dealType: string;
 }
 
-const mockActivities: Activity[] = [
-  {
-    id: '1',
-    userName: 'Sarah Chen',
-    userAvatar: '👩‍💼',
-    merchantName: 'Bella Italia',
-    merchantLogo: '🍝',
-    savings: 50,
-    timeAgo: '2m ago',
-    dealType: 'Italian dinner'
-  },
-  {
-    id: '2',
-    userName: 'Mike Johnson',
-    userAvatar: '👨‍💻',
-    merchantName: 'Zen Spa',
-    merchantLogo: '💆',
-    savings: 75,
-    timeAgo: '5m ago',
-    dealType: 'massage package'
-  },
-  {
-    id: '3',
-    userName: 'Emma Wilson',
-    userAvatar: '👩‍🎨',
-    merchantName: 'FitZone Gym',
-    merchantLogo: '💪',
-    savings: 120,
-    timeAgo: '8m ago',
-    dealType: 'annual membership'
-  },
-  {
-    id: '4',
-    userName: 'David Lee',
-    userAvatar: '👨‍🔬',
-    merchantName: 'Coffee Haven',
-    merchantLogo: '☕',
-    savings: 15,
-    timeAgo: '12m ago',
-    dealType: 'coffee subscription'
-  },
-  {
-    id: '5',
-    userName: 'Lisa Park',
-    userAvatar: '👩‍🏫',
-    merchantName: 'Sushi Master',
-    merchantLogo: '🍣',
-    savings: 45,
-    timeAgo: '15m ago',
-    dealType: 'omakase dinner'
-  },
-  {
-    id: '6',
-    userName: 'James Brown',
-    userAvatar: '👨‍🎤',
-    merchantName: 'Urban Cuts',
-    merchantLogo: '✂️',
-    savings: 30,
-    timeAgo: '18m ago',
-    dealType: 'haircut & styling'
-  }
-];
+// Mock data removed - component should load real activity data from API
+const mockActivities: Activity[] = [];
 
 export function SocialProofFeed() {
-  const [activities, setActivities] = useState<Activity[]>(mockActivities);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {

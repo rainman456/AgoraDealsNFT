@@ -7,6 +7,11 @@ import { Auction } from '../models/auction';
 import { GroupDeal } from '../models/group-deal';
 import { RedemptionTicket } from '../models/redemption-ticket';
 import { NFTMetadata } from '../models/nft-metadata';
+import { Comment } from '../models/comment';
+import { Rating } from '../models/rating';
+import { Listing } from '../models/listing';
+import { ExternalDeal, DealSource } from '../models/external-deal';
+import { UserReputation, BadgeNFT, BadgeType, ReputationTier } from '../models/badge';
 import { getDatabaseConfig } from '../config/database';
 import { walletService } from '../services/wallet.service';
 import { getSolanaConfig } from '../config/solana';
@@ -34,6 +39,12 @@ async function seedDatabase() {
     await GroupDeal.deleteMany({});
     await RedemptionTicket.deleteMany({});
     await NFTMetadata.deleteMany({});
+    await Comment.deleteMany({});
+    await Rating.deleteMany({});
+    await Listing.deleteMany({});
+    await ExternalDeal.deleteMany({});
+    await UserReputation.deleteMany({});
+    await BadgeNFT.deleteMany({});
     logger.info('Cleared existing data');
 
     // Initialize Solana config with better error handling
@@ -98,16 +109,11 @@ async function seedDatabase() {
     // Create test users
     logger.info('Creating test users...');
     const users = [];
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 25; i++) {
       const walletData = walletService.createWalletData();
       
-      // Airdrop SOL (with retry)
-      try {
-        await walletService.airdropSol(new PublicKey(walletData.publicKey), 2);
-        await new Promise(resolve => setTimeout(resolve, 500));
-      } catch (e: any) {
-        logger.warn(`Airdrop failed for user ${i}: ${e.message}`);
-      }
+      // Skip airdrop to avoid rate limits
+      // Airdrops are not needed for database seeding
 
       const user = new User({
         walletAddress: walletData.publicKey,
@@ -138,33 +144,73 @@ async function seedDatabase() {
     const merchantsData = [
       {
         name: 'Pizza Paradise',
+        email: 'contact@pizzaparadise.com',
         category: 'Food & Dining',
         description: 'Best pizza in town with authentic Italian recipes',
         location: { latitude: 40.7128, longitude: -74.0060, address: '123 Main St, New York, NY' },
       },
       {
         name: 'Fashion Hub',
+        email: 'info@fashionhub.com',
         category: 'Shopping',
         description: 'Trendy clothing and accessories for all ages',
         location: { latitude: 34.0522, longitude: -118.2437, address: '456 Fashion Ave, Los Angeles, CA' },
       },
       {
         name: 'Tech Store',
+        email: 'support@techstore.com',
         category: 'Electronics',
         description: 'Latest gadgets and electronics at great prices',
         location: { latitude: 37.7749, longitude: -122.4194, address: '789 Tech Blvd, San Francisco, CA' },
       },
       {
         name: 'Spa Retreat',
+        email: 'bookings@sparetreat.com',
         category: 'Wellness',
         description: 'Relaxation and rejuvenation services',
         location: { latitude: 25.7617, longitude: -80.1918, address: '321 Wellness Way, Miami, FL' },
       },
       {
         name: 'Adventure Tours',
+        email: 'tours@adventuretours.com',
         category: 'Travel',
         description: 'Exciting travel packages and guided tours',
         location: { latitude: 36.1699, longitude: -115.1398, address: '654 Adventure Rd, Las Vegas, NV' },
+      },
+      {
+        name: 'Coffee Corner',
+        email: 'hello@coffeecorner.com',
+        category: 'Food & Dining',
+        description: 'Artisan coffee and fresh pastries daily',
+        location: { latitude: 41.8781, longitude: -87.6298, address: '100 Coffee St, Chicago, IL' },
+      },
+      {
+        name: 'Fitness First',
+        email: 'join@fitnessfirst.com',
+        category: 'Wellness',
+        description: 'Premium gym with personal training',
+        location: { latitude: 42.3601, longitude: -71.0589, address: '200 Gym Ave, Boston, MA' },
+      },
+      {
+        name: 'Book Haven',
+        email: 'books@bookhaven.com',
+        category: 'Shopping',
+        description: 'Independent bookstore with rare finds',
+        location: { latitude: 47.6062, longitude: -122.3321, address: '300 Book Ln, Seattle, WA' },
+      },
+      {
+        name: 'Sushi Master',
+        email: 'reservations@sushimaster.com',
+        category: 'Food & Dining',
+        description: 'Authentic Japanese cuisine and sushi bar',
+        location: { latitude: 33.4484, longitude: -112.0740, address: '400 Sushi Rd, Phoenix, AZ' },
+      },
+      {
+        name: 'Game Zone',
+        email: 'play@gamezone.com',
+        category: 'Electronics',
+        description: 'Gaming consoles, accessories, and collectibles',
+        location: { latitude: 39.7392, longitude: -104.9903, address: '500 Game St, Denver, CO' },
       },
     ];
 
@@ -173,59 +219,29 @@ async function seedDatabase() {
       const walletData = walletService.createWalletData();
       const publicKey = new PublicKey(walletData.publicKey);
 
-      // Airdrop SOL
-      try {
-        await walletService.airdropSol(publicKey, 5);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      } catch (e: any) {
-        logger.warn(`Airdrop failed for merchant ${merchantData.name}: ${e.message}`);
-      }
+      // Skip airdrop to avoid rate limits
+      // Airdrops are not needed for database seeding
 
-      // Register merchant on-chain
-      const merchantKeypair = walletService.restoreKeypair({
-        encryptedPrivateKey: walletData.encryptedPrivateKey,
-        iv: walletData.iv,
-        authTag: walletData.authTag,
-      });
-
+      // Skip on-chain registration for faster seeding
       const [merchantPDA] = config.getMerchantPDA(publicKey);
 
-      try {
-        const tx = await config.program.methods
-          .registerMerchant(
-            merchantData.name,
-            merchantData.category,
-            merchantData.location.latitude,
-            merchantData.location.longitude
-          )
-          .accounts({
-            merchant: merchantPDA,
-            marketplace: marketplacePDA,
-            authority: publicKey,
-            systemProgram: SystemProgram.programId,
-          } as any)
-          .signers([merchantKeypair])
-          .rpc();
-
-        logger.info(`Merchant registered on-chain: ${merchantData.name} (${tx})`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      } catch (error: any) {
-        logger.error(`Failed to register merchant ${merchantData.name}:`, error.message);
-        continue;
-      }
-
       const merchant = new Merchant({
+        email: merchantData.email,
         walletAddress: walletData.publicKey,
         encryptedPrivateKey: walletData.encryptedPrivateKey,
         iv: walletData.iv,
         authTag: walletData.authTag,
         authority: walletData.publicKey,
         onChainAddress: merchantPDA.toString(),
+        name: merchantData.name,
+        category: merchantData.category,
+        description: merchantData.description,
+        location: merchantData.location,
         totalCouponsCreated: 0,
         totalCouponsRedeemed: Math.floor(Math.random() * 50),
         averageRating: 3.5 + Math.random() * 1.5,
         totalRatings: Math.floor(Math.random() * 100),
-        ...merchantData,
+        isActive: true,
       });
 
       await merchant.save();
@@ -239,12 +255,6 @@ async function seedDatabase() {
     const allCoupons = [];
 
     for (const merchant of merchants) {
-      const merchantKeypair = walletService.restoreKeypair({
-        encryptedPrivateKey: merchant.encryptedPrivateKey,
-        iv: merchant.iv,
-        authTag: merchant.authTag,
-      });
-
       const merchantPublicKey = new PublicKey(merchant.walletAddress);
       const [merchantPDA] = config.getMerchantPDA(merchantPublicKey);
       
@@ -252,15 +262,6 @@ async function seedDatabase() {
       const numPromotions = 2;
       
       for (let p = 0; p < numPromotions; p++) {
-        // Fetch merchant account EACH TIME to get current totalCouponsCreated
-        let merchantAccount;
-        try {
-          merchantAccount = await config.program.account.merchant.fetch(merchantPDA);
-        } catch (error: any) {
-          logger.error(`Failed to fetch merchant account for ${merchant.name}:`, error.message);
-          break;
-        }
-
         const promotionData = {
           title: `${merchant.name} Special Deal ${p + 1}`,
           discountPercentage: 15 + Math.floor(Math.random() * 35),
@@ -271,41 +272,10 @@ async function seedDatabase() {
           price: 0.05 + Math.random() * 0.45,
         };
 
-        // Use current totalCouponsCreated from freshly fetched account
-        const [promotionPDA] = config.getPromotionPDA(merchantPDA, merchantAccount.totalCouponsCreated.toNumber());
-
-        // Check if promotion already exists on-chain
-        try {
-          const existingPromotion = await config.program.account.promotion.fetch(promotionPDA);
-          logger.info(`Promotion already exists on-chain for ${merchant.name}, skipping...`);
-          continue;
-        } catch (error: any) {
-          // Account doesn't exist, proceed with creation
-        }
+        // Generate promotion PDA
+        const [promotionPDA] = config.getPromotionPDA(merchantPDA, p);
 
         try {
-          const tx = await config.program.methods
-            .createPromotion(
-              promotionData.discountPercentage,
-              promotionData.maxSupply,
-              new BN(promotionData.expiryTimestamp),
-              promotionData.category,
-              promotionData.description,
-              new BN(Math.floor(promotionData.price * 1e9))
-            )
-            .accounts({
-              promotion: promotionPDA,
-              merchant: merchantPDA,
-              authority: merchantPublicKey,
-              systemProgram: SystemProgram.programId,
-            } as any)
-            .signers([merchantKeypair])
-            .rpc();
-
-          logger.info(`Promotion created on-chain for ${merchant.name} (${tx})`);
-          
-          // Wait for transaction confirmation before continuing
-          await new Promise(resolve => setTimeout(resolve, 1500));
 
           const promotion = new Promotion({
             onChainAddress: promotionPDA.toString(),
@@ -359,8 +329,6 @@ async function seedDatabase() {
         } catch (error: any) {
           logger.error(`Failed to create promotion for ${merchant.name}:`, JSON.stringify(error));
         }
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
 
@@ -450,7 +418,7 @@ async function seedDatabase() {
     // Create NFT metadata for coupons
     logger.info('Creating NFT metadata...');
     const nftMetadataList = [];
-    for (let i = 0; i < Math.min(10, allCoupons.length); i++) {
+    for (let i = 0; i < Math.min(allCoupons.length, 50); i++) {
       const coupon = allCoupons[i];
       const merchant = merchants.find(m => m.onChainAddress === coupon.merchant);
       const promotion = promotions.find(p => p.onChainAddress === coupon.promotion);
@@ -530,7 +498,7 @@ async function seedDatabase() {
     // Create redemption tickets
     logger.info('Creating redemption tickets...');
     const redemptionTickets = [];
-    for (let i = 0; i < Math.min(8, allCoupons.length); i++) {
+    for (let i = 0; i < Math.min(allCoupons.length, 30); i++) {
       const coupon = allCoupons[i];
       const user = users[Math.floor(Math.random() * users.length)];
       const merchant = merchants.find(m => m.onChainAddress === coupon.merchant);
@@ -573,6 +541,236 @@ async function seedDatabase() {
       logger.info(`Created redemption ticket for user: ${user.username}`);
     }
 
+    // Create comments for promotions
+    logger.info('Creating comments...');
+    const comments = [];
+    for (let i = 0; i < Math.min(20, promotions.length * 3); i++) {
+      const randomPromotion = promotions[Math.floor(Math.random() * promotions.length)];
+      const randomUser = users[Math.floor(Math.random() * users.length)];
+      const isMerchantReply = Math.random() > 0.7;
+      
+      const comment = new Comment({
+        onChainAddress: `comment_${i}_${Date.now()}`,
+        user: randomUser.walletAddress,
+        promotion: randomPromotion.onChainAddress,
+        content: [
+          'Great deal! Highly recommend.',
+          'Used this coupon yesterday, works perfectly!',
+          'Amazing discount, saved so much money!',
+          'Is this still available?',
+          'Best deal I\'ve found this month.',
+          'Thank you for the feedback! We\'re glad you enjoyed it.',
+          'Limited stock remaining, grab it while you can!',
+          'Does this work with other promotions?',
+        ][Math.floor(Math.random() * 8)],
+        likes: Math.floor(Math.random() * 50),
+        isMerchantReply,
+        parentComment: Math.random() > 0.8 && comments.length > 0 ? comments[Math.floor(Math.random() * comments.length)].onChainAddress : undefined,
+      });
+
+      await comment.save();
+      comments.push(comment);
+      logger.info(`Created comment ${i + 1}`);
+    }
+
+    // Create ratings for promotions
+    logger.info('Creating ratings...');
+    const ratings = [];
+    for (let i = 0; i < Math.min(30, promotions.length * 4); i++) {
+      const randomPromotion = promotions[Math.floor(Math.random() * promotions.length)];
+      const randomUser = users[Math.floor(Math.random() * users.length)];
+      const merchant = merchants.find(m => m.onChainAddress === randomPromotion.merchant);
+      
+      if (!merchant) continue;
+
+      // Check if user already rated this promotion
+      const existingRating = ratings.find(r => r.user === randomUser.walletAddress && r.promotion === randomPromotion.onChainAddress);
+      if (existingRating) continue;
+
+      const rating = new Rating({
+        onChainAddress: `rating_${i}_${Date.now()}`,
+        user: randomUser.walletAddress,
+        promotion: randomPromotion.onChainAddress,
+        merchant: merchant.onChainAddress,
+        stars: Math.floor(Math.random() * 3) + 3, // 3-5 stars
+      });
+
+      await rating.save();
+      ratings.push(rating);
+      logger.info(`Created rating ${i + 1}`);
+    }
+
+    // Create marketplace listings
+    logger.info('Creating marketplace listings...');
+    const listings = [];
+    for (let i = 0; i < Math.min(15, allCoupons.length); i++) {
+      const randomCoupon = allCoupons[Math.floor(Math.random() * allCoupons.length)];
+      
+      // Skip if coupon is redeemed or already listed
+      if (randomCoupon.isRedeemed || randomCoupon.isListed) continue;
+
+      const listing = new Listing({
+        onChainAddress: `listing_${i}_${Date.now()}`,
+        coupon: randomCoupon.onChainAddress,
+        seller: randomCoupon.owner,
+        price: 0.05 + Math.random() * 0.25,
+        isActive: Math.random() > 0.2,
+      });
+
+      await listing.save();
+      listings.push(listing);
+      
+      // Update coupon listing status
+      randomCoupon.isListed = true;
+      randomCoupon.listingPrice = listing.price;
+      await randomCoupon.save();
+      
+      logger.info(`Created listing ${i + 1}`);
+    }
+
+    // Create external deals
+    logger.info('Creating external deals...');
+    const externalDeals = [];
+    const externalDealData = [
+      {
+        source: DealSource.Skyscanner,
+        title: 'Round Trip Flight to Paris',
+        description: 'Amazing deal on flights to Paris with flexible dates',
+        category: 'Travel',
+        originalPrice: 899,
+        discountedPrice: 549,
+        imageUrl: 'https://api.dicebear.com/7.x/shapes/svg?seed=flight1',
+      },
+      {
+        source: DealSource.BookingCom,
+        title: '5-Star Hotel in Dubai',
+        description: 'Luxury accommodation with breakfast included',
+        category: 'Travel',
+        originalPrice: 450,
+        discountedPrice: 299,
+        imageUrl: 'https://api.dicebear.com/7.x/shapes/svg?seed=hotel1',
+      },
+      {
+        source: DealSource.Amazon,
+        title: 'Wireless Noise-Cancelling Headphones',
+        description: 'Premium audio quality with active noise cancellation',
+        category: 'Electronics',
+        originalPrice: 349,
+        discountedPrice: 199,
+        imageUrl: 'https://api.dicebear.com/7.x/shapes/svg?seed=headphones1',
+      },
+      {
+        source: DealSource.Shopify,
+        title: 'Designer Leather Jacket',
+        description: 'Genuine leather with modern fit and style',
+        category: 'Shopping',
+        originalPrice: 599,
+        discountedPrice: 399,
+        imageUrl: 'https://api.dicebear.com/7.x/shapes/svg?seed=jacket1',
+      },
+      {
+        source: DealSource.Custom,
+        title: 'Spa Day Package',
+        description: 'Full day spa treatment with massage and facial',
+        category: 'Wellness',
+        originalPrice: 250,
+        discountedPrice: 149,
+        imageUrl: 'https://api.dicebear.com/7.x/shapes/svg?seed=spa1',
+      },
+    ];
+
+    for (let i = 0; i < externalDealData.length; i++) {
+      const dealData = externalDealData[i];
+      const discountPercentage = Math.round(((dealData.originalPrice - dealData.discountedPrice) / dealData.originalPrice) * 100);
+      
+      const externalDeal = new ExternalDeal({
+        onChainAddress: `external_deal_${i}_${Date.now()}`,
+        oracleAuthority: config.wallet.publicKey.toString(),
+        source: dealData.source,
+        externalId: `ext_${dealData.source}_${i}_${Date.now()}`,
+        title: dealData.title,
+        description: dealData.description,
+        originalPrice: dealData.originalPrice,
+        discountedPrice: dealData.discountedPrice,
+        discountPercentage,
+        category: dealData.category,
+        imageUrl: dealData.imageUrl,
+        affiliateUrl: `https://example.com/deal/${i}`,
+        expiryTimestamp: new Date(Date.now() + (15 + Math.floor(Math.random() * 30)) * 24 * 60 * 60 * 1000),
+        lastUpdated: new Date(),
+        isVerified: Math.random() > 0.3,
+        verificationCount: Math.floor(Math.random() * 10),
+      });
+
+      await externalDeal.save();
+      externalDeals.push(externalDeal);
+      logger.info(`Created external deal: ${externalDeal.title}`);
+    }
+
+    // Create user reputations
+    logger.info('Creating user reputations...');
+    const userReputations = [];
+    for (const user of users) {
+      const totalPurchases = user.totalPurchases;
+      const totalRedemptions = user.totalRedemptions;
+      const totalRatingsGiven = ratings.filter(r => r.user === user.walletAddress).length;
+      const totalComments = comments.filter(c => c.user === user.walletAddress).length;
+      const reputationScore = user.reputationScore;
+      
+      // Determine tier based on reputation score
+      let tier = ReputationTier.Bronze;
+      if (reputationScore >= 800) tier = ReputationTier.Diamond;
+      else if (reputationScore >= 600) tier = ReputationTier.Platinum;
+      else if (reputationScore >= 400) tier = ReputationTier.Gold;
+      else if (reputationScore >= 200) tier = ReputationTier.Silver;
+
+      // Determine badges earned
+      const badgesEarned: BadgeType[] = [];
+      if (totalPurchases >= 1) badgesEarned.push(BadgeType.FirstPurchase);
+      if (totalRedemptions >= 10) badgesEarned.push(BadgeType.TenRedemptions);
+      if (totalRedemptions >= 50) badgesEarned.push(BadgeType.FiftyRedemptions);
+      if (totalRatingsGiven >= 20) badgesEarned.push(BadgeType.TopReviewer);
+      if (Math.random() > 0.8) badgesEarned.push(BadgeType.EarlyAdopter);
+
+      const userReputation = new UserReputation({
+        onChainAddress: `reputation_${user.walletAddress}`,
+        user: user.walletAddress,
+        totalPurchases,
+        totalRedemptions,
+        totalRatingsGiven,
+        totalComments,
+        reputationScore,
+        tier,
+        badgesEarned,
+        joinedAt: new Date(Date.now() - Math.floor(Math.random() * 180) * 24 * 60 * 60 * 1000),
+      });
+
+      await userReputation.save();
+      userReputations.push(userReputation);
+      logger.info(`Created reputation for user: ${user.username}`);
+    }
+
+    // Create badge NFTs
+    logger.info('Creating badge NFTs...');
+    const badgeNFTs = [];
+    for (const userRep of userReputations) {
+      for (const badgeType of userRep.badgesEarned) {
+        const badgeNFT = new BadgeNFT({
+          onChainAddress: `badge_${userRep.user}_${badgeType}_${Date.now()}`,
+          user: userRep.user,
+          badgeType,
+          mint: `mint_badge_${userRep.user}_${badgeType}`,
+          metadata: `metadata_badge_${badgeType}`,
+          earnedAt: new Date(Date.now() - Math.floor(Math.random() * 90) * 24 * 60 * 60 * 1000),
+          metadataUri: `https://api.dealforge.app/metadata/badge/${badgeType}`,
+        });
+
+        await badgeNFT.save();
+        badgeNFTs.push(badgeNFT);
+      }
+      logger.info(`Created ${userRep.badgesEarned.length} badge NFTs for user`);
+    }
+
     logger.info('Database seeding completed successfully!');
     logger.info(`Created:
       - ${users.length} users
@@ -583,6 +781,12 @@ async function seedDatabase() {
       - ${groupDeals.length} group deals
       - ${nftMetadataList.length} NFT metadata entries
       - ${redemptionTickets.length} redemption tickets
+      - ${comments.length} comments
+      - ${ratings.length} ratings
+      - ${listings.length} marketplace listings
+      - ${externalDeals.length} external deals
+      - ${userReputations.length} user reputations
+      - ${badgeNFTs.length} badge NFTs
     `);
 
     process.exit(0);

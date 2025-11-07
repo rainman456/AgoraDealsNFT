@@ -94,10 +94,8 @@ export default function Social() {
   const handleShare = async (platform: string, deal: SocialDeal) => {
     try {
       await socialAPI.trackShare({
-        itemId: deal.id,
-        itemType: 'deal',
-        platform,
-        walletAddress: localStorage.getItem('walletAddress') || ''
+        promotionId: deal.id,
+        platform
       });
       toast({
         title: `Shared on ${platform}!`,
@@ -112,11 +110,9 @@ export default function Social() {
     if (!newReview.trim() || !selectedDeal) return;
 
     try {
-      await socialAPI.rate({
+      await socialAPI.rateCoupon({
         couponId: selectedDeal.id,
-        rating: newRating,
-        review: newReview,
-        walletAddress: localStorage.getItem('walletAddress') || ''
+        rating: newRating
       });
       toast({
         title: "Review Posted!",
@@ -248,7 +244,11 @@ export default function Social() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <h3 className="font-bold text-lg mb-1">{deal.title}</h3>
-                        <p className="text-sm text-muted-foreground">{deal.merchant}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {typeof deal.merchant === 'string' 
+                            ? deal.merchant 
+                            : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant')}
+                        </p>
                       </div>
                       <Badge variant="outline">{deal.category}</Badge>
                     </div>
@@ -314,7 +314,11 @@ export default function Social() {
                     <img src={deal.image} alt={deal.title} className="w-24 h-24 object-cover rounded-lg" />
                     <div className="flex-1">
                       <h3 className="font-bold mb-1">{deal.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-2">{deal.merchant}</p>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {typeof deal.merchant === 'string' 
+                          ? deal.merchant 
+                          : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant')}
+                      </p>
                       <div className="flex items-center gap-4 text-sm">
                         <div className="flex items-center gap-1">
                           <Heart className="w-4 h-4 text-red-500" />

@@ -19,12 +19,8 @@ interface PromotionData {
   template: string;
 }
 
-const templates = [
-  { id: "flash", name: "Flash Sale", icon: "⚡", discount: 50, description: "Limited time offer" },
-  { id: "seasonal", name: "Seasonal", icon: "🎄", discount: 30, description: "Holiday special" },
-  { id: "bundle", name: "Bundle Deal", icon: "📦", discount: 40, description: "Buy more, save more" },
-  { id: "loyalty", name: "Loyalty Reward", icon: "⭐", discount: 25, description: "For returning customers" },
-];
+// Templates will be loaded from API
+const templates: any[] = [];
 
 const categories = [
   { id: "food", label: "Food & Dining", icon: "🍕" },
@@ -49,6 +45,8 @@ export default function PromotionWizard() {
     template: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -78,6 +76,31 @@ export default function PromotionWizard() {
     });
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingImage(true);
+      const result = await promotionsAPI.uploadImage(file, 'promotions');
+      setFormData({ ...formData, image: result.data.url });
+      setImageFile(file);
+      toast({
+        title: "Image uploaded",
+        description: "Your image has been uploaded successfully",
+      });
+    } catch (error: any) {
+      console.error('Image upload failed:', error);
+      toast({
+        title: "Upload failed",
+        description: error.response?.data?.error || "Failed to upload image",
+        variant: "destructive"
+      });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
@@ -99,6 +122,7 @@ export default function PromotionWizard() {
 
       await promotionsAPI.create({
         walletAddress: merchantData.walletAddress,
+        email: merchantData.email,
         title: formData.title,
         description: formData.description,
         discountPercentage: formData.discount,
@@ -106,6 +130,7 @@ export default function PromotionWizard() {
         category: formData.category,
         maxSupply: formData.quantity,
         expiryDays: expiryDays > 0 ? expiryDays : 30,
+        imageUrl: formData.image,
       });
 
       toast({
@@ -269,16 +294,32 @@ export default function PromotionWizard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2">Deal Image URL</label>
-                  <div className="flex gap-2">
+                  <label className="block text-sm font-semibold mb-2">Deal Image</label>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="flex-1"
+                        disabled={uploadingImage}
+                      />
+                      {uploadingImage && <Loader2 className="w-5 h-5 animate-spin" />}
+                    </div>
+                    {formData.image && (
+                      <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+                        <img 
+                          src={formData.image.startsWith('http') ? formData.image : `${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${formData.image}`}
+                          alt="Deal preview" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
                     <Input
-                      placeholder="https://example.com/image.jpg"
+                      placeholder="Or paste image URL"
                       value={formData.image}
                       onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                     />
-                    <Button variant="outline" size="icon">
-                      <ImageIcon className="w-4 h-4" />
-                    </Button>
                   </div>
                 </div>
               </div>

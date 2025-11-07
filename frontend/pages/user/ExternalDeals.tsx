@@ -29,6 +29,7 @@ interface ExternalDeal {
   featured: boolean;
 }
 
+// External deal sources configuration
 const sources = [
   { name: 'skyscanner', label: 'Skyscanner', icon: Plane, color: 'text-blue-500' },
   { name: 'booking', label: 'Booking.com', icon: Hotel, color: 'text-purple-500' },

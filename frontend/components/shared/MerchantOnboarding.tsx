@@ -4,6 +4,9 @@ import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, Clock, Store, Imag
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { promotionsAPI } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface Template {
   id: string;
@@ -17,52 +20,24 @@ interface Template {
   expectedReach: number;
 }
 
-const templates: Template[] = [
-  {
-    id: 'food',
-    name: 'Restaurant Special',
-    category: 'Food & Dining',
-    icon: '🍽️',
-    title: '50% OFF Dinner for Two',
-    description: 'Enjoy an exquisite 3-course dinner with wine pairing at our award-winning restaurant.',
-    discount: 50,
-    originalPrice: 120,
-    expectedReach: 2500
-  },
-  {
-    id: 'spa',
-    name: 'Spa Package',
-    category: 'Wellness & Beauty',
-    icon: '💆',
-    title: 'Luxury Spa Day - 60% OFF',
-    description: 'Full day spa experience including massage, facial, and access to all facilities.',
-    discount: 60,
-    originalPrice: 200,
-    expectedReach: 1800
-  },
-  {
-    id: 'travel',
-    name: 'Weekend Getaway',
-    category: 'Travel & Hotels',
-    icon: '✈️',
-    title: 'Weekend Escape - Save 40%',
-    description: '2-night stay at a luxury resort with breakfast and spa access included.',
-    discount: 40,
-    originalPrice: 500,
-    expectedReach: 3200
-  }
-];
+// Templates will be loaded from API
+const templates: Template[] = [];
 
 export function MerchantOnboarding() {
   const navigate = useNavigate();
+  const { merchant } = useAuth();
+  const { toast } = useToast();
   const [step, setStep] = useState<'template' | 'customize' | 'preview'>('template');
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     discount: 0,
-    originalPrice: 0
+    originalPrice: 0,
+    maxSupply: 100,
+    expiryDays: 30
   });
 
   const handleTemplateSelect = (template: Template) => {
@@ -71,9 +46,68 @@ export function MerchantOnboarding() {
       title: template.title,
       description: template.description,
       discount: template.discount,
-      originalPrice: template.originalPrice
+      originalPrice: template.originalPrice,
+      maxSupply: 100,
+      expiryDays: 30
     });
     setStep('customize');
+  };
+
+  const handlePublishDeal = async () => {
+    if (!merchant?.walletAddress) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in as a merchant to publish deals",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.title || !formData.description || formData.discount <= 0 || formData.originalPrice <= 0) {
+      toast({
+        title: "Invalid Data",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setPublishing(true);
+      const response = await promotionsAPI.create({
+        walletAddress: merchant.walletAddress,
+        title: formData.title,
+        description: formData.description,
+        discountPercentage: formData.discount,
+        price: formData.originalPrice,
+        category: selectedTemplate?.category || 'general',
+        maxSupply: formData.maxSupply,
+        expiryDays: formData.expiryDays
+      });
+
+      if (response.success) {
+        setShowSuccessModal(true);
+        toast({
+          title: "Success!",
+          description: "Your deal has been published successfully"
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: response.message || "Failed to publish deal",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Failed to publish deal:', error);
+      toast({
+        title: "Error",
+        description: "Failed to publish deal. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setPublishing(false);
+    }
   };
 
   const currentPrice = formData.originalPrice * (1 - formData.discount / 100);
@@ -212,6 +246,31 @@ export function MerchantOnboarding() {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Max Supply
+                </label>
+                <Input
+                  type="number"
+                  value={formData.maxSupply}
+                  onChange={(e) => setFormData({ ...formData, maxSupply: parseInt(e.target.value) })}
+                  min={1}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Expiry (Days)
+                </label>
+                <Input
+                  type="number"
+                  value={formData.expiryDays}
+                  onChange={(e) => setFormData({ ...formData, expiryDays: parseInt(e.target.value) })}
+                  min={1}
+                />
+              </div>
+            </div>
+
             <div className="p-4 bg-lime-50 dark:bg-lime-950/20 rounded-xl border border-lime-200 dark:border-lime-800">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-4 h-4 text-lime-600 dark:text-lime-400" />
@@ -338,11 +397,12 @@ export function MerchantOnboarding() {
               Edit Deal
             </Button>
             <Button
-              onClick={() => setShowSuccessModal(true)}
-              className="flex-1 bg-gradient-to-r from-lime-500 to-yellow-500 hover:from-lime-600 hover:to-yellow-600 text-white font-semibold py-6 text-lg"
+              onClick={handlePublishDeal}
+              disabled={publishing}
+              className="flex-1 bg-gradient-to-r from-lime-500 to-yellow-500 hover:from-lime-600 hover:to-yellow-600 text-white font-semibold py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Store className="w-5 h-5 mr-2" />
-              Publish Deal
+              {publishing ? 'Publishing...' : 'Publish Deal'}
             </Button>
           </div>
         </div>

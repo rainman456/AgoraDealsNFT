@@ -40,10 +40,10 @@ const rewardTiers: RewardTier[] = [
 export default function Staking() {
   const [stakedCoupons, setStakedCoupons] = useState<StakedCoupon[]>([]);
   const [stats, setStats] = useState({
-  totalStaked: 500,
-  totalRewards: 46.61,
-  activeStakes: 2,
-  averageAPY: 18.5,
+    totalStaked: 0,
+    totalRewards: 0,
+    activeStakes: 0,
+    averageAPY: 0,
     lifetimeRewards: 0
   });
   const [selectedTier, setSelectedTier] = useState<RewardTier | null>(null);
@@ -58,7 +58,21 @@ export default function Staking() {
     try {
       setLoading(true);
       const walletAddress = localStorage.getItem('walletAddress') || '';
-      const response = await stakingAPI.getStakingInfo(walletAddress);
+      
+      if (!walletAddress || !walletAddress.trim()) {
+        setStakedCoupons([]);
+        setStats({
+          totalStaked: 0,
+          totalRewards: 0,
+          activeStakes: 0,
+          averageAPY: 0,
+          lifetimeRewards: 0
+        });
+        setLoading(false);
+        return;
+      }
+      
+      const response = await stakingAPI.getUserStakes(walletAddress.trim());
       setStakedCoupons(response.data?.stakedCoupons || []);
       setStats(response.data?.stats || {
         totalStaked: 0,
@@ -94,7 +108,7 @@ export default function Staking() {
 
     try {
       const walletAddress = localStorage.getItem('walletAddress') || '';
-      await stakingAPI.unstake({ couponId, walletAddress });
+      await stakingAPI.claimRewards({ userAddress: walletAddress, couponId });
       toast({
         title: "🎉 Unstaked Successfully!",
         description: `Claimed ${coupon.rewardsEarned.toFixed(2)} tokens in rewards`
@@ -233,7 +247,11 @@ export default function Staking() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <h3 className="font-bold text-lg mb-1">{coupon.title}</h3>
-                      <p className="text-sm text-muted-foreground">{coupon.merchant}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {typeof coupon.merchant === 'string' 
+                          ? coupon.merchant 
+                          : (coupon.merchant?.businessName || coupon.merchant?.name || 'Merchant')}
+                      </p>
                     </div>
                     <Badge className={isUnlocked ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'}>
                       {isUnlocked ? 'Unlocked' : 'Locked'}

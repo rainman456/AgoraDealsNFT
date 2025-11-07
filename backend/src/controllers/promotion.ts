@@ -7,7 +7,7 @@ import { logger } from '../utils/logger';
 import { getPaginationParams, createPaginationResult } from '../utils/pagination';
 import { filterByDistance } from '../utils/distance';
 import { getDatabaseConfig } from '../config/database';
-  
+
 export class PromotionController {
   constructor() {
     // Bind all methods to ensure 'this' context is preserved
@@ -36,11 +36,13 @@ export class PromotionController {
         maxSupply,
         price,
         expiryTimestamp,
+        expiryDays,
+        imageUrl,
       } = req.body;
 
       const walletAddress = req.body.walletAddress || req.user?.walletAddress;
 
-      if (!walletAddress || !title || !description || !category || !discountPercentage || !maxSupply || !price || !expiryTimestamp) {
+      if (!walletAddress || !title || !description || !category || !discountPercentage || !maxSupply || !price) {
         res.status(400).json({
           success: false,
           error: 'Missing required fields',
@@ -48,8 +50,26 @@ export class PromotionController {
         return;
       }
 
+      // Calculate expiry timestamp from days if not provided
+      let finalExpiryTimestamp: Date;
+      if (expiryTimestamp) {
+        finalExpiryTimestamp = new Date(expiryTimestamp);
+      } else if (expiryDays) {
+        finalExpiryTimestamp = new Date();
+        finalExpiryTimestamp.setDate(finalExpiryTimestamp.getDate() + parseInt(expiryDays));
+      } else {
+        // Default to 30 days
+        finalExpiryTimestamp = new Date();
+        finalExpiryTimestamp.setDate(finalExpiryTimestamp.getDate() + 30);
+      }
+
       // Get merchant
-      const merchant = await Merchant.findOne({ walletAddress });
+      const merchant = await Merchant.findOne({ 
+        $or: [
+          { walletAddress },
+          { email: req.body.email }
+        ]
+      });
       if (!merchant) {
         res.status(403).json({
           success: false,
@@ -58,34 +78,50 @@ export class PromotionController {
         return;
       }
 
-      const merchantAuthority = new PublicKey(walletAddress);
-      const promotionId = merchant.totalCouponsCreated;
+      // Check if merchant has blockchain setup
+      const hasBlockchainSetup = merchant.encryptedPrivateKey && merchant.iv && merchant.authTag;
+      
+      let onChainAddress = 'pending';
+      let transactionSignature = 'pending';
 
-      // Restore merchant keypair for signing
-      const { walletService } = await import('../services/wallet.service');
-      const merchantKeypair = walletService.restoreKeypair({
-        encryptedPrivateKey: merchant.encryptedPrivateKey,
-        iv: merchant.iv,
-        authTag: merchant.authTag,
-      });
+      if (hasBlockchainSetup) {
+        try {
+          const merchantAuthority = new PublicKey(merchant.walletAddress!);
+          const promotionId = merchant.totalCouponsCreated;
 
-      // Create on-chain
-      const result = await solanaService.createPromotion(
-        merchantAuthority,
-        promotionId,
-        discountPercentage,
-        maxSupply,
-        Math.floor(new Date(expiryTimestamp).getTime() / 1000),
-        category,
-        description,
-        price,
-        merchantKeypair
-      );
+          // Restore merchant keypair for signing
+          const { walletService } = await import('../services/wallet.service');
+          const merchantKeypair = walletService.restoreKeypair({
+            encryptedPrivateKey: merchant.encryptedPrivateKey!,
+            iv: merchant.iv!,
+            authTag: merchant.authTag!,
+          });
+
+          // Create on-chain
+          const result = await solanaService.createPromotion(
+            merchantAuthority,
+            promotionId,
+            discountPercentage,
+            maxSupply,
+            Math.floor(finalExpiryTimestamp.getTime() / 1000),
+            category,
+            description,
+            price,
+            merchantKeypair
+          );
+          
+          onChainAddress = result.promotion;
+          transactionSignature = result.signature;
+        } catch (blockchainError) {
+          logger.warn('Blockchain creation failed, saving to DB only:', blockchainError);
+        }
+      }
 
       // Save to database
+      const originalPrice = price / (1 - discountPercentage / 100);
       const promotion = await Promotion.create({
-        onChainAddress: result.promotion,
-        merchant: merchant.onChainAddress,
+        onChainAddress,
+        merchant: merchant.onChainAddress || merchant._id.toString(),
         title,
         description,
         category,
@@ -93,7 +129,9 @@ export class PromotionController {
         maxSupply,
         currentSupply: 0,
         price,
-        expiryTimestamp: new Date(expiryTimestamp),
+        originalPrice,
+        imageUrl: imageUrl || '',
+        expiryTimestamp: finalExpiryTimestamp,
         isActive: true,
         stats: {
           totalMinted: 0,
@@ -122,9 +160,11 @@ export class PromotionController {
             discountPercentage: promotion.discountPercentage,
             maxSupply: promotion.maxSupply,
             price: promotion.price,
+            originalPrice: promotion.originalPrice,
+            imageUrl: promotion.imageUrl,
             expiryTimestamp: promotion.expiryTimestamp,
           },
-          transactionSignature: result.signature,
+          transactionSignature,
         },
       });
     } catch (error) {
@@ -141,84 +181,9 @@ export class PromotionController {
    * List promotions with filters
    */
   async list(req: Request, res: Response): Promise<void> {
-    const startTime = Date.now();
-    
-    // Immediate safety check
-    if (!res || typeof res.json !== 'function') {
-      logger.error('Invalid response object in list method');
-      return;
-    }
-    
-    logger.info('=== PROMOTION LIST REQUEST START ===');
-    logger.info('Request path:', req.path);
-    logger.info('Request method:', req.method);
-    logger.info('Request query:', JSON.stringify(req.query));
-    logger.info('Response headersSent:', res.headersSent);
-    
     try {
       const { page, limit, skip } = getPaginationParams(req.query);
       const { category, minDiscount, search, sortBy, sortOrder, latitude, longitude, radius, isActive } = req.query;
-
-      logger.info('Filters:', { category, minDiscount, search, sortBy, sortOrder, isActive, page, limit });
-
-      // Check database connection
-      const mongoose = await import('mongoose');
-      const dbState = mongoose.default.connection.readyState;
-      const dbName = mongoose.default.connection.name;
-      const dbHost = mongoose.default.connection.host;
-      
-      logger.info('Database Status:', {
-        readyState: dbState,
-        readyStateText: ['disconnected', 'connected', 'connecting', 'disconnecting'][dbState] || 'unknown',
-        name: dbName,
-        host: dbHost,
-      });
-      
-      if (dbState !== 1) {
-        logger.error('DATABASE NOT CONNECTED - Returning empty result');
-        logger.error('Connection details:', {
-          readyState: dbState,
-          name: dbName,
-          host: dbHost,
-        });
-        
-        // Return empty result instead of error to avoid breaking frontend
-        if (!res.headersSent) {
-          res.status(200).json({
-            success: true,
-            data: {
-              promotions: [],
-              pagination: {
-                page: 1,
-                limit: 20,
-                total: 0,
-                totalPages: 0,
-              },
-            },
-          });
-        }
-        return;
-      }
-
-      logger.info('Database connected, building query...');
-
-      // Verify Promotion model is available
-      if (!Promotion) {
-        logger.error('Promotion model not available');
-        res.json({
-          success: true,
-          data: {
-            promotions: [],
-            pagination: {
-              page: 1,
-              limit: 20,
-              total: 0,
-              totalPages: 0,
-            },
-          },
-        });
-        return;
-      }
 
       const filter: any = { expiryTimestamp: { $gt: new Date() } };
       
@@ -253,72 +218,42 @@ export class PromotionController {
         sortOptions.createdAt = -1;
       }
 
-      logger.info('Query filter:', JSON.stringify(filter));
-      logger.info('Sort options:', JSON.stringify(sortOptions));
-
-      let promotions: any[] = [];
-      let total = 0;
-
-      try {
-        logger.info('Executing database queries...');
-        const queryStart = Date.now();
-        
-        [promotions, total] = await Promise.all([
-          Promotion.find(filter).skip(skip).limit(limit).sort(sortOptions),
-          Promotion.countDocuments(filter),
-        ]);
-        
-        const queryDuration = Date.now() - queryStart;
-        logger.info(`Query completed in ${queryDuration}ms`);
-        logger.info(`Found ${promotions.length} promotions, total: ${total}`);
-      } catch (queryError) {
-        logger.error('DATABASE QUERY FAILED:', queryError);
-        if (queryError instanceof Error) {
-          logger.error('Error details:', {
-            name: queryError.name,
-            message: queryError.message,
-            stack: queryError.stack,
-          });
-        }
-        
-        // Return empty result on query failure
-        res.json({
-          success: true,
-          data: {
-            promotions: [],
-            pagination: {
-              page: 1,
-              limit: 20,
-              total: 0,
-              totalPages: 0,
-            },
-          },
-        });
-        return;
-      }
+      const [promotions, total] = await Promise.all([
+        Promotion.find(filter).skip(skip).limit(limit).sort(sortOptions).lean(),
+        Promotion.countDocuments(filter),
+      ]);
 
       // Populate merchant details
       const merchantAddresses = [...new Set(promotions.map((p) => p.merchant))].filter(Boolean);
-      logger.info('Looking up merchants by onChainAddress:', merchantAddresses);
-      
-      let merchants: any[] = [];
-      try {
-        merchants = await Merchant.find({ onChainAddress: { $in: merchantAddresses } });
-        logger.info(`Found ${merchants.length} merchants`);
-      } catch (merchantError) {
-        logger.error('Failed to fetch merchants:', merchantError);
-      }
-      
+      const merchants = await Merchant.find({ onChainAddress: { $in: merchantAddresses } }).lean();
       const merchantMap = new Map(merchants.map((m) => [m.onChainAddress, m]));
 
       let promotionsWithMerchant = promotions.map((p) => {
         const merchantDetails = merchantMap.get(p.merchant);
-        if (!merchantDetails) {
-          logger.warn(`No merchant found for promotion ${p._id} with merchant reference: ${p.merchant}`);
-        }
         return {
-          ...p.toObject(),
-          merchantDetails,
+          _id: p._id,
+          onChainAddress: p.onChainAddress,
+          merchant: p.merchant,
+          title: p.title,
+          description: p.description,
+          category: p.category,
+          discountPercentage: p.discountPercentage,
+          maxSupply: p.maxSupply,
+          currentSupply: p.currentSupply,
+          price: p.price,
+          expiryTimestamp: p.expiryTimestamp,
+          imageUrl: p.imageUrl,
+          isActive: p.isActive,
+          stats: p.stats,
+          createdAt: p.createdAt,
+          originalPrice: p.originalPrice,
+          merchantDetails: merchantDetails ? {
+            _id: merchantDetails._id,
+            name: merchantDetails.name,
+            businessName: merchantDetails.businessName || merchantDetails.name,
+            category: merchantDetails.category,
+            location: merchantDetails.location,
+          } : null,
         };
       });
 
@@ -334,69 +269,49 @@ export class PromotionController {
         total = promotionsWithMerchant.length;
       }
 
-      const duration = Date.now() - startTime;
-      logger.info(`=== PROMOTION LIST REQUEST COMPLETE (${duration}ms) ===`);
+
       
-      res.json({
-        success: true,
-        data: {
-          promotions: promotionsWithMerchant.map((p) => ({
-            _id: p._id,
-            id: p._id,
-            onChainAddress: p.onChainAddress,
-            merchant: {
-              id: p.merchantDetails?._id,
-              name: p.merchantDetails?.name,
-              businessName: p.merchantDetails?.businessName || p.merchantDetails?.name,
-              category: p.merchantDetails?.category,
-              location: p.merchantDetails?.location,
-            },
-            title: p.title,
-            description: p.description,
-            category: p.category,
-            discountPercentage: p.discountPercentage,
-            maxSupply: p.maxSupply,
-            currentSupply: p.currentSupply,
-            price: p.price,
-            originalPrice: p.originalPrice || (p.price / (1 - p.discountPercentage / 100)),
-            discountedPrice: p.price,
-            expiryTimestamp: p.expiryTimestamp,
-            endDate: p.expiryTimestamp,
-            imageUrl: p.imageUrl,
-            stats: p.stats,
-          })),
-          pagination: createPaginationResult(page, limit, total),
-        },
-      });
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      logger.error(`=== PROMOTION LIST REQUEST FAILED (${duration}ms) ===`);
-      logger.error('Unexpected error in list promotions:', error);
-      
-      if (error instanceof Error) {
-        logger.error('Error details:', {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-        });
-      }
-      
-      // Return empty result instead of 500 error to avoid breaking frontend
-      logger.warn('Returning empty result due to unexpected error');
-      
-      // Check if response already sent
       if (!res.headersSent) {
-        res.status(200).json({
+        res.json({
           success: true,
           data: {
-            promotions: [],
-            pagination: {
-              page: 1,
-              limit: 20,
-              total: 0,
-              totalPages: 0,
-            },
+            promotions: promotionsWithMerchant.map((p) => ({
+              _id: p._id,
+              id: p._id,
+              onChainAddress: p.onChainAddress,
+              merchant: {
+                id: p.merchantDetails?._id,
+                name: p.merchantDetails?.name,
+                businessName: p.merchantDetails?.businessName || p.merchantDetails?.name,
+                category: p.merchantDetails?.category,
+                location: p.merchantDetails?.location,
+              },
+              title: p.title,
+              description: p.description,
+              category: p.category,
+              discountPercentage: p.discountPercentage,
+              maxSupply: p.maxSupply,
+              currentSupply: p.currentSupply,
+              price: p.price,
+              originalPrice: p.originalPrice || (p.price / (1 - p.discountPercentage / 100)),
+              discountedPrice: p.price,
+              expiryTimestamp: p.expiryTimestamp,
+              endDate: p.expiryTimestamp,
+              imageUrl: p.imageUrl,
+              stats: p.stats,
+            })),
+            pagination: createPaginationResult(page, limit, total),
           },
+        });
+      } else {
+        logger.warn('Headers already sent, skipping response');
+      }
+    } catch (error) {
+      logger.error('Error listing promotions:', error);
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
@@ -583,8 +498,27 @@ export class PromotionController {
         return;
       }
 
+      // Validate wallet address format
+      if (!walletAddress || walletAddress.length < 32) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid wallet address format',
+        });
+        return;
+      }
+
+      let authorPubkey: PublicKey;
+      try {
+        authorPubkey = new PublicKey(walletAddress);
+      } catch (err) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid wallet address: must be a valid Solana public key',
+        });
+        return;
+      }
+
       const promotionPDA = new PublicKey(promotion.onChainAddress);
-      const authorPubkey = new PublicKey(walletAddress);
       const merchantPDA = new PublicKey(promotion.merchant);
       const commentId = promotion.stats.totalComments;
 

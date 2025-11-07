@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Simple email-based login - create or retrieve user
       const userData = {
         _id: `user_${Date.now()}`,
-        walletAddress: '',
+        walletAddress: 'guest_user',
         name: email.split('@')[0],
         email: email,
         role: 'user' as const,
