@@ -20,8 +20,74 @@ interface Template {
   expectedReach: number;
 }
 
-// Templates will be loaded from API
-const templates: Template[] = [];
+const templates: Template[] = [
+  {
+    id: 'flash-sale',
+    name: 'Flash Sale',
+    category: 'food',
+    icon: '⚡',
+    title: '50% Off All Menu Items - Today Only!',
+    description: 'Limited time flash sale on all menu items. Dine in or takeout. Valid for one day only.',
+    discount: 50,
+    originalPrice: 25,
+    expectedReach: 5000
+  },
+  {
+    id: 'happy-hour',
+    name: 'Happy Hour',
+    category: 'food',
+    icon: '🍹',
+    title: 'Happy Hour Special - 40% Off Drinks',
+    description: 'Enjoy 40% off all beverages during happy hour (4-7 PM). Perfect for after-work relaxation.',
+    discount: 40,
+    originalPrice: 15,
+    expectedReach: 3000
+  },
+  {
+    id: 'weekend-special',
+    name: 'Weekend Deal',
+    category: 'entertainment',
+    icon: '🎉',
+    title: 'Weekend Special - 30% Off',
+    description: 'Make your weekend special with 30% off. Valid Saturday and Sunday only.',
+    discount: 30,
+    originalPrice: 50,
+    expectedReach: 4000
+  },
+  {
+    id: 'new-customer',
+    name: 'New Customer',
+    category: 'services',
+    icon: '🎁',
+    title: 'First Time Customer - 60% Off',
+    description: 'Welcome new customers with an exclusive 60% discount on your first purchase.',
+    discount: 60,
+    originalPrice: 30,
+    expectedReach: 6000
+  },
+  {
+    id: 'loyalty-reward',
+    name: 'Loyalty Reward',
+    category: 'shopping',
+    icon: '💎',
+    title: 'Loyalty Members - 35% Off',
+    description: 'Thank you for your loyalty! Enjoy 35% off as a valued returning customer.',
+    discount: 35,
+    originalPrice: 40,
+    expectedReach: 2500
+  },
+  {
+    id: 'bundle-deal',
+    name: 'Bundle Deal',
+    category: 'wellness',
+    icon: '📦',
+    title: 'Bundle & Save - 45% Off Package',
+    description: 'Get more for less with our bundle package. 45% off when you buy the complete set.',
+    discount: 45,
+    originalPrice: 80,
+    expectedReach: 3500
+  }
+];
 
 export function MerchantOnboarding() {
   const navigate = useNavigate();

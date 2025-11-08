@@ -413,6 +413,7 @@ export const couponsAPI = {
     userId?: string;
     promotionId?: string;
     isRedeemed?: boolean;
+    status?: string;
     page?: number;
     limit?: number;
   }) => {
@@ -471,6 +472,16 @@ export const redemptionAPI = {
     const response = await api.get(`/redemption/tickets/${walletAddress}`);
     return response.data;
   },
+  
+  getMerchantTickets: async (merchantAddress: string) => {
+    const response = await api.get(`/redemption-tickets/merchant/${merchantAddress}`);
+    return response.data;
+  },
+  
+  redeem: async (promotionId: string) => {
+    const response = await api.post(`/redemption/${promotionId}/redeem`);
+    return response.data;
+  },
 };
 
 // Redemption Tickets API
@@ -500,7 +511,14 @@ export const redemptionTicketsAPI = {
     return response.data;
   },
   
-  listTickets: async (params?: { limit?: number; status?: string }) => {
+  listTickets: async (params?: { 
+    userId?: string;
+    promotionId?: string;
+    isRedeemed?: boolean;
+    status?: string;
+    page?: number;
+    limit?: number;
+  }) => {
     const user = localStorage.getItem('user');
     if (!user) {
       return { success: false, data: [] };
@@ -694,7 +712,12 @@ export const stakingAPI = {
     return response.data;
   },
   
-  claimRewards: async (data: { userAddress: string; couponId?: string }) => {
+  unstake: async (data: { couponId: string; walletAddress: string }) => {
+    const response = await api.post('/staking/unstake', data);
+    return response.data;
+  },
+  
+  claimRewards: async (data: { userAddress: string; couponId?: string; walletAddress?: string }) => {
     const response = await api.post('/staking/claim', data);
     return response.data;
   },

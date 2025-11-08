@@ -136,8 +136,8 @@ export default function AuctionsEnhanced() {
 
     try {
       await auctionsAPI.placeBid(auctionId, {
-        amount,
-        walletAddress: user.walletAddress
+        bidAmount: amount,
+        bidderAddress: user.walletAddress
       });
 
       toast({
@@ -173,8 +173,8 @@ export default function AuctionsEnhanced() {
 
     try {
       await auctionsAPI.placeBid(auctionId, {
-        amount: auction.buyNowPrice,
-        walletAddress: user.walletAddress
+        bidAmount: auction.buyNowPrice,
+        bidderAddress: user.walletAddress
       });
 
       toast({

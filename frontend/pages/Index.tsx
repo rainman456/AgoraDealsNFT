@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, TrendingUp, Heart, Shield, Users, Share2, Star, Gift, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Shield, Users, Share2, Star, Gift, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { promotionsAPI, Promotion } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,7 +38,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const { toast } = useToast();
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const loadDeals = async () => {
@@ -300,16 +300,16 @@ const Index = () => {
                             <Shield className="w-4 h-4 text-green-600" />
                             <span className="text-xs font-bold text-green-700">Verified</span>
                           </div>
-                          {deal.stats?.totalRedeemed > 0 && (
+                          {(deal.stats?.totalRedeemed || 0) > 0 && (
                             <div className="flex items-center gap-1">
                               <Users className="w-4 h-4 text-blue-600" />
-                              <span className="text-xs font-bold text-blue-700">{deal.stats.totalRedeemed}+ claimed</span>
+                              <span className="text-xs font-bold text-blue-700">{deal.stats?.totalRedeemed}+ claimed</span>
                             </div>
                           )}
-                          {deal.stats?.averageRating > 0 && (
+                          {(deal.stats?.averageRating || 0) > 0 && (
                             <div className="flex items-center gap-1">
                               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                              <span className="text-xs font-bold">{deal.stats.averageRating.toFixed(1)}</span>
+                              <span className="text-xs font-bold">{deal.stats?.averageRating?.toFixed(1)}</span>
                             </div>
                           )}
                         </div>

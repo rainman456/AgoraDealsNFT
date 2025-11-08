@@ -1,23 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   Award, 
-  Trophy, 
   Star, 
   TrendingUp, 
-  Zap, 
   Crown, 
   Flame, 
   Target,
-  Gift,
-  Users,
   Calendar,
   Sparkles,
   Medal,
   Heart
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { badgesAPI, couponsAPI, userStatsAPI } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 interface Achievement {
   id: string;
@@ -43,22 +42,90 @@ type NFTGalleryItem = CollectibleItem;
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState<"achievements" | "nfts" | "stats">("achievements");
+  const [userStats, setUserStats] = useState({
+    level: 1,
+    xp: 0,
+    nextLevelXp: 1000,
+    totalSavings: 0,
+    dealsRedeemed: 0,
+    streakDays: 0,
+    reputation: 0,
+  });
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [nftGallery, setNftGallery] = useState<NFTGalleryItem[]>([]);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  const userStats = {
-    level: 12,
-    xp: 2450,
-    nextLevelXp: 3000,
-    totalSavings: 1247,
-    dealsRedeemed: 34,
-    streakDays: 7,
-    reputation: 4.8,
+  useEffect(() => {
+    loadProfileData();
+  }, [user]);
+
+  const loadProfileData = async () => {
+    try {
+      const walletAddress = user?.walletAddress || localStorage.getItem('walletAddress') || '';
+      
+      if (!walletAddress) {
+        return;
+      }
+
+      // Load user stats, badges, and coupons in parallel
+      const [statsResponse, badgesResponse, couponsResponse] = await Promise.all([
+        userStatsAPI.getUserStats(walletAddress).catch(() => ({ success: false, data: null })),
+        badgesAPI.getUserBadges(walletAddress).catch(() => ({ success: false, data: [] })),
+        couponsAPI.getMyCoupons(walletAddress).catch(() => ({ success: false, data: [] }))
+      ]);
+
+      // Set user stats
+      if (statsResponse.success && statsResponse.data) {
+        const stats = statsResponse.data;
+        setUserStats({
+          level: Math.floor((stats.totalPurchases || 0) / 10) + 1,
+          xp: (stats.totalPurchases || 0) * 100,
+          nextLevelXp: (Math.floor((stats.totalPurchases || 0) / 10) + 1) * 1000,
+          totalSavings: stats.totalSavings || 0,
+          dealsRedeemed: stats.totalRedemptions || 0,
+          streakDays: stats.streakDays || 0,
+          reputation: stats.reputationScore || 0,
+        });
+      }
+
+      // Set badges as achievements
+      if (badgesResponse.success && Array.isArray(badgesResponse.data)) {
+        const badgeAchievements: Achievement[] = badgesResponse.data.map((badge: any) => ({
+          id: badge._id || badge.id,
+          title: badge.name || badge.badgeType,
+          description: badge.description || '',
+          icon: Award,
+          earned: true,
+          earnedDate: badge.createdAt,
+          rarity: badge.tier || 'common'
+        }));
+        setAchievements(badgeAchievements);
+      }
+
+      // Set coupons as NFT gallery
+      if (couponsResponse.success && Array.isArray(couponsResponse.data)) {
+        const nfts: NFTGalleryItem[] = couponsResponse.data.map((coupon: any) => ({
+          id: coupon._id || coupon.id,
+          image: coupon.promotion?.imageUrl || '',
+          title: coupon.promotion?.title || 'Coupon',
+          merchant: typeof coupon.promotion?.merchant === 'string' 
+            ? coupon.promotion.merchant 
+            : (coupon.promotion?.merchant?.businessName || 'Merchant'),
+          discount: coupon.promotion?.discountPercentage || 0,
+          claimed: coupon.createdAt || new Date().toISOString()
+        }));
+        setNftGallery(nfts);
+      }
+    } catch (error) {
+      console.error('Failed to load profile data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load profile data",
+        variant: "destructive"
+      });
+    }
   };
-
-  // Achievements will be loaded from API
-  const achievements: Achievement[] = [];
-
-  // NFT Gallery will be loaded from API
-  const nftGallery: NFTGalleryItem[] = [];
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -283,9 +350,7 @@ export default function Profile() {
 
                     {/* Merchant */}
                     <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-card/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold">
-                      {typeof nft.merchant === 'string' 
-                        ? nft.merchant 
-                        : (nft.merchant?.businessName || nft.merchant?.name || 'Merchant')}
+                      {nft.merchant}
                     </div>
 
                     {/* Favorite Icon */}

@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const userData = {
         _id: `user_${Date.now()}`,
         walletAddress: 'guest_user',
-        name: email.split('@')[0],
+        name: email.split('@')[0] || 'guest',
         email: email,
         role: 'user' as const,
         createdAt: new Date().toISOString(),
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Simple email-based login - create or retrieve merchant
       const merchantData = {
         _id: `merchant_${Date.now()}`,
-        name: email.split('@')[0],
+        name: email.split('@')[0] || 'Anonymous Merchant',
         email: email,
         walletAddress: '',
         businessName: '',
@@ -147,7 +147,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           businessName: response.data.name,
           description: data.description,
           category: response.data.category,
-          location: data.location,
+          location: data.location ? {
+            address: data.location.address || '',
+            city: data.location.city || '',
+            state: data.location.state || '',
+            zipCode: data.location.zipCode || '',
+            coordinates: data.location.latitude && data.location.longitude ? 
+              [data.location.latitude, data.location.longitude] as [number, number] : undefined
+          } : undefined,
           verified: false,
           createdAt: new Date().toISOString(),
         };

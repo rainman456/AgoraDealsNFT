@@ -62,19 +62,23 @@ export default function GroupDeals() {
 
   // Update countdown timers
   useEffect(() => {
+    if (deals.length === 0) return;
+    
     const interval = setInterval(() => {
       setDeals(prevDeals =>
         prevDeals.map(deal => ({
           ...deal,
-          timeLeft: Math.max(0, deal.timeLeft - 1),
+          timeLeft: Math.max(0, (deal.timeLeft || 0) - 1),
         }))
       );
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [deals.length]);
 
   const formatTimeLeft = (seconds: number) => {
+    if (!seconds || seconds < 0) return '0s';
+    
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
@@ -203,7 +207,7 @@ export default function GroupDeals() {
             const isUrgent = deal.timeLeft < 3600; // Less than 1 hour
 
             return (
-              <Card key={`group-deal-${deal.id}`} className="overflow-hidden card-hover border-0 shadow-lg relative">
+              <Card key={deal.id || `group-deal-${index}`} className="overflow-hidden card-hover border-0 shadow-lg relative">
                 {/* Trending Badge */}
                 {deal.trending && (
                   <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-1.5 shadow-xl animate-pulse">
@@ -268,7 +272,7 @@ export default function GroupDeals() {
                         const isUnlocked = deal.currentParticipants >= tier.minParticipants;
                         const isCurrent = idx === deal.currentTier;
                         return (
-                          <div key={`${deal.id}-tier-${idx}`} className="flex items-center gap-2">
+                          <div key={`tier-${idx}`} className="flex items-center gap-2">
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                               isUnlocked ? 'bg-success text-white' : isCurrent ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'
                             }`}>

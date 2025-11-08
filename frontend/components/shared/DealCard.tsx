@@ -15,7 +15,7 @@ interface DealCardProps {
 
 export default function DealCard({ deal, isOwned = false, onClaim, onLike }: DealCardProps) {
   const [isLiked, setIsLiked] = useState(false);
-  const daysUntilExpiry = Math.ceil((new Date(deal.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+  const daysUntilExpiry = deal.endDate ? Math.ceil((new Date(deal.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 999;
   const isExpiringSoon = daysUntilExpiry <= 3;
   
   // Transaction sponsorship logic

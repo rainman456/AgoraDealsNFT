@@ -98,7 +98,8 @@ export default function MyDeals() {
     }
   };
 
-  const getDaysUntilExpiry = (expiryDate: string) => {
+  const getDaysUntilExpiry = (expiryDate: string | undefined) => {
+    if (!expiryDate) return 999;
     return Math.ceil((new Date(expiryDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
   };
 
@@ -205,8 +206,8 @@ export default function MyDeals() {
               </div>
             </div>
 
-            {/* Grid View */}
-            {!loading && !error && viewMode === "grid" && (
+           
+            )}{!loading && !error && viewMode === "grid" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {coupons.map((coupon) => {
                   const promotion = coupon.promotion;
@@ -247,7 +248,7 @@ export default function MyDeals() {
 
                         {/* Merchant Badge */}
                         <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-card/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold">
-                          {promotion.merchant?.businessName || 'Merchant'}
+                          {typeof promotion.merchant === 'string' ? promotion.merchant : (promotion.merchant?.businessName || promotion.merchant?.name || 'Merchant')}
                         </div>
 
                         {/* Redeemed Badge */}
@@ -336,7 +337,7 @@ export default function MyDeals() {
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <h3 className="text-xl font-bold mb-1">{promotion.title}</h3>
-                              <p className="text-sm text-foreground/60">{promotion.merchant?.businessName || 'Merchant'}</p>
+                              <p className="text-sm text-foreground/60">{typeof promotion.merchant === 'string' ? promotion.merchant : (promotion.merchant?.businessName || promotion.merchant?.name || 'Merchant')}</p>
                             </div>
                             <div className={`${expiryStatus.bg} ${expiryStatus.color} px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1`}>
                               <Clock className="w-3 h-3" />
@@ -394,8 +395,6 @@ export default function MyDeals() {
                   Browse Deals
                 </Button>
               </Card>
-            )}
-            )}
             )}
               </TabsContent>
 

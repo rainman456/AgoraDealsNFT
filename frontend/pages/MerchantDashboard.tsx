@@ -418,16 +418,16 @@ export default function MerchantDashboard() {
 
                   <div className="grid grid-cols-3 gap-3 md:gap-4 text-center">
                     <div className="p-3 bg-muted/50 rounded-lg">
-                      <div className="text-xl md:text-2xl font-black">{promo.redemptions}</div>
+                      <div className="text-xl md:text-2xl font-black">{promo.redemptions || 0}</div>
                       <div className="text-xs text-muted-foreground font-semibold">Redeemed</div>
                     </div>
                     <div className="p-3 bg-muted/50 rounded-lg">
-                      <div className="text-xl md:text-2xl font-black">${promo.revenue.toLocaleString()}</div>
+                      <div className="text-xl md:text-2xl font-black">${Number(promo.revenue || 0).toLocaleString()}</div>
                       <div className="text-xs text-muted-foreground font-semibold">Revenue</div>
                     </div>
                     <div className="p-3 bg-muted/50 rounded-lg">
                       <div className="text-xl md:text-2xl font-black">
-                        {Math.round((promo.redemptions / promo.sold) * 100)}%
+                        {promo.sold > 0 ? Math.round(((promo.redemptions || 0) / promo.sold) * 100) : 0}%
                       </div>
                       <div className="text-xs text-muted-foreground font-semibold">Redeem Rate</div>
                     </div>

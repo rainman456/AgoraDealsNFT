@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import AuctionCard from "@/components/shared/AuctionCard";
 import { auctionsAPI } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";

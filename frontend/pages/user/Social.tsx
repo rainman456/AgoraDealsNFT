@@ -12,10 +12,15 @@ import {
 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 
+interface Merchant {
+  businessName?: string;
+  name?: string;
+}
+
 interface SocialDeal {
   id: string;
   title: string;
-  merchant: string;
+  merchant: string | Merchant;
   image: string;
   discount: number;
   category: string;
@@ -57,7 +62,7 @@ export default function Social() {
   const loadTrendingDeals = async () => {
     try {
       setLoading(true);
-      const response = await socialAPI.getTrending({ timeframe, limit: 50 });
+      const response = await socialAPI.getTrending({ limit: 50 });
       setDeals(response.data || []);
     } catch (error) {
       console.error('Failed to load trending deals:', error);

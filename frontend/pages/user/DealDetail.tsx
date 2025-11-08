@@ -26,7 +26,6 @@ export default function DealDetail() {
   const [likeCount, setLikeCount] = useState(0);
   const [showQR, setShowQR] = useState(false);
   const [giftEmail, setGiftEmail] = useState("");
-  const [listPrice, setListPrice] = useState("");
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([
     { id: 1, user: "Sarah M.", text: "Amazing deal! Just used it yesterday.", likes: 12, time: "2h ago" },
@@ -100,15 +99,6 @@ export default function DealDetail() {
     setGiftEmail("");
   };
 
-  const handleList = () => {
-    if (!listPrice) return;
-    toast({
-      title: "Listed for Sale!",
-      description: `Your deal is now listed for $${listPrice}`,
-    });
-    setListPrice("");
-  };
-
   const handleLike = () => {
     setLiked(!liked);
     setLikeCount(liked ? likeCount - 1 : likeCount + 1);
@@ -125,6 +115,8 @@ export default function DealDetail() {
   const handleComment = async () => {
     if (!comment.trim()) return;
     
+    if (!deal._id) return;
+
     try {
       // Add comment to API
       await promotionsAPI.addComment({
@@ -157,7 +149,7 @@ export default function DealDetail() {
     }
   };
 
-  const daysLeft = Math.ceil((new Date(deal.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  const daysLeft = Math.ceil((new Date(deal.endDate || new Date()).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   const merchantName = typeof deal.merchant === 'string' 
     ? deal.merchant 
     : (deal.merchant?.businessName || deal.merchant?.name || 'Merchant');
@@ -344,7 +336,7 @@ export default function DealDetail() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-0.5">•</span>
-                  <span>Expires on {new Date(deal.expiry).toLocaleDateString()}</span>
+                  <span>Expires on {deal.endDate ? new Date(deal.endDate).toLocaleDateString() : 'N/A'}</span>
                 </li>
               </ul>
             </Card>

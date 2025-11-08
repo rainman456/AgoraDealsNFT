@@ -3,12 +3,11 @@ import { Input } from "@/components/ui/input";
 import DealCard from "@/components/shared/DealCard";
 import NotificationBar from "@/components/shared/NotificationBar";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Mail, MapPin, Star, Loader2, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Search, Mail, MapPin, Star, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Promotion, promotionsAPI } from "@/lib/api";
-import { useAuth } from "@/contexts/AuthContext";
 
 export default function Deals() {
   const [deals, setDeals] = useState<Promotion[]>([]);
@@ -27,7 +26,6 @@ export default function Deals() {
   const [minRating, setMinRating] = useState(0);
   const observerTarget = useRef(null);
   const { toast } = useToast();
-  const { user } = useAuth();
 
   // Load deals from API
   useEffect(() => {
@@ -103,7 +101,7 @@ export default function Deals() {
 
   const filteredDeals = Array.isArray(deals) ? deals
     .filter((deal) => {
-      const merchantName = deal.merchant?.businessName || deal.merchant?.name || '';
+      const merchantName = typeof deal.merchant === 'string' ? deal.merchant : (deal.merchant?.businessName || deal.merchant?.name || '');
       const matchesSearch =
         deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         merchantName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -116,7 +114,7 @@ export default function Deals() {
     })
     .sort((a, b) => {
       if (sortBy === "popular") return (b.ratings?.count || 0) - (a.ratings?.count || 0);
-      if (sortBy === "expiry") return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+      if (sortBy === "expiry") return new Date(a.endDate || new Date()).getTime() - new Date(b.endDate || new Date()).getTime();
       if (sortBy === "discount") return b.discountPercentage - a.discountPercentage;
       if (sortBy === "rating") {
         const ratingA = a.ratings?.average || 0;
@@ -185,14 +183,14 @@ export default function Deals() {
   );
 
   const handleLike = useCallback(
-    (dealId: string) => {
+    (_dealId: string) => {
       // Like functionality would require backend endpoint
       toast({
         title: "Liked!",
         description: "Deal added to favorites",
       });
     },
-    [deals]
+    [toast]
   );
 
   const handleSendEmail = () => {

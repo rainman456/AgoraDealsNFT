@@ -11,7 +11,10 @@ import { ShoppingBag, DollarSign, Gavel, Clock, TrendingUp, Star, Users, Verifie
 interface Deal {
   id: string;
   title: string;
-  merchant: string;
+  merchant: {
+    businessName?: string;
+    name?: string;
+  } | string;
   image: string;
   price: number;
   discount: number;
@@ -23,7 +26,10 @@ interface Deal {
 interface Auction {
   id: string;
   title: string;
-  merchant: string;
+  merchant: {
+    businessName?: string;
+    name?: string;
+  } | string;
   image: string;
   currentBid: number;
   bids: number;
@@ -75,7 +81,11 @@ export default function Marketplace() {
       console.error('Failed to load marketplace data:', error);
       setDeals([]);
       setAuctions([]);
-      toast.error('Unable to load marketplace data. Backend service may be unavailable.');
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Unable to load marketplace data. Backend service may be unavailable.",
+      });
     } finally {
       setLoading(false);
     }

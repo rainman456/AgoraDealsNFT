@@ -6004,3 +6004,182 @@
 {"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 00:27:37"}
 {"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-07 00:27:37"}
 {"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-07 00:28:53"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-07 02:30:41"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-07 02:30:41"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-07 02:30:41"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-07 02:30:41"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"Connected to Solana: http://127.0.0.1:8899","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-07 02:30:42"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michaelstone897com_db_user:hjf62pjKourOHibd@cluster0.ksskilh.mongodb.net/?appName=Cluster0","timestamp":"2025-11-07 02:30:42"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-07 02:32:22","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:32:22"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (41ms)","timestamp":"2025-11-07 02:32:22"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-07 02:32:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:32:40"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-07 02:32:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-07 02:32:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:32:40"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (30ms)","timestamp":"2025-11-07 02:32:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-07 02:32:44","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:32:44"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-07 02:32:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-07 02:32:44","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:32:44"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (28ms)","timestamp":"2025-11-07 02:32:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-07 02:48:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:48:40"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (44ms)","timestamp":"2025-11-07 02:48:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-07 02:49:05","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:49:05"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-07 02:49:05"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-07 02:49:49","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:49:49"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (30ms)","timestamp":"2025-11-07 02:49:49"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-07 02:49:49","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:49:49"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-07 02:49:49"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-07 02:49:51","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:49:51"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-07 02:49:51"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-07 02:49:51","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-07 02:49:51"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-07 02:49:51"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-07 03:23:24"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-07 19:26:00"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-07 19:26:00"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-07 19:26:00"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-07 19:26:00"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-07 19:26:00"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-07 19:26:00"}
+{"level":"info","message":"Connected to Solana: http://127.0.0.1:8899","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michaelstone897com_db_user:hjf62pjKourOHibd@cluster0.ksskilh.mongodb.net/?appName=Cluster0","timestamp":"2025-11-07 19:26:01"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-08 02:08:44"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-08 02:08:44"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-08 02:08:44"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-08 02:08:44"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"Connected to Solana: http://127.0.0.1:8899","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-08 02:08:45"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michaelstone897com_db_user:hjf62pjKourOHibd@cluster0.ksskilh.mongodb.net/?appName=Cluster0","timestamp":"2025-11-08 02:08:45"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:12:30","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:12:30"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (37ms)","timestamp":"2025-11-08 02:12:30"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:12:32","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:12:32"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (28ms)","timestamp":"2025-11-08 02:12:32"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-08 02:13:22","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:13:22"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-08 02:13:22"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762475255276","page":"1"},"timestamp":"2025-11-08 02:13:23","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:13:23"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-08 02:13:23"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:15:29","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:15:29"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-08 02:15:29"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:15:29","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:15:29"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-08 02:15:29"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/listings","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:15:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (32ms)","timestamp":"2025-11-08 02:15:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","status":"active"},"timestamp":"2025-11-08 02:15:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-08 02:15:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/listings","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:15:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (30ms)","timestamp":"2025-11-08 02:15:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","status":"active"},"timestamp":"2025-11-08 02:15:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (14ms)","timestamp":"2025-11-08 02:15:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"100","page":"1"},"timestamp":"2025-11-08 02:15:48","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:15:48"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (28ms)","timestamp":"2025-11-08 02:15:49"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"100","page":"1"},"timestamp":"2025-11-08 02:15:49","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:15:49"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-08 02:15:49"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad983a","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-08 02:15:57","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad983a","timestamp":"2025-11-08 02:15:57"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad983a - ✅ 200 (28ms)","timestamp":"2025-11-08 02:15:57"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad983a","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-08 02:15:57","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad983a","timestamp":"2025-11-08 02:15:57"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad983a - ✅ 200 (23ms)","timestamp":"2025-11-08 02:15:57"}
+{"body":{"content":"h jb ","promotionId":"690ca64293c586f5aaad983a","walletAddress":"guest_user"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/promotions/comment","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-08 02:16:13","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: POST /comment","timestamp":"2025-11-08 02:16:13"}
+{"level":"info","message":"📤 Response: POST /comment - ⚠️ 400 (11ms)","timestamp":"2025-11-08 02:16:13"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:18:02","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:18:02"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-08 02:18:02"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:18:02","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:18:02"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-08 02:18:02"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:18:34","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:18:34"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-08 02:18:34"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:18:34","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:18:34"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-08 02:18:34"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:19:14","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (15ms)","timestamp":"2025-11-08 02:19:14"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:19:16","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (13ms)","timestamp":"2025-11-08 02:19:16"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/group-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:19:22","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (19ms)","timestamp":"2025-11-08 02:19:22"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/group-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:19:22","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (14ms)","timestamp":"2025-11-08 02:19:22"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/social/trending","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:19:46","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /trending - ✅ 200 (97ms)","timestamp":"2025-11-08 02:19:46"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/social/trending","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:19:46","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /trending - ✅ 200 (46ms)","timestamp":"2025-11-08 02:19:46"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/external-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:20:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-08 02:20:33"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/external-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:20:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-08 02:20:33"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/coupons","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","status":"active"},"timestamp":"2025-11-08 02:20:43","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (40ms)","timestamp":"2025-11-08 02:20:43"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/coupons","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","status":"active"},"timestamp":"2025-11-08 02:21:03","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (37ms)","timestamp":"2025-11-08 02:21:03"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/external-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:22:41","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-08 02:22:41"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/external-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:22:41","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-08 02:22:41"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/group-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:23:15","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (15ms)","timestamp":"2025-11-08 02:23:15"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/group-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:23:15","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (13ms)","timestamp":"2025-11-08 02:23:15"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/group-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:36:58","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (12ms)","timestamp":"2025-11-08 02:36:58"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/group-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50"},"timestamp":"2025-11-08 02:36:58","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (13ms)","timestamp":"2025-11-08 02:36:58"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:46:18","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:46:18"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-08 02:46:18"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"isActive":"true","limit":"12","page":"1"},"timestamp":"2025-11-08 02:46:19","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:46:19"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-08 02:46:19"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762570086987","page":"1"},"timestamp":"2025-11-08 02:48:10","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:48:10"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-08 02:48:10"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762570086987","page":"1"},"timestamp":"2025-11-08 02:48:11","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:48:11"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-08 02:48:11"}

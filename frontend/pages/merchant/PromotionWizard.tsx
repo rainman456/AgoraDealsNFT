@@ -19,8 +19,50 @@ interface PromotionData {
   template: string;
 }
 
-// Templates will be loaded from API
-const templates: any[] = [];
+const templates = [
+  {
+    id: 'flash-sale',
+    name: 'Flash Sale',
+    icon: '⚡',
+    description: 'Limited time offer with high urgency',
+    discount: 50
+  },
+  {
+    id: 'happy-hour',
+    name: 'Happy Hour',
+    icon: '🍹',
+    description: 'Time-based discount for specific hours',
+    discount: 40
+  },
+  {
+    id: 'weekend-special',
+    name: 'Weekend Deal',
+    icon: '🎉',
+    description: 'Weekend-only promotion',
+    discount: 30
+  },
+  {
+    id: 'new-customer',
+    name: 'New Customer',
+    icon: '🎁',
+    description: 'First-time customer exclusive',
+    discount: 60
+  },
+  {
+    id: 'loyalty-reward',
+    name: 'Loyalty Reward',
+    icon: '💎',
+    description: 'Reward for returning customers',
+    discount: 35
+  },
+  {
+    id: 'bundle-deal',
+    name: 'Bundle Deal',
+    icon: '📦',
+    description: 'Package deal with multiple items',
+    discount: 45
+  }
+];
 
 const categories = [
   { id: "food", label: "Food & Dining", icon: "🍕" },
@@ -53,6 +95,62 @@ export default function PromotionWizard() {
   const totalSteps = 4;
 
   const handleNext = () => {
+    // Validation for each step
+    if (step === 1 && !formData.template) {
+      toast({
+        title: "Template Required",
+        description: "Please select a template to continue",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (step === 2) {
+      if (!formData.title || !formData.description || !formData.category) {
+        toast({
+          title: "Missing Information",
+          description: "Please fill in all required fields",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
+    if (step === 3) {
+      if (formData.discount < 5 || formData.discount > 90) {
+        toast({
+          title: "Invalid Discount",
+          description: "Discount must be between 5% and 90%",
+          variant: "destructive"
+        });
+        return;
+      }
+      if (formData.price <= 0) {
+        toast({
+          title: "Invalid Price",
+          description: "Price must be greater than 0",
+          variant: "destructive"
+        });
+        return;
+      }
+      if (formData.quantity < 1) {
+        toast({
+          title: "Invalid Quantity",
+          description: "Quantity must be at least 1",
+          variant: "destructive"
+        });
+        return;
+      }
+      if (!formData.expiry) {
+        toast({
+          title: "Expiry Date Required",
+          description: "Please select an expiration date",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
     if (step < totalSteps) {
       setStep(step + 1);
     }
@@ -401,6 +499,7 @@ export default function PromotionWizard() {
                     value={formData.expiry}
                     onChange={(e) => setFormData({ ...formData, expiry: e.target.value })}
                     className="text-lg"
+                    min={new Date().toISOString().split('T')[0]}
                   />
                 </div>
               </div>
@@ -499,7 +598,6 @@ export default function PromotionWizard() {
         <div className="flex items-center justify-between">
           <Button
             onClick={handleBack}
-            disabled={step === 1}
             variant="outline"
             size="lg"
             className="min-w-[120px]"

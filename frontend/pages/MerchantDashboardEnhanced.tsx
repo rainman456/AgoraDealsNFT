@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Plus, BarChart3, Users, DollarSign, TrendingUp, Package,
-  ShoppingCart, Ticket, Award, Calendar, Download, Filter,
-  Eye, Heart, Share2, Star, Clock, CheckCircle, XCircle
+  Plus, BarChart3, DollarSign, TrendingUp, Package,
+  ShoppingCart, Ticket, Award, Download,
+  Share2, Star, Clock, CheckCircle
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { merchantDashboardAPI, promotionsAPI } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface DailyStats {
   date: string;
@@ -38,14 +41,7 @@ interface RecentActivity {
   amount?: number;
 }
 
-// Mock data removed - all data now loaded from database
-const mockDailyStats: DailyStats[] = [];
-
-// Mock data removed - all data now loaded from database
-const mockPromotions: Promotion[] = [];
-
-// Mock data removed - all data now loaded from database
-const mockRecentActivity: RecentActivity[] = [];
+// Mock data removed - all data now loaded from database via API
 
 // Mock data removed - all data now loaded from database
 const mockAnalytics = {
@@ -64,6 +60,83 @@ const mockAnalytics = {
 
 export default function MerchantDashboardEnhanced() {
   const [dateRange, setDateRange] = useState('7d');
+  const [analytics, setAnalytics] = useState(mockAnalytics);
+  const [promotions, setPromotions] = useState<Promotion[]>([]);
+  const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
+  const { merchant } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [merchant, dateRange]);
+
+  const loadDashboardData = async () => {
+    if (!merchant?.walletAddress) {
+      return;
+    }
+
+    try {
+      
+      // Calculate date range
+      const endDate = new Date();
+      const startDate = new Date();
+      const days = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90;
+      startDate.setDate(endDate.getDate() - days);
+
+      // Load analytics and promotions in parallel
+      const [analyticsResponse, promotionsResponse, activityResponse] = await Promise.all([
+        merchantDashboardAPI.getAnalytics(merchant.walletAddress, {
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        }).catch(() => ({ success: false, data: null })),
+        promotionsAPI.list({ merchantId: merchant._id, limit: 50 }).catch(() => ({ success: false, data: [] })),
+        merchantDashboardAPI.getRecentActivity(merchant.walletAddress, { limit: 20 }).catch(() => ({ success: false, data: [] }))
+      ]);
+
+      // Set analytics
+      if (analyticsResponse.success && analyticsResponse.data) {
+        const data = analyticsResponse.data as any;
+        setAnalytics({
+          overview: {
+            totalPromotions: data.totalPromotions || 0,
+            activePromotions: data.activePromotions || 0,
+            totalCoupons: data.totalCoupons || 0,
+            totalRedemptions: data.totalRedemptions || 0,
+            redemptionRate: data.redemptionRate || 0,
+            totalRevenue: data.totalRevenue || 0,
+            auctionRevenue: data.auctionRevenue || 0,
+            groupDealRevenue: data.groupDealRevenue || 0
+          },
+          categoryBreakdown: data.categoryBreakdown || {}
+        });
+
+        if (Array.isArray(data.dailyStats)) {
+          setDailyStats(data.dailyStats);
+        }
+      }
+
+      // Set promotions
+      if (promotionsResponse.success) {
+        const promoData = promotionsResponse.data?.promotions || promotionsResponse.data || [];
+        if (Array.isArray(promoData)) {
+          setPromotions(promoData);
+        }
+      }
+
+      // Set recent activity
+      if (activityResponse.success && Array.isArray(activityResponse.data)) {
+        setRecentActivity(activityResponse.data);
+      }
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load dashboard data",
+        variant: "destructive"
+      });
+    }
+  };
 
   const getActivityIcon = (type: string) => {
     const icons = {
@@ -116,10 +189,10 @@ export default function MerchantDashboardEnhanced() {
               <Package className="w-5 h-5 text-blue-500" />
               <TrendingUp className="w-4 h-4 text-green-500" />
             </div>
-            <p className="text-2xl font-bold">{mockAnalytics.overview.totalPromotions}</p>
+            <p className="text-2xl font-bold">{analytics.overview.totalPromotions}</p>
             <p className="text-xs text-muted-foreground">Total Promotions</p>
             <p className="text-xs text-green-600 mt-1">
-              {mockAnalytics.overview.activePromotions} active
+              {analytics.overview.activePromotions} active
             </p>
           </Card>
 
@@ -128,7 +201,7 @@ export default function MerchantDashboardEnhanced() {
               <Ticket className="w-5 h-5 text-purple-500" />
               <TrendingUp className="w-4 h-4 text-green-500" />
             </div>
-            <p className="text-2xl font-bold">{mockAnalytics.overview.totalCoupons}</p>
+            <p className="text-2xl font-bold">{analytics.overview.totalCoupons}</p>
             <p className="text-xs text-muted-foreground">Coupons Minted</p>
             <p className="text-xs text-green-600 mt-1">+12% this week</p>
           </Card>
@@ -138,10 +211,10 @@ export default function MerchantDashboardEnhanced() {
               <CheckCircle className="w-5 h-5 text-green-500" />
               <TrendingUp className="w-4 h-4 text-green-500" />
             </div>
-            <p className="text-2xl font-bold">{mockAnalytics.overview.totalRedemptions}</p>
+            <p className="text-2xl font-bold">{analytics.overview.totalRedemptions}</p>
             <p className="text-xs text-muted-foreground">Redemptions</p>
             <p className="text-xs text-green-600 mt-1">
-              {mockAnalytics.overview.redemptionRate}% rate
+              {analytics.overview.redemptionRate}% rate
             </p>
           </Card>
 
@@ -150,7 +223,7 @@ export default function MerchantDashboardEnhanced() {
               <DollarSign className="w-5 h-5 text-yellow-500" />
               <TrendingUp className="w-4 h-4 text-green-500" />
             </div>
-            <p className="text-2xl font-bold">${mockAnalytics.overview.totalRevenue.toLocaleString()}</p>
+            <p className="text-2xl font-bold">${analytics.overview.totalRevenue.toLocaleString()}</p>
             <p className="text-xs text-muted-foreground">Total Revenue</p>
             <p className="text-xs text-green-600 mt-1">+18% this month</p>
           </Card>
@@ -195,7 +268,7 @@ export default function MerchantDashboardEnhanced() {
             <Card className="p-6">
               <h3 className="font-bold text-lg mb-4">Daily Performance</h3>
               <div className="space-y-4">
-                {mockDailyStats.map((stat, idx) => (
+                {dailyStats.map((stat, idx) => (
                   <div key={idx} className="flex items-center gap-4">
                     <div className="w-24 text-sm text-muted-foreground">
                       {new Date(stat.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
@@ -251,27 +324,30 @@ export default function MerchantDashboardEnhanced() {
             <Card className="p-6">
               <h3 className="font-bold text-lg mb-4">Category Performance</h3>
               <div className="space-y-4">
-                {Object.entries(mockAnalytics.categoryBreakdown).map(([category, data]) => (
+                {Object.entries(analytics.categoryBreakdown).map(([category, data]) => {
+                  const categoryData = data as any;
+                  return (
                   <div key={category} className="flex items-center gap-4">
                     <div className="w-32 font-medium">{category}</div>
                     <div className="flex-1 grid grid-cols-3 gap-4">
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">Promotions</p>
-                        <p className="text-lg font-bold">{data.promotions}</p>
+                        <p className="text-lg font-bold">{categoryData.promotions || 0}</p>
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">Coupons</p>
-                        <p className="text-lg font-bold">{data.coupons}</p>
+                        <p className="text-lg font-bold">{categoryData.coupons || 0}</p>
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">Redemptions</p>
                         <p className="text-lg font-bold text-green-600">
-                          {data.redemptions} ({((data.redemptions / data.coupons) * 100).toFixed(1)}%)
+                          {categoryData.redemptions || 0} ({categoryData.coupons > 0 ? ((categoryData.redemptions / categoryData.coupons) * 100).toFixed(1) : 0}%)
                         </p>
                       </div>
                     </div>
                   </div>
-                ))}
+                );
+                })}
               </div>
             </Card>
 
@@ -280,24 +356,24 @@ export default function MerchantDashboardEnhanced() {
               <Card className="p-5">
                 <p className="text-sm text-muted-foreground mb-2">Regular Sales</p>
                 <p className="text-2xl font-bold mb-1">
-                  ${(mockAnalytics.overview.totalRevenue - mockAnalytics.overview.auctionRevenue - mockAnalytics.overview.groupDealRevenue).toLocaleString()}
+                  ${(analytics.overview.totalRevenue - analytics.overview.auctionRevenue - analytics.overview.groupDealRevenue).toLocaleString()}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {(((mockAnalytics.overview.totalRevenue - mockAnalytics.overview.auctionRevenue - mockAnalytics.overview.groupDealRevenue) / mockAnalytics.overview.totalRevenue) * 100).toFixed(1)}% of total
+                  {analytics.overview.totalRevenue > 0 ? (((analytics.overview.totalRevenue - analytics.overview.auctionRevenue - analytics.overview.groupDealRevenue) / analytics.overview.totalRevenue) * 100).toFixed(1) : 0}% of total
                 </p>
               </Card>
               <Card className="p-5">
                 <p className="text-sm text-muted-foreground mb-2">Auction Revenue</p>
-                <p className="text-2xl font-bold mb-1">${mockAnalytics.overview.auctionRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-bold mb-1">${analytics.overview.auctionRevenue.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">
-                  {((mockAnalytics.overview.auctionRevenue / mockAnalytics.overview.totalRevenue) * 100).toFixed(1)}% of total
+                  {analytics.overview.totalRevenue > 0 ? ((analytics.overview.auctionRevenue / analytics.overview.totalRevenue) * 100).toFixed(1) : 0}% of total
                 </p>
               </Card>
               <Card className="p-5">
                 <p className="text-sm text-muted-foreground mb-2">Group Deal Revenue</p>
-                <p className="text-2xl font-bold mb-1">${mockAnalytics.overview.groupDealRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-bold mb-1">${analytics.overview.groupDealRevenue.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">
-                  {((mockAnalytics.overview.groupDealRevenue / mockAnalytics.overview.totalRevenue) * 100).toFixed(1)}% of total
+                  {analytics.overview.totalRevenue > 0 ? ((analytics.overview.groupDealRevenue / analytics.overview.totalRevenue) * 100).toFixed(1) : 0}% of total
                 </p>
               </Card>
             </div>
@@ -305,7 +381,7 @@ export default function MerchantDashboardEnhanced() {
 
           <TabsContent value="promotions" className="space-y-6">
             <div className="grid grid-cols-1 gap-4">
-              {mockPromotions.map((promo) => (
+              {promotions.map((promo: any) => (
                 <Card key={promo.id} className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
@@ -371,7 +447,7 @@ export default function MerchantDashboardEnhanced() {
             <Card className="p-6">
               <h3 className="font-bold text-lg mb-4">Recent Activity</h3>
               <div className="space-y-3">
-                {mockRecentActivity.map((activity) => (
+                {recentActivity.map((activity) => (
                   <div key={activity.id} className="flex items-center gap-4 p-3 bg-muted/50 rounded-lg">
                     <div className={`w-10 h-10 rounded-full bg-muted flex items-center justify-center ${getActivityColor(activity.type)}`}>
                       {getActivityIcon(activity.type)}

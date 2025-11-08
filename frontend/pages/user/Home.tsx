@@ -6,6 +6,7 @@ import HeroCarousel from "@/components/shared/HeroCarousel";
 import TrendingSection from "@/components/shared/TrendingSection";
 import AuctionCard from "@/components/shared/AuctionCard";
 import CommunityActivity from "@/components/shared/CommunityActivity";
+import { GeoDiscoveryMap } from "@/components/shared/GeoDiscoveryMap";
 import { promotionsAPI, Promotion } from "@/lib/api";
 import { Search, MapPin, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -24,6 +25,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [deals, setDeals] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showMap, setShowMap] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -109,11 +111,22 @@ export default function Home() {
               <MapPin className="w-6 h-6 text-accent" />
               <h2 className="text-2xl md:text-3xl font-heading font-bold">Near You</h2>
             </div>
-            <Button variant="outline" size="sm" className="gap-2 glass-button">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2 glass-button"
+              onClick={() => setShowMap(!showMap)}
+            >
               <MapPin className="w-4 h-4" />
-              Change Location
+              {showMap ? 'Hide Map' : 'View Map'}
             </Button>
           </div>
+          
+          {showMap && (
+            <div className="mb-6">
+              <GeoDiscoveryMap onClose={() => setShowMap(false)} />
+            </div>
+          )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {nearbyDeals.map((deal, index) => (

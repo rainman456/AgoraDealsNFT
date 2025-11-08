@@ -13,7 +13,10 @@ import {
 interface StakedCoupon {
   id: string;
   title: string;
-  merchant: string;
+ merchant: {
+    businessName?: string;
+    name?: string;
+  } | string;
   discount: number;
   stakedAmount: number;
   stakedAt: string;
@@ -108,7 +111,7 @@ export default function Staking() {
 
     try {
       const walletAddress = localStorage.getItem('walletAddress') || '';
-      await stakingAPI.claimRewards({ userAddress: walletAddress, couponId });
+      await stakingAPI.unstake({ couponId, walletAddress });
       toast({
         title: "🎉 Unstaked Successfully!",
         description: `Claimed ${coupon.rewardsEarned.toFixed(2)} tokens in rewards`
@@ -131,7 +134,7 @@ export default function Staking() {
 
     try {
       const walletAddress = localStorage.getItem('walletAddress') || '';
-      await stakingAPI.claimRewards({ walletAddress });
+      await stakingAPI.claimRewards({ userAddress: walletAddress, walletAddress, couponId });
       toast({
         title: "💰 Rewards Claimed!",
         description: `Claimed ${coupon.rewardsEarned.toFixed(2)} tokens`

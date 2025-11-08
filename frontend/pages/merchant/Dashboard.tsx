@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import NotificationBar from "@/components/shared/NotificationBar";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, TrendingUp, Users, Zap, DollarSign, Target, BarChart3, Eye, ArrowUpRight, Sparkles, QrCode, Printer, Download, Loader2, AlertCircle } from "lucide-react";
+import { Plus, TrendingUp, Users, Zap, DollarSign, Target, BarChart3, Eye, ArrowUpRight, Sparkles, QrCode, Printer, Download, Loader2, AlertCircle, Pause, Play, Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { promotionsAPI, Promotion } from "@/lib/api";
@@ -42,8 +42,72 @@ export default function Dashboard() {
     }
   };
 
+  const handlePausePromotion = async (promotionId: string) => {
+    try {
+      const merchant = localStorage.getItem('merchant');
+      if (!merchant) return;
+      const merchantData = JSON.parse(merchant);
+      
+      await promotionsAPI.pause(promotionId, merchantData.walletAddress);
+      toast({
+        title: "Deal Paused",
+        description: "Your promotion has been paused successfully",
+      });
+      loadMerchantPromotions();
+    } catch (error: any) {
+      console.error('Failed to pause promotion:', error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.error || "Failed to pause promotion",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleResumePromotion = async (promotionId: string) => {
+    try {
+      const merchant = localStorage.getItem('merchant');
+      if (!merchant) return;
+      const merchantData = JSON.parse(merchant);
+      
+      await promotionsAPI.resume(promotionId, merchantData.walletAddress);
+      toast({
+        title: "Deal Resumed",
+        description: "Your promotion is now active again",
+      });
+      loadMerchantPromotions();
+    } catch (error: any) {
+      console.error('Failed to resume promotion:', error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.error || "Failed to resume promotion",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeletePromotion = async (promotionId: string) => {
+    if (!confirm('Are you sure you want to delete this promotion?')) return;
+    
+    try {
+      await promotionsAPI.delete(promotionId);
+      toast({
+        title: "Deal Deleted",
+        description: "Your promotion has been deleted successfully",
+      });
+      loadMerchantPromotions();
+    } catch (error: any) {
+      console.error('Failed to delete promotion:', error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.error || "Failed to delete promotion",
+        variant: "destructive"
+      });
+    }
+  };
+
   const stats = {
-    totalRevenue: promotions.reduce((sum, p) => sum + (p.discountedPrice * p.currentSupply), 0),
+    totalRevenue: promotions.reduce((sum, p) => sum + ((p.discountedPrice || 0) * p.currentSupply), 0),
     activeDeals: promotions.filter(p => p.isActive).length,
     totalCustomers: promotions.reduce((sum, p) => sum + p.currentSupply, 0),
     avgROI: 340,
@@ -344,19 +408,47 @@ export default function Dashboard() {
                     </div>
 
                     {/* Right: Actions */}
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="lg" className="flex-1 md:flex-none">
-                        <Eye className="w-4 h-4 mr-2" />
+                    <div className="flex flex-wrap gap-2">
+                      {promo.isActive ? (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handlePausePromotion(promo._id)}
+                          className="border-warning/50 hover:bg-warning/10"
+                        >
+                          <Pause className="w-4 h-4 mr-1" />
+                          Pause
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleResumePromotion(promo._id)}
+                          className="border-success/50 hover:bg-success/10"
+                        >
+                          <Play className="w-4 h-4 mr-1" />
+                          Resume
+                        </Button>
+                      )}
+                      <Button variant="outline" size="sm">
+                        <Eye className="w-4 h-4 mr-1" />
                         View
                       </Button>
                       <Button 
                         variant="outline" 
-                        size="lg" 
-                        className="flex-1 md:flex-none"
+                        size="sm"
                         onClick={() => handlePrintQR(promo)}
                       >
-                        <QrCode className="w-4 h-4 mr-2" />
-                        QR Code
+                        <QrCode className="w-4 h-4 mr-1" />
+                        QR
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleDeletePromotion(promo._id)}
+                        className="border-destructive/50 hover:bg-destructive/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>

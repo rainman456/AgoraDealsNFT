@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { redemptionAPI } from '@/lib/api';
+import { redemptionTicketsAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 
 interface RedemptionTicket {
@@ -40,7 +40,7 @@ export default function RedemptionTickets() {
   const loadTickets = async () => {
     try {
       setLoading(true);
-      const response = await redemptionAPI.listTickets({ limit: 50 });
+      const response = await redemptionTicketsAPI.listTickets({ limit: 50 });
       setTickets(response.data || []);
     } catch (error) {
       console.error('Failed to load redemption tickets:', error);

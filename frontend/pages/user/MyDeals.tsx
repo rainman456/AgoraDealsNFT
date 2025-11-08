@@ -25,7 +25,10 @@ interface Deal {
   id: string;
   title: string;
   description: string;
-  merchant: string;
+  merchant: {
+    businessName?: string;
+    name?: string;
+  } | string;
   image: string;
   price: number;
   discount: number;
