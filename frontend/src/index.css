@@ -1,0 +1,323 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Safe area insets for mobile devices */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Smooth scrolling with momentum */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom toast animations */
+.Toastify__toast {
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.Toastify__toast--info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* Disable text selection on interactive elements */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+
+@layer base {
+  :root {
+    /* Default theme - Vibrant purple gradient */
+    --background: 0 0% 99%;
+    --foreground: 240 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+    
+    --primary: 280 85% 60%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 250 60% 95%;
+    --secondary-foreground: 280 85% 40%;
+    
+    --muted: 240 10% 96%;
+    --muted-foreground: 240 5% 45%;
+    
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Gold accent for premium deals */
+    --gold: 45 95% 55%;
+    --gold-foreground: 240 10% 10%;
+    
+    /* Success green for deals */
+    --success: 145 65% 50%;
+    --success-foreground: 0 0% 100%;
+    
+    /* Destructive: Softer red */
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 240 10% 92%;
+    --input: 240 10% 92%;
+    --ring: 280 85% 60%;
+    
+    /* Gradient colors */
+    --gradient-from: 280 85% 60%;
+    --gradient-via: 290 80% 55%;
+    --gradient-to: 320 90% 60%;
+    
+    /* Effect colors */
+    --glow: 280 85% 70%;
+    --shadow: 240 10% 10%;
+    
+    /* Chart colors: Vibrant and distinct */
+    --chart-1: 280 85% 60%;
+    --chart-2: 15 90% 60%;
+    --chart-3: 145 65% 50%;
+    --chart-4: 200 80% 55%;
+    --chart-5: 45 95% 55%;
+    
+    /* Rounded corners for modern feel */
+    --radius: 1rem;
+    
+    /* Smooth theme transitions */
+    transition: background-color 280ms ease, color 280ms ease, border-color 280ms ease;
+    
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-primary: 280 85% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 250 60% 95%;
+    --sidebar-accent-foreground: 280 85% 40%;
+    --sidebar-border: 240 10% 92%;
+    --sidebar-ring: 280 85% 60%;
+  }
+  .dark {
+    /* Dark mode: Deep, rich colors with vibrant accents */
+    --background: 240 15% 8%;
+    --foreground: 0 0% 98%;
+    --card: 240 12% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 12% 12%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 280 85% 65%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 240 10% 18%;
+    --secondary-foreground: 280 85% 70%;
+    
+    --muted: 240 10% 18%;
+    --muted-foreground: 240 5% 65%;
+    
+    --accent: 160 84% 45%;
+    --accent-foreground: 0 0% 100%;
+    
+    --gold: 45 95% 60%;
+    --gold-foreground: 240 15% 8%;
+    
+    --success: 145 65% 55%;
+    --success-foreground: 0 0% 100%;
+    
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 240 10% 20%;
+    --input: 240 10% 20%;
+    --ring: 280 85% 65%;
+    
+    --chart-1: 280 85% 65%;
+    --chart-2: 15 90% 65%;
+    --chart-3: 145 65% 55%;
+    --chart-4: 200 80% 60%;
+    --chart-5: 45 95% 60%;
+    
+    --sidebar-background: 240 15% 8%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 280 85% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 10% 18%;
+    --sidebar-accent-foreground: 280 85% 70%;
+    --sidebar-border: 240 10% 20%;
+    --sidebar-ring: 280 85% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    transition: background-color 280ms ease, color 280ms ease;
+  }
+  #root {
+    @apply min-h-screen w-full;
+  }
+}
+
+/* Custom utility classes for modern, delightful UI */
+@layer utilities {
+  /* Gradient backgrounds - theme-aware */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, 
+      hsl(var(--gradient-from)), 
+      hsl(var(--gradient-via)), 
+      hsl(var(--gradient-to))
+    );
+  }
+  
+  .bg-gradient-accent {
+    @apply bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500;
+  }
+  
+  .bg-gradient-gold {
+    @apply bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-400;
+  }
+  
+  .bg-gradient-success {
+    @apply bg-gradient-to-br from-green-400 to-emerald-600;
+  }
+  
+  /* Glass morphism effect - premium futuristic cards */
+  .glass {
+    @apply bg-white/70 backdrop-blur-2xl border border-white/30 shadow-glass;
+  }
+  
+  .glass-dark {
+    @apply bg-gray-900/70 backdrop-blur-2xl border border-gray-700/30 shadow-glass;
+  }
+  
+  /* Neumorphic cards - subtle depth */
+  .neumorphic {
+    @apply bg-background shadow-neumorphic rounded-2xl;
+  }
+  
+  .neumorphic-inset {
+    @apply bg-background shadow-neumorphic-inset rounded-2xl;
+  }
+  
+  /* Elevated cards with depth */
+  .card-elevated {
+    @apply shadow-lg hover:shadow-2xl transition-shadow duration-300;
+  }
+  
+  /* Smooth transitions */
+  .transition-smooth {
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  /* Hover lift effect */
+  .hover-lift {
+    @apply transition-transform duration-200 hover:-translate-y-1;
+  }
+  
+  /* Pulse animation for CTAs */
+  .pulse-glow {
+    animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
+    }
+    50% {
+      opacity: 0.9;
+      box-shadow: 0 0 0 8px rgba(168, 85, 247, 0);
+    }
+  }
+  
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.5) 60%,
+      rgba(255, 255, 255, 0)
+    );
+    animation: shimmer 2s infinite;
+    background-size: 200% 100%;
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  
+  /* Bounce in animation */
+  .animate-bounce-in {
+    animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Slide up animation */
+  .animate-slide-up {
+    animation: slide-up 0.4s ease-out;
+  }
+  
+  @keyframes slide-up {
+    0% {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Fade in animation */
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+  
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
