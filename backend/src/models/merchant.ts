@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IMerchant extends Document {
   email: string;
+  businessName?: string;
   walletAddress?: string;
   encryptedPrivateKey?: string;
   iv?: string;

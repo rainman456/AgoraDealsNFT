@@ -85,6 +85,13 @@ const PromotionSchema = new Schema<IPromotion>(
         type: Number,
         default: 0,
       },
+      imageUrl: {
+  type: String,
+  default: '',
+},
+originalPrice: {
+  type: Number,
+},
       totalRatings: {
         type: Number,
         default: 0,

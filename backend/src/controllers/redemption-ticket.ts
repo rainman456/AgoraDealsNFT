@@ -175,6 +175,7 @@ export class RedemptionTicketController {
         ticketPDA,
         couponPDA,
         merchantAuthority,
+        ticket.nonce,
         userPubkey,
         Array.from(hashArray)
       );

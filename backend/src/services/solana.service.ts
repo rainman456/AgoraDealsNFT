@@ -531,6 +531,7 @@ export class SolanaService {
     ticketPDA: PublicKey,
     couponPDA: PublicKey,
     merchantAuthority: PublicKey,
+    nonce: number,
     userPubkey: PublicKey,
     expectedHash: number[]
   ) {
@@ -539,6 +540,8 @@ export class SolanaService {
       const coupon = await this.config.program.account.coupon.fetch(couponPDA);
       const [merchantPDA] = this.config.getMerchantPDA(merchantAuthority);
       const [userStatsPDA] = this.config.getUserStatsPDA(ticket.user);
+      const [ticketPDA] = this.config.getRedemptionTicketPDA(couponPDA, userPubkey, nonce);
+
 
       if (!coupon.mint) {
         throw new Error('Coupon does not have an associated NFT mint');

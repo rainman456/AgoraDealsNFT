@@ -254,12 +254,79 @@ export class SolanaConfig {
     );
   }
 
-  public getRedemptionTicketPDA(coupon: PublicKey, user: PublicKey): [PublicKey, number] {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('redemption_ticket'), coupon.toBuffer(), user.toBuffer()],
-      this.programId
-    );
-  }
+  public getCommentLikePDA(user: PublicKey, comment: PublicKey): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('comment_like'), user.toBuffer(), comment.toBuffer()],
+    this.programId
+  );
+}
+
+  public getRedemptionTicketPDA(coupon: PublicKey, user: PublicKey, nonce: number): [PublicKey, number] {
+  const buffer = Buffer.alloc(8);
+  buffer.writeBigUInt64LE(BigInt(nonce));
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('ticket'), coupon.toBuffer(), user.toBuffer(), buffer],
+    this.programId
+  );
+}
+
+public getStakingPoolPDA(): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('staking_pool')],
+    this.programId
+  );
+}
+
+public getStakeAccountPDA(coupon: PublicKey, user: PublicKey): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('stake'), coupon.toBuffer(), user.toBuffer()],
+    this.programId
+  );
+}
+
+public getStakeVaultPDA(nftMint: PublicKey): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('stake_vault'), nftMint.toBuffer()],
+    this.programId
+  );
+}
+
+public getGroupParticipantPDA(groupDeal: PublicKey, user: PublicKey): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('participant'), groupDeal.toBuffer(), user.toBuffer()],
+    this.programId
+  );
+}
+
+public getGroupEscrowPDA(groupDeal: PublicKey): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('group_escrow'), groupDeal.toBuffer()],
+    this.programId
+  );
+}
+
+public getGroupCouponPDA(groupDeal: PublicKey, user: PublicKey): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('group_coupon'), groupDeal.toBuffer(), user.toBuffer()],
+    this.programId
+  );
+}
+
+public getAuctionEscrowPDA(auction: PublicKey): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('auction_escrow'), auction.toBuffer()],
+    this.programId
+  );
+}
+
+public getBidPDA(auction: PublicKey, bidder: PublicKey, bidCount: number): [PublicKey, number] {
+  const buffer = Buffer.alloc(4);
+  buffer.writeUInt32LE(bidCount);
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('bid'), auction.toBuffer(), bidder.toBuffer(), buffer],
+    this.programId
+  );
+}
 }
 
 // Export singleton getter
