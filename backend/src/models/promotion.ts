@@ -12,6 +12,8 @@ export interface IPromotion extends Document {
   price: number;
   expiryTimestamp: Date;
   isActive: boolean;
+  imageUrl: string;
+  originalPrice:number;
   stats: {
     totalMinted: number;
     totalRedeemed: number;
@@ -72,6 +74,14 @@ const PromotionSchema = new Schema<IPromotion>(
       type: Boolean,
       default: true,
     },
+
+     imageUrl: {
+     type: String,
+     default: '',
+    },
+    originalPrice: {
+      type: Number,
+    },
     stats: {
       totalMinted: {
         type: Number,
@@ -85,13 +95,6 @@ const PromotionSchema = new Schema<IPromotion>(
         type: Number,
         default: 0,
       },
-      imageUrl: {
-  type: String,
-  default: '',
-},
-originalPrice: {
-  type: Number,
-},
       totalRatings: {
         type: Number,
         default: 0,

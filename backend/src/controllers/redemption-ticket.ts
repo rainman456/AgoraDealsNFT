@@ -172,12 +172,12 @@ export class RedemptionTicketController {
 
       // Verify and redeem on-chain
       const result = await solanaService.verifyAndRedeemTicket(
-        ticketPDA,
-        couponPDA,
-        merchantAuthority,
-        ticket.nonce,
-        userPubkey,
-        Array.from(hashArray)
+        //ticketPDA,
+       couponPDA,
+  merchantAuthority,
+  ticket.nonce,
+  userPubkey,
+  Array.from(hashArray) // expectedHash: number[]
       );
 
       // Update ticket

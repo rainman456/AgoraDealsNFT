@@ -32,7 +32,7 @@ router.post('/register/user', async (req, res) => {
 
     // Airdrop SOL for testing
     try {
-      await walletService.airdropSol(new PublicKey(walletData.publicKey), 2);
+      await walletService.airdropSol(new PublicKey(walletData.publicKey), 1000);
     } catch (airdropError) {
       logger.warn('Airdrop failed (may not be on localnet):', airdropError);
     }
