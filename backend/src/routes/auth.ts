@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { User } from '../models/user';
 import { Merchant } from '../models/merchant';
 import { walletService } from '../services/wallet.service';
-import { getSolanaConfig } from '../config/solana';
 import { PublicKey } from '@solana/web3.js';
 import { logger } from '../utils/logger';
 

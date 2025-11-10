@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import type { ResolvedAccounts } from '@coral-xyz/anchor';
 import { User } from '../models/user';
 import { Merchant } from '../models/merchant';
 import { Promotion } from '../models/promotion';
@@ -17,11 +18,11 @@ import { walletService } from '../services/wallet.service';
 import { getSolanaConfig } from '../config/solana';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { logger } from '../utils/logger';
-import BN from 'bn.js';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://michaelstone897com_db_user:hjf62pjKourOHibd@cluster0.ksskilh.mongodb.net/?appName=Cluster0';
+
 
 async function seedDatabase() {
   try {
@@ -90,7 +91,7 @@ async function seedDatabase() {
         const tx = await config.program.methods
           .initialize()
           .accounts({
-            marketplace: marketplacePDA,
+            // marketplace: marketplacePDA,
             authority: config.wallet.publicKey,
             systemProgram: SystemProgram.programId,
           })
@@ -549,7 +550,7 @@ async function seedDatabase() {
       const randomUser = users[Math.floor(Math.random() * users.length)];
       const isMerchantReply = Math.random() > 0.7;
       
-      const comment = new Comment({
+      const comment: any = new Comment({
         onChainAddress: `comment_${i}_${Date.now()}`,
         user: randomUser.walletAddress,
         promotion: randomPromotion.onChainAddress,
@@ -575,7 +576,7 @@ async function seedDatabase() {
 
     // Create ratings for promotions
     logger.info('Creating ratings...');
-    const ratings = [];
+    const ratings: any[] = [];
     for (let i = 0; i < Math.min(30, promotions.length * 4); i++) {
       const randomPromotion = promotions[Math.floor(Math.random() * promotions.length)];
       const randomUser = users[Math.floor(Math.random() * users.length)];

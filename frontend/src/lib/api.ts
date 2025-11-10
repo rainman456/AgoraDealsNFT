@@ -366,25 +366,33 @@ export const authAPI = USE_MOCK_API ? mockAuthAPI : realAuthAPI;
 // ============================================================================
 
 const realPromotionsAPI = {
-  createPromotion: async (data: {
-    walletAddress: string;
-    email: string;
-    title: string;
-    description: string;
-    discountPercentage: number;
-    price: number;
-    category: string;
-    maxSupply: number;
-    expiryDays?: number;
-    expiryTimestamp?: string;
-    imageUrl?: string;
-  }) => {
-    const { data: response } = await api.post('/promotions', data, {
-      headers: { 'X-Wallet-Address': data.walletAddress },
-    });
-    return response;
-  },
-
+ createPromotion: async (data: {
+  walletAddress: string;
+  email: string;
+  title: string;
+  description: string;
+  discountPercentage: number;
+  price: number;
+  category: string;
+  maxSupply: number;
+  expiryDays?: number;
+  expiryTimestamp?: string;
+  imageUrl?: string;
+}) => {
+  // Add validation for category
+  const validCategories = ['flights', 'hotels', 'restaurants', 'experiences', 'shopping'];
+  if (!validCategories.includes(data.category.toLowerCase())) {
+    throw new Error(`Invalid category. Must be one of: ${validCategories.join(', ')}`);
+  }
+  
+  const { data: response } = await api.post('/promotions', {
+    ...data,
+    category: data.category.toLowerCase() // Ensure lowercase
+  }, {
+    headers: { 'X-Wallet-Address': data.walletAddress },
+  });
+  return response;
+},
   listPromotions: async (params?: {
     page?: number;
     limit?: number;

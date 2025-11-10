@@ -17,6 +17,7 @@ export class ExternalController {
           success: false,
           error: 'Missing required fields: origin, destination, departureDate',
         });
+        return;
       }
 
       // Fetch flight deals from aggregator
@@ -81,6 +82,7 @@ export class ExternalController {
           success: false,
           error: 'Missing required fields: location, checkIn, checkOut',
         });
+        return;
       }
 
       // Fetch hotel deals from aggregator
@@ -172,7 +174,48 @@ export class ExternalController {
 export const externalController = new ExternalController();
 
 // Export individual controller methods for testing
-export const getExternalDeals = externalController.getDeals.bind(externalController);
+export const getExternalDeals = async (req: Request, res: Response, next: any): Promise<void> => {
+  try {
+    const { type, walletAddress } = req.query;
+
+    if (!type) {
+      throw new Error('Missing required query parameter: type');
+    }
+
+    if (type !== 'flight' && type !== 'hotel') {
+      throw new Error('Invalid deal type. Must be "flight" or "hotel"');
+    }
+
+    let deals: any[] = [];
+
+    if (type === 'flight') {
+      deals = await aggregatorService.fetchFlightDeals({
+        origin: req.query.origin as string,
+        destination: req.query.destination as string,
+        departureDate: req.query.date as string,
+      });
+    } else if (type === 'hotel') {
+      deals = await aggregatorService.fetchHotelDeals({
+        location: req.query.location as string,
+        checkIn: req.query.checkIn as string,
+        checkOut: req.query.checkOut as string,
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        deals,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
 export const syncExternalDeals = async (req: Request, res: Response, next: any): Promise<void> => {
   try {
     const { deals, walletAddress } = req.body;

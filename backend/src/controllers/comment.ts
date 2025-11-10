@@ -73,10 +73,10 @@ export const commentController = {
         { $inc: { 'stats.totalComments': 1 } }
       );
 
-      res.status(201).json(comment);
+      return res.status(201).json(comment);
     } catch (error) {
       logger.error('Error creating comment:', error);
-      res.status(500).json({ error: 'Failed to create comment' });
+      return res.status(500).json({ error: 'Failed to create comment' });
     }
   },
 
@@ -99,10 +99,10 @@ export const commentController = {
       comment.likes += 1;
       await comment.save();
 
-      res.json(comment);
+      return res.json(comment);
     } catch (error) {
       logger.error('Error liking comment:', error);
-      res.status(500).json({ error: 'Failed to like comment' });
+      return res.status(500).json({ error: 'Failed to like comment' });
     }
   },
 
@@ -134,10 +134,10 @@ export const commentController = {
         { $inc: { 'stats.totalComments': -1 } }
       );
 
-      res.json({ message: 'Comment deleted successfully' });
+      return res.json({ message: 'Comment deleted successfully' });
     } catch (error) {
       logger.error('Error deleting comment:', error);
-      res.status(500).json({ error: 'Failed to delete comment' });
+      return res.status(500).json({ error: 'Failed to delete comment' });
     }
   },
 };

@@ -57,10 +57,10 @@ export const listingController = {
         return res.status(404).json({ error: 'Listing not found' });
       }
 
-      res.json(listing);
+      return res.json(listing);
     } catch (error) {
       logger.error('Error fetching listing:', error);
-      res.status(500).json({ error: 'Failed to fetch listing' });
+      return res.status(500).json({ error: 'Failed to fetch listing' });
     }
   },
 
@@ -106,10 +106,10 @@ export const listingController = {
       coupon.isListed = true;
       await coupon.save();
 
-      res.status(201).json(listing);
+      return res.status(201).json(listing);
     } catch (error) {
       logger.error('Error creating listing:', error);
-      res.status(500).json({ error: 'Failed to create listing' });
+      return res.status(500).json({ error: 'Failed to create listing' });
     }
   },
 
@@ -142,10 +142,10 @@ export const listingController = {
         { isListed: false }
       );
 
-      res.json(listing);
+      return res.json(listing);
     } catch (error) {
       logger.error('Error deactivating listing:', error);
-      res.status(500).json({ error: 'Failed to deactivate listing' });
+      return res.status(500).json({ error: 'Failed to deactivate listing' });
     }
   },
 
@@ -177,10 +177,10 @@ export const listingController = {
         { isListed: false }
       );
 
-      res.json({ message: 'Listing deleted successfully' });
+      return res.json({ message: 'Listing deleted successfully' });
     } catch (error) {
       logger.error('Error deleting listing:', error);
-      res.status(500).json({ error: 'Failed to delete listing' });
+      return res.status(500).json({ error: 'Failed to delete listing' });
     }
   },
 };

@@ -528,7 +528,7 @@ export class SolanaService {
    * Verify and redeem ticket
    */
   async verifyAndRedeemTicket(
-    ticketPDA: PublicKey,
+    //ticketPDA: PublicKey,
     couponPDA: PublicKey,
     merchantAuthority: PublicKey,
     nonce: number,
@@ -536,11 +536,14 @@ export class SolanaService {
     expectedHash: number[]
   ) {
     try {
-      const ticket = await this.config.program.account.redemptionTicket.fetch(ticketPDA);
+      // const ticket = await this.config.program.account.redemptionTicket.fetch(ticketPDA);
       const coupon = await this.config.program.account.coupon.fetch(couponPDA);
       const [merchantPDA] = this.config.getMerchantPDA(merchantAuthority);
       const [userStatsPDA] = this.config.getUserStatsPDA(ticket.user);
       const [ticketPDA] = this.config.getRedemptionTicketPDA(couponPDA, userPubkey, nonce);
+      const ticket = await this.config.program.account.redemptionTicket.fetch(ticketPDA);
+      
+      
 
 
       if (!coupon.mint) {

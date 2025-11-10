@@ -6,7 +6,7 @@ import { Merchant } from '../models/merchant';
 import { logger } from '../utils/logger';
 import { getPaginationParams, createPaginationResult } from '../utils/pagination';
 import { filterByDistance } from '../utils/distance';
-import { getDatabaseConfig } from '../config/database';
+// import { getDatabaseConfig } from '../config/database';
 
 export class PromotionController {
   constructor() {
@@ -84,6 +84,7 @@ export class PromotionController {
       let onChainAddress = 'pending';
       let transactionSignature = 'pending';
 
+      // BLOCKCHAIN-FIRST PATTERN: Create on-chain first, then sync to DB
       if (hasBlockchainSetup) {
         try {
           const merchantAuthority = new PublicKey(merchant.walletAddress!);
@@ -97,7 +98,7 @@ export class PromotionController {
             authTag: merchant.authTag!,
           });
 
-          // Create on-chain
+          // Create on-chain FIRST
           const result = await solanaService.createPromotion(
             merchantAuthority,
             promotionId,
@@ -112,12 +113,29 @@ export class PromotionController {
           
           onChainAddress = result.promotion;
           transactionSignature = result.signature;
+
+          logger.info(`✅ Promotion created on-chain: ${onChainAddress}`);
+
+          // Wait for confirmation before saving to DB
+          const { blockchainSync } = await import('../services/blockchain-sync.service');
+          const isFinalized = await blockchainSync.verifyTransactionFinality(transactionSignature);
+          
+          if (!isFinalized) {
+            logger.warn(`Transaction not yet finalized: ${transactionSignature}`);
+          }
         } catch (blockchainError) {
-          logger.warn('Blockchain creation failed, saving to DB only:', blockchainError);
+          logger.error('Blockchain creation failed:', blockchainError);
+          // FAIL FAST: Don't create in DB if blockchain fails
+          res.status(500).json({
+            success: false,
+            error: 'Blockchain transaction failed. Please try again.',
+            details: blockchainError instanceof Error ? blockchainError.message : 'Unknown error',
+          });
+          return;
         }
       }
 
-      // Save to database
+      // Save to database AFTER blockchain success
       const originalPrice = price / (1 - discountPercentage / 100);
       const promotion = await Promotion.create({
         onChainAddress,
@@ -133,6 +151,7 @@ export class PromotionController {
         imageUrl: imageUrl || '',
         expiryTimestamp: finalExpiryTimestamp,
         isActive: true,
+        transactionSignature,
         stats: {
           totalMinted: 0,
           totalRedeemed: 0,
@@ -182,6 +201,20 @@ export class PromotionController {
    */
   async list(req: Request, res: Response): Promise<void> {
     try {
+      // Check if database is connected
+      const mongoose = await import('mongoose');
+      if (mongoose.default.connection.readyState !== 1) {
+        logger.warn('Database not connected, returning empty promotions list');
+        res.json({
+          success: true,
+          data: {
+            promotions: [],
+            pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+          },
+        });
+        return;
+      }
+
       const { page, limit, skip } = getPaginationParams(req.query);
       const { category, minDiscount, search, sortBy, sortOrder, latitude, longitude, radius, isActive } = req.query;
 
@@ -266,54 +299,45 @@ export class PromotionController {
           parseFloat(longitude as string),
           parseFloat(radius as string)
         ) as typeof promotionsWithMerchant;
-        total = promotionsWithMerchant.length;
       }
 
-
-      
-      if (!res.headersSent) {
-        res.json({
-          success: true,
-          data: {
-            promotions: promotionsWithMerchant.map((p) => ({
-              _id: p._id,
-              id: p._id,
-              onChainAddress: p.onChainAddress,
-              merchant: {
-                id: p.merchantDetails?._id,
-                name: p.merchantDetails?.name,
-                businessName: p.merchantDetails?.businessName || p.merchantDetails?.name,
-                category: p.merchantDetails?.category,
-                location: p.merchantDetails?.location,
-              },
-              title: p.title,
-              description: p.description,
-              category: p.category,
-              discountPercentage: p.discountPercentage,
-              maxSupply: p.maxSupply,
-              currentSupply: p.currentSupply,
-              price: p.price,
-              originalPrice: p.originalPrice || (p.price / (1 - p.discountPercentage / 100)),
-              discountedPrice: p.price,
-              expiryTimestamp: p.expiryTimestamp,
-              endDate: p.expiryTimestamp,
-              imageUrl: p.imageUrl,
-              stats: p.stats,
-            })),
-            pagination: createPaginationResult(page, limit, total),
-          },
-        });
-      } else {
-        logger.warn('Headers already sent, skipping response');
-      }
+      res.json({
+        success: true,
+        data: {
+          promotions: promotionsWithMerchant.map((p) => ({
+            _id: p._id,
+            id: p._id,
+            onChainAddress: p.onChainAddress,
+            merchant: {
+              id: p.merchantDetails?._id,
+              name: p.merchantDetails?.name,
+              businessName: p.merchantDetails?.businessName || p.merchantDetails?.name,
+              category: p.merchantDetails?.category,
+              location: p.merchantDetails?.location,
+            },
+            title: p.title,
+            description: p.description,
+            category: p.category,
+            discountPercentage: p.discountPercentage,
+            maxSupply: p.maxSupply,
+            currentSupply: p.currentSupply,
+            price: p.price,
+            originalPrice: p.originalPrice || (p.price / (1 - p.discountPercentage / 100)),
+            discountedPrice: p.price,
+            expiryTimestamp: p.expiryTimestamp,
+            endDate: p.expiryTimestamp,
+            imageUrl: p.imageUrl,
+            stats: p.stats,
+          })),
+          pagination: createPaginationResult(page, limit, total),
+        },
+      });
     } catch (error) {
       logger.error('Error listing promotions:', error);
-      if (!res.headersSent) {
-        res.status(500).json({
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        });
-      }
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   }
 
@@ -498,7 +522,25 @@ export class PromotionController {
         return;
       }
 
-      // Validate wallet address format
+      // Handle guest users - skip blockchain interaction
+      if (walletAddress === 'guest_user') {
+        // For guest users, just increment comment count without blockchain tx
+        await Promotion.updateOne(
+          { _id: promotion._id },
+          { $inc: { 'stats.totalComments': 1 } }
+        );
+
+        res.json({
+          success: true,
+          data: {
+            message: 'Comment added (guest mode - no blockchain transaction)',
+            commentId: promotion.stats.totalComments,
+          },
+        });
+        return;
+      }
+
+      // Validate wallet address format for real users
       if (!walletAddress || walletAddress.length < 32) {
         res.status(400).json({
           success: false,

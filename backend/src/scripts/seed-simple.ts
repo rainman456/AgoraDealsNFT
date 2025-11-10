@@ -322,7 +322,7 @@ async function seedSimple() {
 
     // Create ratings for promotions
     logger.info('Creating ratings...');
-    const ratings = [];
+    const ratings: any[] = [];
     for (let i = 0; i < 40; i++) {
       const promotion = promotions[Math.floor(Math.random() * promotions.length)];
       const user = users[Math.floor(Math.random() * users.length)];

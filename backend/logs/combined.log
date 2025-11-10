@@ -6183,3 +6183,20 @@
 {"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"50","merchantId":"merchant_1762570086987","page":"1"},"timestamp":"2025-11-08 02:48:11","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
 {"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-08 02:48:11"}
 {"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-08 02:48:11"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"Connected to Solana: http://127.0.0.1:8899","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-10 00:06:59"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-10 00:07:00"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-10 00:07:00"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-10 00:07:00"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michaelstone897com_db_user:hjf62pjKourOHibd@cluster0.ksskilh.mongodb.net/?appName=Cluster0","timestamp":"2025-11-10 00:07:00"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-10 00:10:15"}

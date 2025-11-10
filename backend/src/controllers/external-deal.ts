@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import { PublicKey } from '@solana/web3.js';
-import { ExternalDeal, DealSource } from '../models/external-deal';
+import { ExternalDeal } from '../models/external-deal';
 import { solanaService } from '../services/solana.service';
 import { logger } from '../utils/logger';
-import BN from 'bn.js';
 
 export const externalDealController = {
   // List external deals
@@ -64,10 +62,10 @@ export const externalDealController = {
         return res.status(404).json({ error: 'External deal not found' });
       }
 
-      res.json(deal);
+      return res.json(deal);
     } catch (error) {
       logger.error('Error fetching external deal:', error);
-      res.status(500).json({ error: 'Failed to fetch external deal' });
+      return res.status(500).json({ error: 'Failed to fetch external deal' });
     }
   },
 
@@ -135,13 +133,13 @@ export const externalDealController = {
 
       await deal.save();
 
-      res.status(201).json({
+      return res.status(201).json({
         deal,
         transactionSignature: result.signature,
       });
     } catch (error) {
       logger.error('Error creating external deal:', error);
-      res.status(500).json({ error: 'Failed to create external deal' });
+      return res.status(500).json({ error: 'Failed to create external deal' });
     }
   },
 
@@ -186,10 +184,10 @@ export const externalDealController = {
       deal.lastUpdated = new Date();
       await deal.save();
 
-      res.json(deal);
+      return res.json(deal);
     } catch (error) {
       logger.error('Error updating external deal:', error);
-      res.status(500).json({ error: 'Failed to update external deal' });
+      return res.status(500).json({ error: 'Failed to update external deal' });
     }
   },
 };

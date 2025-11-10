@@ -18,6 +18,7 @@ export class SocialController {
           success: false,
           error: 'Missing required fields: itemId, itemType',
         });
+        return;
       }
 
       // Update share count in metadata
@@ -50,6 +51,7 @@ export class SocialController {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      return;
     }
   }
 
@@ -66,6 +68,7 @@ export class SocialController {
           success: false,
           error: 'Missing required fields: itemId, itemType',
         });
+        return;
       }
 
       // Update view count in metadata
@@ -96,6 +99,7 @@ export class SocialController {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      return;
     }
   }
 
@@ -152,6 +156,7 @@ export class SocialController {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      return;
     }
   }
 
@@ -186,6 +191,7 @@ export class SocialController {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      return;
     }
   }
 
@@ -203,6 +209,7 @@ export class SocialController {
           success: false,
           error: 'Missing required fields: couponId, rating',
         });
+        return;
       }
 
       if (rating < 1 || rating > 5) {
@@ -210,6 +217,7 @@ export class SocialController {
           success: false,
           error: 'Rating must be between 1 and 5',
         });
+        return;
       }
 
       const coupon = await Coupon.findOne({
@@ -221,6 +229,7 @@ export class SocialController {
           success: false,
           error: 'Coupon not found',
         });
+        return;
       }
 
       // Update metadata with new rating
@@ -259,6 +268,7 @@ export class SocialController {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      return;
     }
   }
 
@@ -270,6 +280,17 @@ export class SocialController {
     try {
       const { category } = req.query;
       const limit = parseInt(req.query.limit as string) || 50;
+
+      // Check if database is connected
+      const mongoose = await import('mongoose');
+      if (mongoose.default.connection.readyState !== 1) {
+        logger.warn('Database not connected, returning empty feed');
+        res.json({
+          success: true,
+          data: [],
+        });
+        return;
+      }
 
       const filter: any = {};
       if (category) {
@@ -295,6 +316,7 @@ export class SocialController {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      return;
     }
   }
 }

@@ -137,16 +137,28 @@ export class CouponController {
         authTag: merchant.authTag,
       });
 
-      // Mint on-chain
-      const result = await solanaService.mintCoupon(
-        promotionPDA,
-        recipientPubkey,
-        merchantAuthority,
-        couponId,
-        merchantKeypair
-      );
+      // BLOCKCHAIN-FIRST: Mint on-chain FIRST
+      let result;
+      try {
+        result = await solanaService.mintCoupon(
+          promotionPDA,
+          recipientPubkey,
+          merchantAuthority,
+          couponId,
+          merchantKeypair
+        );
+        logger.info(`✅ Coupon minted on-chain: ${result.coupon}`);
+      } catch (blockchainError) {
+        logger.error('Blockchain minting failed:', blockchainError);
+        res.status(500).json({
+          success: false,
+          error: 'Blockchain transaction failed. Please try again.',
+          details: blockchainError instanceof Error ? blockchainError.message : 'Unknown error',
+        });
+        return;
+      }
 
-      // Save to database
+      // Save to database AFTER blockchain success
       const coupon = await Coupon.create({
         onChainAddress: result.coupon,
         couponId,
@@ -159,6 +171,7 @@ export class CouponController {
         isRedeemed: false,
         isListed: false,
         transferHistory: [],
+        transactionSignature: result.signature,
       });
 
       // Update promotion

@@ -108,7 +108,7 @@ export function createApp(): Application {
     app.use('/api/v1/merchants', merchantRoutes);
     
     logger.info('Registering promotions route...');
-    app.use('/api/v1/promotions', (req, res, next) => {
+    app.use('/api/v1/promotions', (req, _res, next) => {
       logger.info(`Promotions middleware: ${req.method} ${req.path}`);
       next();
     }, promotionRoutes);
@@ -143,7 +143,7 @@ export function createApp(): Application {
   });
 
   // Catch-all error handler before the final error handler
-  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
     logger.error('=== GLOBAL ERROR HANDLER TRIGGERED ===');
     logger.error('Error:', err);
     logger.error('Request:', { method: req.method, path: req.path, query: req.query });
