@@ -1,16 +1,16 @@
-// import { PublicKey } from '@solana/web3.js';
+
 import { logger } from '../utils/logger';
 import { Promotion } from '../models/promotion';
 import { Coupon } from '../models/coupon';
 import { Merchant } from '../models/merchant';
-// import { User } from '../models/user';
+
 import { Listing } from '../models/listing';
 import { Rating } from '../models/rating';
 import { Comment } from '../models/comment';
-// import { GroupDeal } from '../models/group-deal';
-// import { Auction } from '../models/auction';
-// import { Badge } from '../models/badge';
-// import { RedemptionTicket } from '../models/redemption-ticket';
+import { GroupDeal } from '../models/group-deal';
+import { Auction } from '../models/auction';
+import { BadgeNFT } from '../models/badge';
+import { RedemptionTicket } from '../models/redemption-ticket';
 
 /**
  * Event Handlers Service
@@ -498,26 +498,483 @@ export class EventHandlersService {
   }
 
   /**
-   * Handle other events (implement as needed)
+   * Handle GroupDealCreated event
    */
   public async handleGroupDealCreated(event: any): Promise<void> {
-    // Implementation similar to above
-    logger.info('GroupDealCreated event received', event);
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { group_deal, promotion, merchant, target_participants, max_participants, start_time, end_time } = data;
+
+      const existing = await GroupDeal.findOne({ onChainAddress: group_deal.toString() });
+      if (existing) {
+        this.markProcessed(signature);
+        return;
+      }
+
+      const promotionDoc = await Promotion.findOne({ onChainAddress: promotion.toString() });
+      if (!promotionDoc) {
+        logger.warn(`Promotion not found for group deal: ${promotion.toString()}`);
+        return;
+      }
+
+      await GroupDeal.create({
+        onChainAddress: group_deal.toString(),
+        promotionAddress: promotion.toString(),
+        merchantAddress: merchant.toString(),
+        title: promotionDoc.title || 'Group Deal',
+        description: promotionDoc.description || '',
+        category: promotionDoc.category || 'general',
+        tiers: [],
+        targetParticipants: target_participants,
+        currentParticipants: 0,
+        maxParticipants: max_participants,
+        participants: [],
+        startTime: new Date(start_time * 1000),
+        endTime: new Date(end_time * 1000),
+        expiryTimestamp: new Date(end_time * 1000),
+        status: 'active',
+        isActive: true,
+        isSuccessful: false,
+        totalRevenue: 0,
+        currentTier: 0,
+        termsAndConditions: [],
+      });
+
+      logger.info(`✅ Group deal created in DB: ${group_deal.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling GroupDealCreated event:', error);
+      throw error;
+    }
   }
 
+  /**
+   * Handle GroupDealJoined event
+   */
+  public async handleGroupDealJoined(event: any): Promise<void> {
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { group_deal, participant, quantity, amount_paid, timestamp } = data;
+
+      await GroupDeal.updateOne(
+        { onChainAddress: group_deal.toString() },
+        {
+          $inc: { currentParticipants: 1, totalRevenue: parseFloat(amount_paid.toString()) },
+          $push: {
+            participants: {
+              userAddress: participant.toString(),
+              joinedAt: new Date(timestamp * 1000),
+              quantity: quantity,
+              paidAmount: parseFloat(amount_paid.toString()),
+              txSignature: signature,
+            },
+          },
+        }
+      );
+
+      logger.info(`✅ User joined group deal: ${group_deal.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling GroupDealJoined event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle GroupDealFinalized event
+   */
+  public async handleGroupDealFinalized(event: any): Promise<void> {
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { group_deal, is_successful, final_participants } = data;
+
+      await GroupDeal.updateOne(
+        { onChainAddress: group_deal.toString() },
+        {
+          $set: {
+            status: is_successful ? 'successful' : 'failed',
+            isActive: false,
+            isSuccessful: is_successful,
+            currentParticipants: final_participants,
+          },
+        }
+      );
+
+      logger.info(`✅ Group deal finalized: ${group_deal.toString()} - ${is_successful ? 'successful' : 'failed'}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling GroupDealFinalized event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle GroupDealRefunded event
+   */
+  public async handleGroupDealRefunded(event: any): Promise<void> {
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { group_deal, participant, refund_amount } = data;
+
+      await GroupDeal.updateOne(
+        { onChainAddress: group_deal.toString() },
+        {
+          $inc: { totalRevenue: -parseFloat(refund_amount.toString()) },
+        }
+      );
+
+      logger.info(`✅ Group deal refunded for participant: ${participant.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling GroupDealRefunded event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle AuctionCreated event
+   */
   public async handleAuctionCreated(event: any): Promise<void> {
-    // Implementation similar to above
-    logger.info('AuctionCreated event received', event);
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { auction, coupon, seller, merchant, starting_price, reserve_price, buy_now_price, start_time, end_time } = data;
+
+      const existing = await Auction.findOne({ onChainAddress: auction.toString() });
+      if (existing) {
+        this.markProcessed(signature);
+        return;
+      }
+
+      const couponDoc = await Coupon.findOne({ onChainAddress: coupon.toString() });
+      const promotionDoc = couponDoc ? await Promotion.findOne({ onChainAddress: couponDoc.promotion }) : null;
+
+      await Auction.create({
+        onChainAddress: auction.toString(),
+        couponAddress: coupon.toString(),
+        sellerAddress: seller.toString(),
+        merchantAddress: merchant.toString(),
+        title: promotionDoc?.title || 'Auction',
+        description: promotionDoc?.description || '',
+        category: promotionDoc?.category || 'general',
+        startingPrice: parseFloat(starting_price.toString()),
+        reservePrice: reserve_price ? parseFloat(reserve_price.toString()) : undefined,
+        currentBid: parseFloat(starting_price.toString()),
+        buyNowPrice: buy_now_price ? parseFloat(buy_now_price.toString()) : undefined,
+        bids: [],
+        totalBids: 0,
+        startTime: new Date(start_time * 1000),
+        endTime: new Date(end_time * 1000),
+        extendOnBid: true,
+        extensionTime: 300,
+        status: 'active',
+        isActive: true,
+        isSettled: false,
+        couponMetadata: couponDoc ? {
+          discountPercentage: couponDoc.discountPercentage,
+          expiryTimestamp: couponDoc.expiryTimestamp,
+          merchantName: promotionDoc?.title || 'Unknown',
+        } : undefined,
+      });
+
+      logger.info(`✅ Auction created in DB: ${auction.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling AuctionCreated event:', error);
+      throw error;
+    }
   }
 
+  /**
+   * Handle BidPlaced event
+   */
+  public async handleBidPlaced(event: any): Promise<void> {
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { auction, bidder, amount, timestamp } = data;
+
+      const auctionDoc = await Auction.findOne({ onChainAddress: auction.toString() });
+      if (auctionDoc) {
+        const bids = auctionDoc.bids.map(bid => ({ ...bid, isWinning: false }));
+        
+        await Auction.updateOne(
+          { onChainAddress: auction.toString() },
+          {
+            $set: {
+              currentBid: parseFloat(amount.toString()),
+              highestBidder: bidder.toString(),
+              bids: bids,
+            },
+            $inc: { totalBids: 1 },
+            $push: {
+              bids: {
+                bidderAddress: bidder.toString(),
+                amount: parseFloat(amount.toString()),
+                timestamp: new Date(timestamp * 1000),
+                txSignature: signature,
+                isWinning: true,
+              },
+            },
+          }
+        );
+      }
+
+      logger.info(`✅ Bid placed on auction: ${auction.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling BidPlaced event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle AuctionFinalized event
+   */
+  public async handleAuctionFinalized(event: any): Promise<void> {
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { auction, winner, final_price, timestamp } = data;
+
+      await Auction.updateOne(
+        { onChainAddress: auction.toString() },
+        {
+          $set: {
+            status: 'settled',
+            isActive: false,
+            isSettled: true,
+            winner: winner ? winner.toString() : undefined,
+            finalPrice: final_price ? parseFloat(final_price.toString()) : undefined,
+            settledAt: new Date(timestamp * 1000),
+            settlementTxSignature: signature,
+          },
+        }
+      );
+
+      if (winner) {
+        const auctionDoc = await Auction.findOne({ onChainAddress: auction.toString() });
+        if (auctionDoc) {
+          await Coupon.updateOne(
+            { onChainAddress: auctionDoc.couponAddress },
+            {
+              $set: {
+                owner: winner.toString(),
+                isListed: false,
+              },
+            }
+          );
+        }
+      }
+
+      logger.info(`✅ Auction finalized: ${auction.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling AuctionFinalized event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle AuctionCancelled event
+   */
+  public async handleAuctionCancelled(event: any): Promise<void> {
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { auction } = data;
+
+      await Auction.updateOne(
+        { onChainAddress: auction.toString() },
+        {
+          $set: {
+            status: 'cancelled',
+            isActive: false,
+          },
+        }
+      );
+
+      logger.info(`✅ Auction cancelled: ${auction.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling AuctionCancelled event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle BadgeEarned event
+   */
   public async handleBadgeEarned(event: any): Promise<void> {
-    // Implementation similar to above
-    logger.info('BadgeEarned event received', event);
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { badge_nft, user, badge_type, mint, metadata, timestamp } = data;
+
+      const existing = await BadgeNFT.findOne({ onChainAddress: badge_nft.toString() });
+      if (existing) {
+        this.markProcessed(signature);
+        return;
+      }
+
+      await BadgeNFT.create({
+        onChainAddress: badge_nft.toString(),
+        user: user.toString(),
+        badgeType: badge_type,
+        mint: mint.toString(),
+        metadata: metadata.toString(),
+        earnedAt: new Date(timestamp * 1000),
+        metadataUri: metadata.toString(),
+      });
+
+      logger.info(`✅ Badge earned: ${badge_type} for user ${user.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling BadgeEarned event:', error);
+      throw error;
+    }
   }
 
+  /**
+   * Handle TicketGenerated event
+   */
   public async handleTicketGenerated(event: any): Promise<void> {
-    // Implementation similar to above
-    logger.info('TicketGenerated event received', event);
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { ticket, coupon, user, merchant, ticket_hash, nonce, expires_at } = data;
+
+      const existing = await RedemptionTicket.findOne({ onChainAddress: ticket.toString() });
+      if (existing) {
+        this.markProcessed(signature);
+        return;
+      }
+
+      await RedemptionTicket.create({
+        onChainAddress: ticket.toString(),
+        couponAddress: coupon.toString(),
+        userAddress: user.toString(),
+        merchantAddress: merchant.toString(),
+        ticketHash: ticket_hash,
+        nonce: nonce,
+        expiresAt: new Date(expires_at * 1000),
+        isConsumed: false,
+        verificationMethod: 'qr_scan',
+        generationTxSignature: signature,
+        status: 'active',
+      });
+
+      logger.info(`✅ Redemption ticket generated: ${ticket.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling TicketGenerated event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle TicketRedeemed event
+   */
+  public async handleTicketRedeemed(event: any): Promise<void> {
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { ticket, timestamp } = data;
+
+      await RedemptionTicket.updateOne(
+        { onChainAddress: ticket.toString() },
+        {
+          $set: {
+            isConsumed: true,
+            consumedAt: new Date(timestamp * 1000),
+            redemptionTxSignature: signature,
+            status: 'consumed',
+          },
+        }
+      );
+
+      logger.info(`✅ Redemption ticket consumed: ${ticket.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling TicketRedeemed event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle CommentLiked event
+   */
+  public async handleCommentLiked(event: any): Promise<void> {
+    const { signature, data } = event;
+
+    if (this.isProcessed(signature)) {
+      return;
+    }
+
+    try {
+      const { comment } = data;
+
+      await Comment.updateOne(
+        { onChainAddress: comment.toString() },
+        {
+          $inc: { likes: 1 },
+        }
+      );
+
+      logger.info(`✅ Comment liked: ${comment.toString()}`);
+      this.markProcessed(signature);
+    } catch (error) {
+      logger.error('Error handling CommentLiked event:', error);
+      throw error;
+    }
   }
 }
 
