@@ -221,12 +221,12 @@ export class PromotionController {
       const filter: any = { expiryTimestamp: { $gt: new Date() } };
       
       // Handle isActive filter - default to true if not specified
-      if (isActive !== undefined) {
-        filter.isActive = isActive === 'true' || isActive === true;
-      } else {
-        filter.isActive = true;
-      }
-
+     if (isActive !== undefined) {
+  const isActiveStr = Array.isArray(isActive) ? isActive[0] : String(isActive);
+  filter.isActive = isActiveStr === 'true' || isActiveStr === '1';
+} else {
+  filter.isActive = true;
+}
       if (category) {
         filter.category = category;
       }

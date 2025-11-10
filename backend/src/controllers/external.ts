@@ -174,9 +174,10 @@ export class ExternalController {
 export const externalController = new ExternalController();
 
 // Export individual controller methods for testing
-export const getExternalDeals = async (req: Request, res: Response, next: any): Promise<void> => {
+export const getExternalDeals = async (req: Request, res: Response, _next: any): Promise<void> => {
   try {
-    const { type, walletAddress } = req.query;
+    //const { type, walletAddress } = req.query;
+    const { type} = req.query;
 
     if (!type) {
       throw new Error('Missing required query parameter: type');
@@ -218,7 +219,8 @@ export const getExternalDeals = async (req: Request, res: Response, next: any): 
 
 export const syncExternalDeals = async (req: Request, res: Response, next: any): Promise<void> => {
   try {
-    const { deals, walletAddress } = req.body;
+    // const { deals, walletAddress } = req.body;
+    const { deals } = req.body;
 
     if (!deals || !Array.isArray(deals)) {
       throw new Error('Missing or invalid deals array');

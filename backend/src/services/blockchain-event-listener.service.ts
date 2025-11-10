@@ -164,7 +164,7 @@ export class BlockchainEventListenerService extends EventEmitter {
 
       let events: any[] = [];
       try {
-        events = this.eventParser.parseLogs(logs.logs);
+        const events: any[] = Array.from(this.eventParser.parseLogs(logs.logs));
       } catch (parseError) {
         logger.error('Error parsing events from logs:', parseError, {
           signature,
@@ -347,14 +347,16 @@ export class BlockchainEventListenerService extends EventEmitter {
         
         logger.info(`Backfilling slots ${currentSlot} to ${maxSlot}`);
 
-        const signatures = await this.connection.getSignaturesForAddress(
-          this.programId,
-          {
-            minContextSlot: currentSlot,
-            maxContextSlot: maxSlot,
-          },
-          'finalized'
-        );
+        // Request signatures starting from minContextSlot, then filter client-side by slot <= maxSlot
+const signatureInfos = await this.connection.getSignaturesForAddress(
+  this.programId,
+  { minContextSlot: currentSlot }, // avoid using maxContextSlot which may not exist in types
+  'finalized'
+);
+
+// Filter by slot range
+const signatures = signatureInfos.filter(sig => sig.slot !== undefined && sig.slot >= currentSlot && sig.slot <= maxSlot);
+
 
         for (const sigInfo of signatures) {
           try {
