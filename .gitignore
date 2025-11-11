@@ -1,6 +1,7 @@
 code1.md
 code.md
 .anchor
+logs
 .DS_Store
 target
 **/*.rs.bk

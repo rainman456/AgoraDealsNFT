@@ -226,9 +226,8 @@ class EventListenerWorker {
 }
 
 // Start worker if this file is run directly
-if (require.main === module) {
-  const worker = new EventListenerWorker();
-  worker.start();
-}
+// Start worker
+const worker = new EventListenerWorker();
+worker.start();
 
 export default EventListenerWorker;

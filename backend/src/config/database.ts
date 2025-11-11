@@ -20,7 +20,7 @@ export class DatabaseConfig {
       return;
     }
 
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/discount-platform';
+    const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://michaelstone897com_db_user:hjf62pjKourOHibd@cluster0.ksskilh.mongodb.net/?appName=Cluster0';
 
     try {
       await mongoose.connect(mongoUri);

@@ -6,6 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import {
   Award,
@@ -20,6 +26,15 @@ import {
   BarChart2,
   AlertCircle,
   Clock,
+  Wallet,
+  CreditCard,
+  Shield,
+  Eye,
+  EyeOff,
+  Download,
+  Copy,
+  ExternalLink,
+  Zap,
 } from 'lucide-react';
 
 const reputationTiers = [
@@ -41,6 +56,9 @@ const badges = [
 
 export const Profile: React.FC = () => {
   const { user } = useAuth();
+  const [advancedMode, setAdvancedMode] = useState(false);
+  const [showWalletDetails, setShowWalletDetails] = useState(false);
+  const [freeTransactionsLeft, setFreeTransactionsLeft] = useState(3);
   const [stats, setStats] = useState({
     totalSaved: 2450,
     dealsRedeemed: 12,
@@ -81,6 +99,30 @@ export const Profile: React.FC = () => {
 
   const userBadges = user?.badges?.map(b => b.id) || ['early-adopter', 'deal-hunter'];
 
+  const [addFundsOpen, setAddFundsOpen] = useState(false);
+  const [fundAmount, setFundAmount] = useState('100');
+  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [mockWalletAddress] = useState('0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb');
+
+  const handleCopyAddress = () => {
+    navigator.clipboard.writeText(mockWalletAddress);
+    toast.success('Wallet address copied to clipboard!');
+  };
+
+  const handleExportWallet = () => {
+    toast.info('Wallet export initiated. Check your email for recovery instructions.');
+  };
+
+  const handleAddFunds = () => {
+    setAddFundsOpen(true);
+  };
+
+  const handleConfirmAddFunds = () => {
+    toast.success(`Successfully added $${fundAmount} to your wallet!`);
+    setAddFundsOpen(false);
+    setFundAmount('100');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,6 +140,47 @@ export const Profile: React.FC = () => {
               <div className="flex-1 text-center md:text-left">
                 <h1 className="text-3xl font-heading font-bold mb-2">{user?.name || 'User'}</h1>
                 <p className="text-muted-foreground mb-4">{user?.email || user?.address}</p>
+
+                {/* Wallet Section - Progressive Disclosure */}
+                {advancedMode && (
+                  <div className="mb-4 p-4 bg-muted/50 rounded-lg border">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Wallet className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Wallet Address</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowWalletDetails(!showWalletDetails)}
+                      >
+                        {showWalletDetails ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                    {showWalletDetails && (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <code className="text-xs bg-background px-2 py-1 rounded flex-1 truncate">
+                            {mockWalletAddress}
+                          </code>
+                          <Button variant="ghost" size="sm" onClick={handleCopyAddress}>
+                            <Copy className="w-3 h-3" />
+                          </Button>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" className="flex-1" onClick={handleExportWallet}>
+                            <Download className="w-3 h-3 mr-1" />
+                            Export Wallet
+                          </Button>
+                          <Button variant="outline" size="sm" className="flex-1" onClick={() => window.open(`https://etherscan.io/address/${mockWalletAddress}`, '_blank')}>
+                            <ExternalLink className="w-3 h-3 mr-1" />
+                            View on Explorer
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Reputation Tier */}
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${currentTier.color} text-white font-semibold shadow-lg">
@@ -305,6 +388,91 @@ export const Profile: React.FC = () => {
 
           <TabsContent value="overview">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Wallet & Payment Section */}
+              <Card className="border-2 border-primary/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Wallet className="text-primary" />
+                    Wallet & Payments
+                  </CardTitle>
+                  <CardDescription>Manage your funds and payment methods</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Add Funds - Fiat On-Ramp */}
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-5 h-5 text-blue-600" />
+                        <span className="font-semibold">Add Funds</span>
+                      </div>
+                      <Badge className="bg-blue-600">Instant</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Add money using credit card, debit card, or bank transfer
+                    </p>
+                    <Button onClick={handleAddFunds} className="w-full" size="lg">
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Add Funds
+                    </Button>
+                  </div>
+
+                  {/* Sponsored Transactions */}
+                  {freeTransactionsLeft > 0 && (
+                    <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg border-2 border-green-200 dark:border-green-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Zap className="w-5 h-5 text-green-600" />
+                          <span className="font-semibold text-green-700 dark:text-green-400">Free Transactions</span>
+                        </div>
+                        <Badge className="bg-green-600 animate-pulse">
+                          {freeTransactionsLeft} left
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Your next {freeTransactionsLeft} transactions are free! No fees applied.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Advanced Mode Toggle */}
+                  <div className="p-4 bg-muted/30 rounded-lg border">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <Label htmlFor="advanced-mode" className="font-semibold cursor-pointer">
+                          Advanced Mode
+                        </Label>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Show wallet address, transaction history, and blockchain details
+                        </p>
+                      </div>
+                      <Switch
+                        id="advanced-mode"
+                        checked={advancedMode}
+                        onCheckedChange={setAdvancedMode}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Educational Content - Progressive Disclosure */}
+                  {advancedMode && (
+                    <div className="p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                      <div className="flex items-start gap-3">
+                        <Shield className="w-5 h-5 text-purple-600 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-sm mb-1">About Your Wallet</h4>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Your wallet is secured by industry-standard encryption. You can export your wallet for use in other apps.
+                          </p>
+                          <Button variant="link" size="sm" className="h-auto p-0 text-xs">
+                            Learn about NFTs & Blockchain →
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               {/* Spending Overview */}
               <Card>
                 <CardHeader>
@@ -334,14 +502,17 @@ export const Profile: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
-                    <span className="text-sm text-gray-600">Staking Rewards</span>
+                    <span className="text-sm text-gray-600">{advancedMode ? 'Staking Rewards' : 'Rewards Earned'}</span>
                     <span className="text-xl font-bold text-orange-600">
                       ${stats.stakingRewards.toFixed(2)}
                     </span>
                   </div>
                 </CardContent>
               </Card>
+            </div>
 
+            {/* Second Row - Full Width Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               {/* Engagement Stats */}
               <Card>
                 <CardHeader>
@@ -523,6 +694,61 @@ export const Profile: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Add Funds Modal */}
+      <Dialog open={addFundsOpen} onOpenChange={setAddFundsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add Funds to Wallet</DialogTitle>
+            <DialogDescription>
+              Add money to your wallet using credit card, debit card, or bank transfer
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="amount">Amount (USD)</Label>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="100"
+                value={fundAmount}
+                onChange={(e) => setFundAmount(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="payment-method">Payment Method</Label>
+              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                <SelectTrigger id="payment-method">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="card">Credit/Debit Card</SelectItem>
+                  <SelectItem value="bank">Bank Transfer</SelectItem>
+                  <SelectItem value="paypal">PayPal</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="flex items-start gap-2">
+                <Shield className="w-4 h-4 text-blue-600 mt-0.5" />
+                <div className="text-xs text-muted-foreground">
+                  <p className="font-semibold text-blue-700 dark:text-blue-400 mb-1">Secure Payment</p>
+                  <p>Your payment information is encrypted and secure. Funds will be available instantly.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddFundsOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmAddFunds}>
+              <CreditCard className="w-4 h-4 mr-2" />
+              Add ${fundAmount}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

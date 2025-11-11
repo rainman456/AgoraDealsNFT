@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -22,7 +23,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'react-toastify';
-import { Plus, TrendingUp, Users, DollarSign, BarChart2, Upload, Edit, Pause, Copy, CheckCircle, Clock, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, TrendingUp, Users, DollarSign, BarChart2, Upload, Edit, Pause, Copy, CheckCircle, Clock, MapPin, Wallet, CreditCard, Shield, Eye, EyeOff, Download, ExternalLink, Zap } from 'lucide-react';
 import { QrCode } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
@@ -31,6 +33,7 @@ import { motion } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 
 export const MerchantDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [deals, setDeals] = useState<Deal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -40,6 +43,10 @@ export const MerchantDashboard: React.FC = () => {
   const [scannerOpen, setScannerOpen] = useState(false);
   const [scannedCode, setScannedCode] = useState('');
   const [verificationStatus, setVerificationStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [advancedMode, setAdvancedMode] = useState(false);
+  const [showWalletDetails, setShowWalletDetails] = useState(false);
+  const [sponsoredTransactions, setSponsoredTransactions] = useState(true);
+  const [mockWalletAddress] = useState('0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -138,10 +145,10 @@ export const MerchantDashboard: React.FC = () => {
     }
   };
 
-  const totalDeals = deals.length;
-  const totalRedemptions = deals.reduce((sum, deal) => sum + (deal.redemptionCount || 0), 0);
-  const totalRevenue = deals.reduce((sum, deal) => sum + (deal.price * (deal.redemptionCount || 0)), 0);
-  const redemptionRate = totalDeals > 0 ? ((totalRedemptions / (deals.reduce((sum, deal) => sum + (deal.maxRedemptions || 100), 0))) * 100).toFixed(1) : 0;
+  const totalDeals = Array.isArray(deals) ? deals.length : 0;
+  const totalRedemptions = Array.isArray(deals) ? deals.reduce((sum, deal) => sum + (deal.redemptionCount || 0), 0) : 0;
+  const totalRevenue = Array.isArray(deals) ? deals.reduce((sum, deal) => sum + (deal.price * (deal.redemptionCount || 0)), 0) : 0;
+  const redemptionRate = totalDeals > 0 && Array.isArray(deals) ? ((totalRedemptions / (deals.reduce((sum, deal) => sum + (deal.maxRedemptions || 100), 0))) * 100).toFixed(1) : 0;
 
   // Mock analytics data
   const revenueData = [
@@ -211,6 +218,15 @@ export const MerchantDashboard: React.FC = () => {
     toast.info('Deal paused successfully');
   };
 
+  const handleCopyWalletAddress = () => {
+    navigator.clipboard.writeText(mockWalletAddress);
+    toast.success('Wallet address copied to clipboard!');
+  };
+
+  const handleWithdrawFunds = () => {
+    toast.success(`Withdrawal of $${totalRevenue.toFixed(2)} initiated. Funds will arrive in 1-2 business days.`);
+  };
+
   return (
     <div className="min-h-screen bg-background py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -246,6 +262,124 @@ export const MerchantDashboard: React.FC = () => {
 
           {/* OVERVIEW TAB */}
           <TabsContent value="overview" className="space-y-6">
+
+            {/* Merchant Wallet & Payment Section */}
+            <Card className="border-2 border-primary/20 mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Wallet className="text-primary" />
+                  Business Wallet & Payments
+                </CardTitle>
+                <CardDescription>Manage your business funds and customer payment options</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Withdraw Earnings */}
+                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg border-2 border-green-200 dark:border-green-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="w-5 h-5 text-green-600" />
+                        <span className="font-semibold">Withdraw Earnings</span>
+                      </div>
+                      <Badge className="bg-green-600">${totalRevenue.toFixed(2)}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Transfer to your bank account or crypto wallet
+                    </p>
+                    <Button className="w-full" size="sm" onClick={handleWithdrawFunds}>
+                      <Download className="w-4 h-4 mr-2" />
+                      Withdraw Funds
+                    </Button>
+                  </div>
+
+                  {/* Sponsored Transactions for Customers */}
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-5 h-5 text-blue-600" />
+                        <span className="font-semibold">Free Transactions</span>
+                      </div>
+                      <Switch
+                        checked={sponsoredTransactions}
+                        onCheckedChange={setSponsoredTransactions}
+                      />
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {sponsoredTransactions 
+                        ? 'You pay transaction fees for customers' 
+                        : 'Customers pay their own transaction fees'}
+                    </p>
+                    {sponsoredTransactions && (
+                      <Badge className="bg-blue-600 w-full justify-center">
+                        Customers see "Free Transaction" badge
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Advanced Settings */}
+                  <div className="p-4 bg-muted/30 rounded-lg border">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex-1">
+                        <Label htmlFor="merchant-advanced" className="font-semibold cursor-pointer">
+                          Advanced Mode
+                        </Label>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Show blockchain details
+                        </p>
+                      </div>
+                      <Switch
+                        id="merchant-advanced"
+                        checked={advancedMode}
+                        onCheckedChange={setAdvancedMode}
+                      />
+                    </div>
+                    {advancedMode && (
+                      <div className="mt-3 pt-3 border-t">
+                        <Button variant="outline" size="sm" className="w-full" onClick={() => setShowWalletDetails(!showWalletDetails)}>
+                          {showWalletDetails ? <EyeOff className="w-3 h-3 mr-2" /> : <Eye className="w-3 h-3 mr-2" />}
+                          {showWalletDetails ? 'Hide' : 'Show'} Wallet Details
+                        </Button>
+                        {showWalletDetails && (
+                          <div className="mt-3 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <code className="text-xs bg-background px-2 py-1 rounded flex-1 truncate">
+                                {mockWalletAddress}
+                              </code>
+                              <Button variant="ghost" size="sm" onClick={handleCopyWalletAddress}>
+                                <Copy className="w-3 h-3" />
+                              </Button>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-full" onClick={() => window.open(`https://etherscan.io/address/${mockWalletAddress}`, '_blank')}>
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              View on Explorer
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Educational Content for Merchants */}
+                {advancedMode && (
+                  <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-purple-600 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-sm mb-1">About NFT Coupons</h4>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Your deals are minted as NFTs on the blockchain, giving customers true ownership and the ability to resell. 
+                          You can sponsor transaction fees to make the experience seamless for customers.
+                        </p>
+                        <Button variant="link" size="sm" className="h-auto p-0 text-xs">
+                          Learn more about NFT benefits for merchants →
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -297,6 +431,12 @@ export const MerchantDashboard: React.FC = () => {
                   <CardContent>
                     <div className="text-3xl font-heading font-bold">${totalDeals > 0 ? (totalRevenue / totalRedemptions || 0).toFixed(2) : '0.00'}</div>
                     <p className="text-xs text-muted-foreground mt-1">Per redemption</p>
+                    {sponsoredTransactions && (
+                      <Badge className="mt-2 bg-blue-600 text-xs">
+                        <Zap className="w-3 h-3 mr-1" />
+                        Free for customers
+                      </Badge>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -349,7 +489,7 @@ export const MerchantDashboard: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentRedemptions.map((redemption) => (
+                  {Array.isArray(recentRedemptions) && recentRedemptions.map((redemption) => (
                     <div key={redemption.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -394,7 +534,7 @@ export const MerchantDashboard: React.FC = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {deals.map((deal) => (
+                    {Array.isArray(deals) && deals.map((deal) => (
                       <motion.div
                         key={deal.id}
                         initial={{ opacity: 0, y: 10 }}
@@ -505,7 +645,7 @@ export const MerchantDashboard: React.FC = () => {
                         fill="#8884d8"
                         dataKey="value"
                       >
-                        {categoryData.map((entry, index) => (
+                        {Array.isArray(categoryData) && categoryData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -553,7 +693,7 @@ export const MerchantDashboard: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {recentRedemptions.map((redemption) => (
+                  {Array.isArray(recentRedemptions) && recentRedemptions.map((redemption) => (
                     <div key={redemption.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">

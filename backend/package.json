@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "dev:all": "concurrently \"npm run dev\" \"npm run worker\"",
     "build": "tsc",
     "start": "node dist/index.js",
     "worker": "tsx src/workers/event-listener.worker.ts",
@@ -15,10 +16,10 @@
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
     "seed": "tsx src/scripts/seed-database.ts",
-     "idl-check": "tsx src/scripts/check-idl.ts",
-     "reconcile": "tsx src/scripts/reconcile-all.ts",
+    "idl-check": "tsx src/scripts/check-idl.ts",
+    "reconcile": "tsx src/scripts/reconcile-all.ts",
     "cleanup:orphaned": "tsx src/scripts/cleanup-orphaned.ts",
-     "seed:simple": "tsx src/scripts/seed-simple.ts"
+    "seed:simple": "tsx src/scripts/seed-simple.ts"
   },
   "keywords": [
     "solana",
@@ -53,6 +54,7 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
+    "concurrently": "^8.2.2",
     "eslint": "^8.55.0",
     "supertest": "^6.3.3",
     "tsx": "^4.7.0",

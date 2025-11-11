@@ -24,20 +24,23 @@ export class SolanaConfig {
     this.connection = new Connection(rpcUrl, 'confirmed');
 
     // Initialize wallet
-    const walletPath = process.env.ANCHOR_WALLET;
-    let keypair: Keypair;
-    
-    if (walletPath && fs.existsSync(walletPath)) {
-      const walletData = JSON.parse(fs.readFileSync(walletPath, 'utf-8'));
-      keypair = Keypair.fromSecretKey(new Uint8Array(walletData));
-    } else if (process.env.WALLET_PRIVATE_KEY) {
-      const privateKeyArray = JSON.parse(process.env.WALLET_PRIVATE_KEY);
-      keypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
-    } else {
-      throw new Error('No wallet found. Set ANCHOR_WALLET or WALLET_PRIVATE_KEY');
-    }
+    // Initialize wallet (optional - only needed for transactions)
+const walletPath = process.env.ANCHOR_WALLET;
+let keypair: Keypair | null = null;
 
-    this.wallet = new Wallet(keypair);
+if (walletPath && fs.existsSync(walletPath)) {
+  const walletData = JSON.parse(fs.readFileSync(walletPath, 'utf-8'));
+  keypair = Keypair.fromSecretKey(new Uint8Array(walletData));
+} else if (process.env.WALLET_PRIVATE_KEY) {
+  const privateKeyArray = JSON.parse(process.env.WALLET_PRIVATE_KEY);
+  keypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+} else {
+  // Create a dummy keypair for read-only operations
+  keypair = Keypair.generate();
+  console.warn('⚠️  No wallet configured. Using dummy wallet for read-only operations.');
+}
+
+this.wallet = new Wallet(keypair);
 
     // Initialize provider
     this.provider = new AnchorProvider(

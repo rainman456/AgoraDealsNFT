@@ -162,7 +162,7 @@ export class RedemptionTicketController {
         });
       }
 
-      const ticketPDA = new PublicKey(ticket.onChainAddress);
+      //const ticketPDA = new PublicKey(ticket.onChainAddress);
       const couponPDA = new PublicKey(ticket.couponAddress);
       const merchantAuthority = new PublicKey(merchantWallet);
       const userPubkey = new PublicKey(ticket.userAddress);
