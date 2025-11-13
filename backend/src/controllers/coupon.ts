@@ -89,13 +89,15 @@ export class CouponController {
    */
   async mint(req: Request, res: Response): Promise<void> {
     try {
-      const { promotionId, recipientAddress } = req.body;
+      const { promotionId, walletAddress, recipientAddress } = req.body;
+      const finalRecipientAddress = recipientAddress || walletAddress;
 
-      if (!promotionId || !recipientAddress) {
+      if (!promotionId || !finalRecipientAddress) {
         res.status(400).json({
           success: false,
-          error: 'Missing required fields: promotionId, recipientAddress',
+          error: 'Missing required fields: promotionId, and either walletAddress or recipientAddress',
         });
+        return;
       }
 
       const promotion = await Promotion.findOne({
@@ -107,6 +109,7 @@ export class CouponController {
           success: false,
           error: 'Promotion not found',
         });
+        return;
       }
 
       if (promotion.currentSupply >= promotion.maxSupply) {
@@ -114,6 +117,7 @@ export class CouponController {
           success: false,
           error: 'Promotion supply exhausted',
         });
+        return;
       }
 
       const merchant = await Merchant.findOne({ onChainAddress: promotion.merchant });
@@ -122,10 +126,20 @@ export class CouponController {
           success: false,
           error: 'Merchant not found',
         });
+        return;
+      }
+
+      // Validate on-chain addresses before creating PublicKey
+      if (!promotion.onChainAddress || !merchant.authority) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid promotion or merchant on-chain configuration',
+        });
+        return;
       }
 
       const promotionPDA = new PublicKey(promotion.onChainAddress);
-      const recipientPubkey = new PublicKey(recipientAddress);
+      const recipientPubkey = new PublicKey(finalRecipientAddress);
       const merchantAuthority = new PublicKey(merchant.authority);
       const couponId = promotion.currentSupply + 1;
 
@@ -164,7 +178,7 @@ export class CouponController {
         couponId,
         nftMint: result.mint,
         promotion: promotion.onChainAddress,
-        owner: recipientAddress,
+        owner: finalRecipientAddress,
         merchant: promotion.merchant,
         discountPercentage: promotion.discountPercentage,
         expiryTimestamp: promotion.expiryTimestamp,
@@ -197,12 +211,17 @@ export class CouponController {
           transactionSignature: result.signature,
         },
       });
-    } catch (error) {
-      logger.error('Coupon minting failed:', error);
-      res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      });
+    } catch (error: any) {
+      // Check if headers were already sent before trying to send response
+      if (!res.headersSent) {
+        logger.error('Coupon minting failed:', error);
+        res.status(500).json({
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      } else {
+        logger.error('Error occurred after headers sent:', error);
+      }
     }
   }
 
@@ -219,6 +238,7 @@ export class CouponController {
           success: false,
           error: 'Missing walletAddress',
         });
+        return;
       }
 
       const { page, limit, skip } = getPaginationParams(req.query);

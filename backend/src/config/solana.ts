@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import * as os from 'os';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,19 +26,37 @@ export class SolanaConfig {
 
     // Initialize wallet
     // Initialize wallet (optional - only needed for transactions)
-const walletPath = process.env.ANCHOR_WALLET;
+let walletPath = process.env.ANCHOR_WALLET;
+// Expand ~ to home directory
+if (walletPath && walletPath.startsWith('~')) {
+  walletPath = path.join(os.homedir(), walletPath.slice(1));
+}
 let keypair: Keypair | null = null;
 
 if (walletPath && fs.existsSync(walletPath)) {
-  const walletData = JSON.parse(fs.readFileSync(walletPath, 'utf-8'));
-  keypair = Keypair.fromSecretKey(new Uint8Array(walletData));
+  try {
+    const walletData = JSON.parse(fs.readFileSync(walletPath, 'utf-8'));
+    keypair = Keypair.fromSecretKey(new Uint8Array(walletData));
+    console.log(`✅ Wallet loaded from: ${walletPath}`);
+  } catch (error) {
+    console.error(`⚠️  Failed to load wallet from ${walletPath}:`, error);
+    keypair = Keypair.generate();
+    console.warn('⚠️  Using fallback wallet.');
+  }
 } else if (process.env.WALLET_PRIVATE_KEY) {
-  const privateKeyArray = JSON.parse(process.env.WALLET_PRIVATE_KEY);
-  keypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+  try {
+    const privateKeyArray = JSON.parse(process.env.WALLET_PRIVATE_KEY);
+    keypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+    console.log(`✅ Wallet loaded from WALLET_PRIVATE_KEY environment variable`);
+  } catch (error) {
+    console.error('⚠️  Failed to parse WALLET_PRIVATE_KEY:', error);
+    keypair = Keypair.generate();
+    console.warn('⚠️  Using fallback wallet.');
+  }
 } else {
   // Create a dummy keypair for read-only operations
   keypair = Keypair.generate();
-  console.warn('⚠️  No wallet configured. Using dummy wallet for read-only operations.');
+  console.warn('⚠️  No wallet configured (ANCHOR_WALLET or WALLET_PRIVATE_KEY not set). Using dummy wallet for read-only operations.');
 }
 
 this.wallet = new Wallet(keypair);

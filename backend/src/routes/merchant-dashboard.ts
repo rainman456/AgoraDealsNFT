@@ -17,4 +17,11 @@ router.get('/:merchantAddress/analytics', merchantDashboardController.getAnalyti
  */
 router.get('/:merchantAddress/recent-activity', merchantDashboardController.getRecentActivity.bind(merchantDashboardController));
 
+/**
+ * @route   GET /api/v1/merchant-dashboard/:merchantAddress/deals
+ * @desc    Get all deals/promotions created by merchant
+ * @access  Private (Merchant)
+ */
+router.get('/:merchantAddress/deals', merchantDashboardController.getMerchantDeals.bind(merchantDashboardController));
+
 export default router;

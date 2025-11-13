@@ -376,6 +376,60 @@ export class MerchantDashboardController {
 
     return days;
   }
+
+  /**
+   * GET /api/v1/merchant-dashboard/:merchantAddress/deals
+   * Get all deals/promotions created by merchant
+   */
+  async getMerchantDeals(req: Request, res: Response): Promise<void> {
+    try {
+      const { merchantAddress } = req.params;
+      const { page = 1, limit = 20 } = req.query;
+
+      const merchant = await Merchant.findOne({
+        $or: [{ onChainAddress: merchantAddress }, { walletAddress: merchantAddress }],
+      });
+
+      if (!merchant) {
+        res.status(404).json({
+          success: false,
+          error: 'Merchant not found',
+        });
+        return;
+      }
+
+      const pageNum = parseInt(page as string) || 1;
+      const limitNum = parseInt(limit as string) || 20;
+      const skip = (pageNum - 1) * limitNum;
+
+      const [deals, total] = await Promise.all([
+        Promotion.find({ merchant: merchant.onChainAddress })
+          .skip(skip)
+          .limit(limitNum)
+          .sort({ createdAt: -1 }),
+        Promotion.countDocuments({ merchant: merchant.onChainAddress }),
+      ]);
+
+      res.json({
+        success: true,
+        data: {
+          deals,
+          pagination: {
+            page: pageNum,
+            limit: limitNum,
+            total,
+            pages: Math.ceil(total / limitNum),
+          },
+        },
+      });
+    } catch (error) {
+      logger.error('Failed to get merchant deals:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  }
 }
 
 export const merchantDashboardController = new MerchantDashboardController();

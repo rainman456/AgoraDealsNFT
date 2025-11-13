@@ -6888,3 +6888,982 @@
 {"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-10 22:50:12"}
 {"level":"warn","message":"⚠️  No events received for 4622.528s. Connection may be dead.","timestamp":"2025-11-10 22:50:16"}
 {"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-10 22:50:16"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 00:43:37"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 00:43:37"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 00:43:37"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 00:43:37"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 00:43:37"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 00:43:37"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 00:43:39"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 00:43:39"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/0x1234...5678","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/0x1234...5678 - ⚠️ 404 (20ms)","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 00:44:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (48ms)","timestamp":"2025-11-13 00:44:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (53ms)","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"trending"},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 00:44:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (32ms)","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/0x1234...5678","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/0x1234...5678 - ⚠️ 404 (12ms)","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 00:44:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 00:44:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"trending"},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 00:44:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/merchant/0x1234...5678","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 00:44:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /merchant/0x1234...5678 - ⚠️ 404 (15ms)","timestamp":"2025-11-13 00:44:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/merchant/0x1234...5678","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 00:44:53","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /merchant/0x1234...5678 - ⚠️ 404 (11ms)","timestamp":"2025-11-13 00:44:53"}
+{"level":"warn","message":"⚠️  No events received for 302.508s. Connection may be dead.","timestamp":"2025-11-13 00:48:39"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 00:48:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:48:39"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 00:48:39"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 00:48:39"}
+{"level":"warn","message":"⚠️  No events received for 362.507s. Connection may be dead.","timestamp":"2025-11-13 00:49:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:49:39"}
+{"level":"warn","message":"⚠️  No events received for 422.508s. Connection may be dead.","timestamp":"2025-11-13 00:50:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:50:39"}
+{"level":"warn","message":"⚠️  No events received for 482.507s. Connection may be dead.","timestamp":"2025-11-13 00:51:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:51:39"}
+{"level":"warn","message":"⚠️  No events received for 542.507s. Connection may be dead.","timestamp":"2025-11-13 00:52:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:52:39"}
+{"level":"warn","message":"⚠️  No events received for 602.507s. Connection may be dead.","timestamp":"2025-11-13 00:53:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:53:39"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 00:53:39"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 00:53:39"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 00:53:39"}
+{"level":"warn","message":"⚠️  No events received for 662.508s. Connection may be dead.","timestamp":"2025-11-13 00:54:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:54:39"}
+{"level":"warn","message":"⚠️  No events received for 722.508s. Connection may be dead.","timestamp":"2025-11-13 00:55:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:55:39"}
+{"level":"warn","message":"⚠️  No events received for 782.508s. Connection may be dead.","timestamp":"2025-11-13 00:56:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:56:39"}
+{"level":"warn","message":"⚠️  No events received for 842.508s. Connection may be dead.","timestamp":"2025-11-13 00:57:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:57:39"}
+{"level":"warn","message":"⚠️  No events received for 902.508s. Connection may be dead.","timestamp":"2025-11-13 00:58:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:58:39"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 00:58:39"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 00:58:39"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 00:58:39"}
+{"level":"warn","message":"⚠️  No events received for 962.507s. Connection may be dead.","timestamp":"2025-11-13 00:59:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 00:59:39"}
+{"level":"warn","message":"⚠️  No events received for 1022.508s. Connection may be dead.","timestamp":"2025-11-13 01:00:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:00:39"}
+{"level":"warn","message":"⚠️  No events received for 1082.508s. Connection may be dead.","timestamp":"2025-11-13 01:01:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:01:39"}
+{"level":"warn","message":"⚠️  No events received for 1142.508s. Connection may be dead.","timestamp":"2025-11-13 01:02:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:02:39"}
+{"level":"warn","message":"⚠️  No events received for 1202.508s. Connection may be dead.","timestamp":"2025-11-13 01:03:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:03:39"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 01:03:39"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 01:03:39"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 01:03:39"}
+{"level":"warn","message":"⚠️  No events received for 1262.507s. Connection may be dead.","timestamp":"2025-11-13 01:04:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:04:39"}
+{"level":"warn","message":"⚠️  No events received for 1322.508s. Connection may be dead.","timestamp":"2025-11-13 01:05:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:05:39"}
+{"level":"warn","message":"⚠️  No events received for 1382.507s. Connection may be dead.","timestamp":"2025-11-13 01:06:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:06:39"}
+{"level":"warn","message":"⚠️  No events received for 1442.508s. Connection may be dead.","timestamp":"2025-11-13 01:07:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:07:39"}
+{"level":"warn","message":"⚠️  No events received for 1502.508s. Connection may be dead.","timestamp":"2025-11-13 01:08:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:08:39"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 01:08:39"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 01:08:39"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 01:08:39"}
+{"level":"warn","message":"⚠️  No events received for 1562.507s. Connection may be dead.","timestamp":"2025-11-13 01:09:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:09:39"}
+{"level":"warn","message":"⚠️  No events received for 1622.508s. Connection may be dead.","timestamp":"2025-11-13 01:10:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:10:39"}
+{"level":"warn","message":"⚠️  No events received for 1682.508s. Connection may be dead.","timestamp":"2025-11-13 01:11:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:11:39"}
+{"level":"warn","message":"⚠️  No events received for 1742.508s. Connection may be dead.","timestamp":"2025-11-13 01:12:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:12:39"}
+{"level":"warn","message":"⚠️  No events received for 1802.508s. Connection may be dead.","timestamp":"2025-11-13 01:13:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:13:39"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 01:13:39"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 01:13:39"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 01:13:39"}
+{"level":"warn","message":"⚠️  No events received for 1862.508s. Connection may be dead.","timestamp":"2025-11-13 01:14:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:14:39"}
+{"level":"warn","message":"⚠️  No events received for 1922.507s. Connection may be dead.","timestamp":"2025-11-13 01:15:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:15:39"}
+{"level":"warn","message":"⚠️  No events received for 1982.507s. Connection may be dead.","timestamp":"2025-11-13 01:16:39"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 01:16:39"}
+{"level":"info","message":"🚀 Starting Event Listener Worker...","timestamp":"2025-11-13 10:51:28"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"✅ Database connected","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"✅ Event handlers registered","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"✅ Periodic reconciliation started (every 5 minutes)","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"✅ Event Listener Worker started successfully","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 10:51:28"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 10:51:28"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 10:51:28"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 10:51:29"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-01.ksskilh.mongodb.net","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 10:51:31"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 10:51:31"}
+{"level":"warn","message":"⚠️  No events received for 300.795s. Connection may be dead.","timestamp":"2025-11-13 10:56:29"}
+{"level":"info","message":"Running periodic reconciliation...","timestamp":"2025-11-13 10:56:29"}
+{"level":"info","message":"Starting full reconciliation...","timestamp":"2025-11-13 10:56:29"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 10:56:29"}
+{"level":"error","message":"Error syncing promotion 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 10:56:29"}
+{"level":"error","message":"Error during reconciliation: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 10:56:29"}
+{"level":"error","message":"Reconciliation failed: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 10:56:29"}
+{"level":"warn","message":"⚠️  No events received for 302.537s. Connection may be dead.","timestamp":"2025-11-13 10:56:31"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 10:56:31"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 10:56:31"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 10:56:31"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 10:56:31"}
+{"level":"info","message":"Received SIGINT, shutting down gracefully...","timestamp":"2025-11-13 10:57:06"}
+{"level":"info","message":"Stopping event listener...","timestamp":"2025-11-13 10:57:06"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 10:57:06"}
+{"level":"info","message":"Event listener stopped","timestamp":"2025-11-13 10:57:06"}
+{"level":"info","message":"🚀 Starting Event Listener Worker...","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"✅ Database connected","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"✅ Event handlers registered","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"✅ Periodic reconciliation started (every 5 minutes)","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"✅ Event Listener Worker started successfully","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 10:57:53"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-02.ksskilh.mongodb.net","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 10:57:55"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 10:57:55"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 10:58:11","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 10:58:11"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (126ms)","timestamp":"2025-11-13 10:58:12"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 10:58:12","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 10:58:12"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (54ms)","timestamp":"2025-11-13 10:58:12"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 10:58:12","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 10:58:12"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (51ms)","timestamp":"2025-11-13 10:58:12"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 10:58:12","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 10:58:12"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (36ms)","timestamp":"2025-11-13 10:58:12"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 10:58:12","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 10:58:12"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 10:58:12"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 10:58:12","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 10:58:12"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (30ms)","timestamp":"2025-11-13 10:58:12"}
+{"body":{"email":"user@example.com","password":"yfvuygyguh"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 10:59:27","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /api/v1/auth/login - ⚠️ 404 (5ms)","timestamp":"2025-11-13 10:59:27"}
+{"body":{"email":"user@example.com","password":"yugiuhuhuho"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:02:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /api/v1/auth/login - ⚠️ 404 (1ms)","timestamp":"2025-11-13 11:02:40"}
+{"level":"info","message":"Running periodic reconciliation...","timestamp":"2025-11-13 11:02:53"}
+{"level":"info","message":"Starting full reconciliation...","timestamp":"2025-11-13 11:02:53"}
+{"level":"warn","message":"⚠️  No events received for 300.792s. Connection may be dead.","timestamp":"2025-11-13 11:02:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:02:53"}
+{"level":"error","message":"Error syncing promotion 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 11:02:53"}
+{"level":"error","message":"Error during reconciliation: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 11:02:53"}
+{"level":"error","message":"Reconciliation failed: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 11:02:53"}
+{"level":"warn","message":"⚠️  No events received for 302.494s. Connection may be dead.","timestamp":"2025-11-13 11:02:55"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 11:02:55"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:02:55"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 11:02:56"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 11:02:56"}
+{"level":"warn","message":"⚠️  No events received for 360.791s. Connection may be dead.","timestamp":"2025-11-13 11:03:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:03:53"}
+{"level":"warn","message":"⚠️  No events received for 362.493s. Connection may be dead.","timestamp":"2025-11-13 11:03:55"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:03:55"}
+{"level":"warn","message":"⚠️  No events received for 420.792s. Connection may be dead.","timestamp":"2025-11-13 11:04:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:04:53"}
+{"level":"warn","message":"⚠️  No events received for 422.494s. Connection may be dead.","timestamp":"2025-11-13 11:04:55"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:04:55"}
+{"level":"warn","message":"⚠️  No events received for 480.792s. Connection may be dead.","timestamp":"2025-11-13 11:05:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:05:53"}
+{"level":"warn","message":"⚠️  No events received for 482.494s. Connection may be dead.","timestamp":"2025-11-13 11:05:55"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:05:55"}
+{"level":"warn","message":"⚠️  No events received for 540.792s. Connection may be dead.","timestamp":"2025-11-13 11:06:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:06:53"}
+{"level":"warn","message":"⚠️  No events received for 542.494s. Connection may be dead.","timestamp":"2025-11-13 11:06:55"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:06:55"}
+{"level":"info","message":"Running periodic reconciliation...","timestamp":"2025-11-13 11:07:53"}
+{"level":"info","message":"Starting full reconciliation...","timestamp":"2025-11-13 11:07:53"}
+{"level":"warn","message":"⚠️  No events received for 600.792s. Connection may be dead.","timestamp":"2025-11-13 11:07:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:07:53"}
+{"level":"error","message":"Error syncing promotion 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 11:07:53"}
+{"level":"error","message":"Error during reconciliation: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 11:07:53"}
+{"level":"error","message":"Reconciliation failed: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi","stack":"Error: Account does not exist or has no data 2CVFjM6LXvwBqvzWjuyfCZURdJn73yrbBNxQUkEGmqEi\n    at AccountClient.fetch (/workspaces/AgoraDealsNFT/backend/node_modules/@coral-xyz/anchor/src/program/namespace/account.ts:168:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async BlockchainSyncService.syncPromotion (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:39:27)\n    at async BlockchainSyncService.reconcileAll (/workspaces/AgoraDealsNFT/backend/src/services/blockchain-sync.service.ts:315:9)\n    at async Timeout._onTimeout (/workspaces/AgoraDealsNFT/backend/src/workers/event-listener.worker.ts:165:9)","timestamp":"2025-11-13 11:07:53"}
+{"level":"warn","message":"⚠️  No events received for 602.493s. Connection may be dead.","timestamp":"2025-11-13 11:07:55"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:07:55"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 11:07:55"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 11:07:55"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 11:07:55"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 11:08:28"}
+{"level":"info","message":"Received SIGINT, shutting down gracefully...","timestamp":"2025-11-13 11:08:28"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 11:08:41"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 11:08:41"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 11:08:41"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 11:08:41"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 11:08:41"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 11:08:41"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 11:08:43"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 11:08:44"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 11:08:44"}
+{"body":{"email":"user@example.com","password":"yugiuhuhuho"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:08:59","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /api/v1/auth/login - ⚠️ 404 (4ms)","timestamp":"2025-11-13 11:08:59"}
+{"level":"warn","message":"⚠️  No events received for 302.513s. Connection may be dead.","timestamp":"2025-11-13 11:13:44"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 11:13:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:13:44"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 11:13:44"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 11:13:44"}
+{"level":"warn","message":"⚠️  No events received for 362.512s. Connection may be dead.","timestamp":"2025-11-13 11:14:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:14:44"}
+{"level":"warn","message":"⚠️  No events received for 422.512s. Connection may be dead.","timestamp":"2025-11-13 11:15:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:15:44"}
+{"level":"warn","message":"⚠️  No events received for 482.513s. Connection may be dead.","timestamp":"2025-11-13 11:16:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:16:44"}
+{"body":{"email":"user1@test.com","password":"ghvujhbjkbkj"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:17:35","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /api/v1/auth/login - ⚠️ 404 (2ms)","timestamp":"2025-11-13 11:17:35"}
+{"level":"warn","message":"⚠️  No events received for 542.513s. Connection may be dead.","timestamp":"2025-11-13 11:17:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:17:44"}
+{"level":"warn","message":"⚠️  No events received for 602.514s. Connection may be dead.","timestamp":"2025-11-13 11:18:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:18:44"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 11:18:44"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 11:18:44"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 11:18:44"}
+{"level":"warn","message":"⚠️  No events received for 662.513s. Connection may be dead.","timestamp":"2025-11-13 11:19:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:19:44"}
+{"level":"warn","message":"⚠️  No events received for 722.514s. Connection may be dead.","timestamp":"2025-11-13 11:20:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:20:44"}
+{"level":"warn","message":"⚠️  No events received for 782.514s. Connection may be dead.","timestamp":"2025-11-13 11:21:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:21:44"}
+{"level":"warn","message":"⚠️  No events received for 842.514s. Connection may be dead.","timestamp":"2025-11-13 11:22:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:22:44"}
+{"level":"warn","message":"⚠️  No events received for 902.513s. Connection may be dead.","timestamp":"2025-11-13 11:23:44"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 11:23:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:23:44"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 11:23:44"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 11:23:44"}
+{"level":"warn","message":"⚠️  No events received for 962.514s. Connection may be dead.","timestamp":"2025-11-13 11:24:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:24:44"}
+{"body":{"email":"user1@test.com","password":"rgdfhdfhhhhf"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:24:54","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /api/v1/auth/login - ⚠️ 404 (2ms)","timestamp":"2025-11-13 11:24:54"}
+{"body":{"email":"user1@test.com","password":"efwergererhet","username":"ewffjkfe"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/register/user","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:25:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Airdropped 1000 SOL to 3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","timestamp":"2025-11-13 11:25:34"}
+{"level":"info","message":"📤 Response: POST /register/user - ✅ 201 (485ms)","timestamp":"2025-11-13 11:25:34"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 11:25:37","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:25:37"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 11:25:37","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:25:37"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (29ms)","timestamp":"2025-11-13 11:25:37"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 11:25:37"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 11:25:37","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:25:37"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 11:25:37"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 11:25:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:25:38"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 11:25:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 11:25:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:25:38"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 11:25:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 11:25:39","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:25:39"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 11:25:39"}
+{"level":"warn","message":"⚠️  No events received for 1022.514s. Connection may be dead.","timestamp":"2025-11-13 11:25:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:25:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"category":"flights","limit":"12","page":"1"},"timestamp":"2025-11-13 11:26:31","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:26:31"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 11:26:31"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"category":"hotels","limit":"12","page":"1"},"timestamp":"2025-11-13 11:26:32","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:26:32"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 11:26:32"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 11:26:34","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:26:34"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 11:26:34"}
+{"level":"warn","message":"⚠️  No events received for 1082.514s. Connection may be dead.","timestamp":"2025-11-13 11:26:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 11:26:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad983a","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:26:48","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad983a","timestamp":"2025-11-13 11:26:48"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad983a - ✅ 200 (35ms)","timestamp":"2025-11-13 11:26:48"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad983a/comments","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:26:48","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad983a/comments","timestamp":"2025-11-13 11:26:48"}
+{"level":"info","message":"📤 Response: GET /promotions/690ca64293c586f5aaad983a/comments - ✅ 200 (30ms)","timestamp":"2025-11-13 11:26:48"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad983a","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:26:48","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad983a","timestamp":"2025-11-13 11:26:48"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad983a - ✅ 200 (23ms)","timestamp":"2025-11-13 11:26:48"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad983a/comments","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:26:48","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad983a/comments","timestamp":"2025-11-13 11:26:48"}
+{"level":"info","message":"📤 Response: GET /promotions/690ca64293c586f5aaad983a/comments - ✅ 200 (22ms)","timestamp":"2025-11-13 11:26:48"}
+{"body":{"content":"hjjj"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/promotions/690ca64293c586f5aaad983a/comments","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:26:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: POST /690ca64293c586f5aaad983a/comments","timestamp":"2025-11-13 11:26:56"}
+{"level":"info","message":"📤 Response: POST /promotions/690ca64293c586f5aaad983a/comments - ⚠️ 404 (12ms)","timestamp":"2025-11-13 11:26:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 11:27:15","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:27:15"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 11:27:15"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 11:27:15","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:27:15"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 11:27:15"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 11:27:15","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:27:15"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 11:27:15"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 11:27:15","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:27:15"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 11:27:15","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:27:15"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 11:27:15"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 11:27:15"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 11:27:15","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 11:27:15"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 11:27:15"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad9850/comments","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:27:19","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad9850/comments","timestamp":"2025-11-13 11:27:19"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad9850","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:27:19","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad9850","timestamp":"2025-11-13 11:27:19"}
+{"level":"info","message":"📤 Response: GET /promotions/690ca64293c586f5aaad9850/comments - ✅ 200 (22ms)","timestamp":"2025-11-13 11:27:19"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad9850 - ✅ 200 (22ms)","timestamp":"2025-11-13 11:27:19"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad9850","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:27:19","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad9850","timestamp":"2025-11-13 11:27:19"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad9850/comments","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:27:19","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad9850/comments","timestamp":"2025-11-13 11:27:19"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad9850 - ✅ 200 (23ms)","timestamp":"2025-11-13 11:27:19"}
+{"level":"info","message":"📤 Response: GET /promotions/690ca64293c586f5aaad9850/comments - ✅ 200 (21ms)","timestamp":"2025-11-13 11:27:19"}
+{"body":{"promotionId":"690ca64293c586f5aaad9850","walletAddress":"3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/coupons/mint","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 11:27:22","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /mint - ⚠️ 400 (1ms)","timestamp":"2025-11-13 11:27:22"}
+{"level":"error","message":"Coupon minting failed: Cannot read properties of undefined (reading '_bn')","stack":"TypeError: Cannot read properties of undefined (reading '_bn')\n    at isPublicKeyData (/workspaces/AgoraDealsNFT/backend/node_modules/@solana/web3.js/src/publickey.ts:39:35)\n    at new constructor (/workspaces/AgoraDealsNFT/backend/node_modules/@solana/web3.js/src/publickey.ts:58:9)\n    at CouponController.mint (/workspaces/AgoraDealsNFT/backend/src/controllers/coupon.ts:128:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-11-13 11:27:22"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:16:41"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:16:41"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:16:41"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 12:16:41"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 12:16:42"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 12:16:42"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 12:16:44"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 12:16:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 12:16:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:16:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:16:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed - ✅ 200 (16ms)","timestamp":"2025-11-13 12:16:56"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (36ms)","timestamp":"2025-11-13 12:16:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 12:16:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:16:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 12:16:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:16:56"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 12:16:56"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 12:16:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:16:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed - ✅ 200 (13ms)","timestamp":"2025-11-13 12:16:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 12:16:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:16:56"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 12:16:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 12:16:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:16:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 12:16:56","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:16:56"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (29ms)","timestamp":"2025-11-13 12:16:56"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 12:16:56"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad9836","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:17:14","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad9836","timestamp":"2025-11-13 12:17:14"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad9836/comments","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:17:14","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad9836/comments","timestamp":"2025-11-13 12:17:14"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad9836 - ✅ 200 (26ms)","timestamp":"2025-11-13 12:17:14"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad9836/comments - ✅ 200 (24ms)","timestamp":"2025-11-13 12:17:14"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad9836/comments","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:17:14","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad9836/comments","timestamp":"2025-11-13 12:17:14"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions/690ca64293c586f5aaad9836","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:17:14","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /690ca64293c586f5aaad9836","timestamp":"2025-11-13 12:17:14"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad9836/comments - ✅ 200 (22ms)","timestamp":"2025-11-13 12:17:14"}
+{"level":"info","message":"📤 Response: GET /690ca64293c586f5aaad9836 - ✅ 200 (22ms)","timestamp":"2025-11-13 12:17:14"}
+{"body":{"content":"nice rack bitch"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/promotions/690ca64293c586f5aaad9836/comments","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:17:39","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: POST /690ca64293c586f5aaad9836/comments","timestamp":"2025-11-13 12:17:39"}
+{"level":"info","message":"📤 Response: POST /690ca64293c586f5aaad9836/comments - ⚠️ 404 (22ms)","timestamp":"2025-11-13 12:17:39"}
+{"body":{"promotionId":"690ca64293c586f5aaad9836","walletAddress":"3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/coupons/mint","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:18:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /mint - ⚠️ 400 (1ms)","timestamp":"2025-11-13 12:18:40"}
+{"level":"warn","message":"⚠️  No events received for 302.638s. Connection may be dead.","timestamp":"2025-11-13 12:21:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:21:44"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 12:21:44"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 12:21:44"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 12:21:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/marketplace/listings","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","maxPrice":"1000","minPrice":"0"},"timestamp":"2025-11-13 12:22:39","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /listings - ✅ 200 (37ms)","timestamp":"2025-11-13 12:22:39"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/marketplace/listings","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","maxPrice":"1000","minPrice":"0"},"timestamp":"2025-11-13 12:22:39","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /listings - ✅ 200 (38ms)","timestamp":"2025-11-13 12:22:39"}
+{"level":"warn","message":"⚠️  No events received for 362.638s. Connection may be dead.","timestamp":"2025-11-13 12:22:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:22:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/group-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 12:23:08","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (29ms)","timestamp":"2025-11-13 12:23:08"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/group-deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 12:23:08","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (13ms)","timestamp":"2025-11-13 12:23:08"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:23:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed - ✅ 200 (13ms)","timestamp":"2025-11-13 12:23:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/marketplace/listings","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","maxPrice":"1000","minPrice":"0"},"timestamp":"2025-11-13 12:23:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /listings - ✅ 200 (25ms)","timestamp":"2025-11-13 12:23:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:23:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed - ✅ 200 (12ms)","timestamp":"2025-11-13 12:23:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/marketplace/listings","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","maxPrice":"1000","minPrice":"0"},"timestamp":"2025-11-13 12:23:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /listings - ✅ 200 (35ms)","timestamp":"2025-11-13 12:23:40"}
+{"level":"warn","message":"⚠️  No events received for 422.638s. Connection may be dead.","timestamp":"2025-11-13 12:23:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:23:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 12:23:46","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 12:23:46"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 12:23:46","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (14ms)","timestamp":"2025-11-13 12:23:46"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 12:24:12","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:24:12"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 12:24:12"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 12:24:12","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:24:12"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (39ms)","timestamp":"2025-11-13 12:24:12"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:24:41","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 12:24:41","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed - ✅ 200 (16ms)","timestamp":"2025-11-13 12:24:41"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (13ms)","timestamp":"2025-11-13 12:24:41"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:24:41","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed - ✅ 200 (11ms)","timestamp":"2025-11-13 12:24:41"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 12:24:41","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (13ms)","timestamp":"2025-11-13 12:24:41"}
+{"level":"warn","message":"⚠️  No events received for 482.639s. Connection may be dead.","timestamp":"2025-11-13 12:24:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:24:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/staking/pool","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:24:47","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /pool - ⚠️ 404 (15ms)","timestamp":"2025-11-13 12:24:47"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/staking/user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","page":"1"},"timestamp":"2025-11-13 12:24:47","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed - ✅ 200 (75ms)","timestamp":"2025-11-13 12:24:47"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/staking/pool","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:24:47","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /pool - ⚠️ 404 (3ms)","timestamp":"2025-11-13 12:24:47"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/staking/user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","page":"1"},"timestamp":"2025-11-13 12:24:47","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /user/3wReX7YdKuGa3WeBtuPvmZjpbtSHs61mCntsgNCqZVed - ✅ 200 (20ms)","timestamp":"2025-11-13 12:24:47"}
+{"level":"warn","message":"⚠️  No events received for 542.638s. Connection may be dead.","timestamp":"2025-11-13 12:25:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:25:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/marketplace/listings","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","maxPrice":"1000","minPrice":"0"},"timestamp":"2025-11-13 12:26:30","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /listings - ✅ 200 (29ms)","timestamp":"2025-11-13 12:26:30"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/marketplace/listings","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"20","maxPrice":"1000","minPrice":"0"},"timestamp":"2025-11-13 12:26:30","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /listings - ✅ 200 (25ms)","timestamp":"2025-11-13 12:26:30"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 12:26:37","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:26:37"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 12:26:37"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 12:26:37","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:26:37"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 12:26:37"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 12:26:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:26:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 12:26:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:26:38"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 12:26:38"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-13 12:26:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 12:26:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:26:38"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 12:26:38"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 12:26:38","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:26:38"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 12:26:38"}
+{"level":"warn","message":"⚠️  No events received for 602.639s. Connection may be dead.","timestamp":"2025-11-13 12:26:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:26:44"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 12:26:44"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 12:26:44"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 12:26:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 12:27:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:27:33"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (28ms)","timestamp":"2025-11-13 12:27:33"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 12:27:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:27:33"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 12:27:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:27:33"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 12:27:33"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 12:27:33"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 12:27:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:27:33"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 12:27:33"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 12:27:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:27:33"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 12:27:33"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 12:27:33","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 12:27:33"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 12:27:33"}
+{"level":"warn","message":"⚠️  No events received for 662.639s. Connection may be dead.","timestamp":"2025-11-13 12:27:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:27:44"}
+{"body":{"email":"info@fashionhub.com","password":"errrrgrrr"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:28:13","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /api/v1/auth/login - ⚠️ 404 (5ms)","timestamp":"2025-11-13 12:28:13"}
+{"body":{"category":"resturan","email":"admin1@mail.com","name":"ddj","password":"adminpass"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/register/merchant","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 12:28:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /register/merchant - ✅ 201 (38ms)","timestamp":"2025-11-13 12:28:40"}
+{"level":"warn","message":"⚠️  No events received for 722.639s. Connection may be dead.","timestamp":"2025-11-13 12:28:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:28:44"}
+{"level":"warn","message":"⚠️  No events received for 782.64s. Connection may be dead.","timestamp":"2025-11-13 12:29:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:29:44"}
+{"level":"warn","message":"⚠️  No events received for 842.64s. Connection may be dead.","timestamp":"2025-11-13 12:30:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:30:44"}
+{"level":"warn","message":"⚠️  No events received for 902.641s. Connection may be dead.","timestamp":"2025-11-13 12:31:44"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 12:31:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:31:44"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 12:31:44"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 12:31:44"}
+{"level":"warn","message":"⚠️  No events received for 962.641s. Connection may be dead.","timestamp":"2025-11-13 12:32:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:32:44"}
+{"level":"warn","message":"⚠️  No events received for 1022.641s. Connection may be dead.","timestamp":"2025-11-13 12:33:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:33:44"}
+{"level":"warn","message":"⚠️  No events received for 1082.641s. Connection may be dead.","timestamp":"2025-11-13 12:34:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:34:44"}
+{"level":"warn","message":"⚠️  No events received for 1142.641s. Connection may be dead.","timestamp":"2025-11-13 12:35:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:35:44"}
+{"level":"warn","message":"⚠️  No events received for 1202.641s. Connection may be dead.","timestamp":"2025-11-13 12:36:44"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 12:36:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:36:44"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 12:36:44"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 12:36:44"}
+{"level":"warn","message":"⚠️  No events received for 1262.641s. Connection may be dead.","timestamp":"2025-11-13 12:37:44"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 12:37:44"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 12:37:59"}
+{"level":"info","message":"🚀 Starting Event Listener Worker...","timestamp":"2025-11-13 12:45:25"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"✅ Database connected","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"✅ Event handlers registered","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"✅ Periodic reconciliation started (every 5 minutes)","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"✅ Event Listener Worker started successfully","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 12:45:26"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 12:45:28"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 12:45:37"}
+{"level":"info","message":"Received SIGINT, shutting down gracefully...","timestamp":"2025-11-13 12:45:37"}
+{"level":"info","message":"Stopping event listener...","timestamp":"2025-11-13 12:45:37"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:45:48"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:45:48"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:45:48"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 12:45:49"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 12:45:49"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 12:45:49"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-02.ksskilh.mongodb.net","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 12:45:51"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 12:49:08"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:49:30"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:49:30"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:49:30"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 12:49:30"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 12:49:31"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 12:49:31"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 12:49:33"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 12:50:15"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:52:26"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:52:26"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:52:26"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 12:52:26"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 12:52:26"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 12:52:26"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 12:52:28"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 12:52:29"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:54:06"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:54:06"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:54:06"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 12:54:06"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 12:54:07"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 12:54:07"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 12:54:09"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 12:55:01"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:56:07"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:56:07"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:56:07"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 12:56:07"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 12:56:07"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 12:56:07"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Connected to Solana: http://localhost:8899","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 12:56:09"}
+{"level":"info","message":"SIGTERM received, shutting down gracefully...","timestamp":"2025-11-13 13:00:04"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 13:00:07"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 13:00:07"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 13:00:07"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 13:00:07"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 13:00:08"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 13:00:08"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Connected to Solana: http://127.0.0.1:8899","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 13:00:10"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 13:00:10"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 13:01:10","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:10"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 13:01:10","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:10"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (130ms)","timestamp":"2025-11-13 13:01:10"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 13:01:10","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:10"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (55ms)","timestamp":"2025-11-13 13:01:10"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (45ms)","timestamp":"2025-11-13 13:01:10"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 13:01:11","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:11"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (53ms)","timestamp":"2025-11-13 13:01:11"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 13:01:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:21"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (33ms)","timestamp":"2025-11-13 13:01:21"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/0xtwh1p","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:01:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 13:01:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:21"}
+{"level":"info","message":"📤 Response: GET /user/0xtwh1p - ⚠️ 404 (14ms)","timestamp":"2025-11-13 13:01:21"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 13:01:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:21"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (28ms)","timestamp":"2025-11-13 13:01:21"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (30ms)","timestamp":"2025-11-13 13:01:21"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 13:01:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:21"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 13:01:21"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/user/0xtwh1p","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:01:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 13:01:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:21"}
+{"level":"info","message":"📤 Response: GET /user/0xtwh1p - ⚠️ 404 (11ms)","timestamp":"2025-11-13 13:01:21"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 13:01:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:01:21"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (28ms)","timestamp":"2025-11-13 13:01:21"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 13:01:21"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/merchant/0xtwh1p","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:01:22","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /merchant/0xtwh1p - ⚠️ 404 (12ms)","timestamp":"2025-11-13 13:01:22"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auth/merchant/0xtwh1p","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:01:22","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /merchant/0xtwh1p - ⚠️ 404 (11ms)","timestamp":"2025-11-13 13:01:22"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/merchant-dashboard/0xtwh1p/deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:02:53","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /0xtwh1p/deals - ⚠️ 404 (13ms)","timestamp":"2025-11-13 13:02:53"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/merchant-dashboard/0xtwh1p/deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:02:53","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /0xtwh1p/deals - ⚠️ 404 (12ms)","timestamp":"2025-11-13 13:02:53"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/merchant-dashboard/0xtwh1p/deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:03:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /0xtwh1p/deals - ⚠️ 404 (12ms)","timestamp":"2025-11-13 13:03:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/merchant-dashboard/0xtwh1p/deals","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:03:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET /0xtwh1p/deals - ⚠️ 404 (13ms)","timestamp":"2025-11-13 13:03:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 13:03:44","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:03:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 13:03:44","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:03:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 13:03:44","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:03:44"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 13:03:44"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-13 13:03:44"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 13:03:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 13:03:44","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:03:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 13:03:44","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:03:44"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 13:03:44"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 13:03:44","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:03:44"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (29ms)","timestamp":"2025-11-13 13:03:44"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-13 13:03:44"}
+{"level":"warn","message":"⚠️  No events received for 300.039s. Connection may be dead.","timestamp":"2025-11-13 13:05:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:05:10"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 13:05:10"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 13:05:10"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 13:05:10"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 13:05:29","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-13 13:05:29"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 13:05:30","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (15ms)","timestamp":"2025-11-13 13:05:30"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 13:06:07","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:06:07"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 13:06:07"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 13:06:07","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 13:06:07"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 13:06:07"}
+{"level":"warn","message":"⚠️  No events received for 360.039s. Connection may be dead.","timestamp":"2025-11-13 13:06:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:06:10"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 13:06:40","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (15ms)","timestamp":"2025-11-13 13:06:40"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/auctions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"status":"active"},"timestamp":"2025-11-13 13:06:42","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (14ms)","timestamp":"2025-11-13 13:06:42"}
+{"level":"warn","message":"⚠️  No events received for 420.039s. Connection may be dead.","timestamp":"2025-11-13 13:07:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:07:10"}
+{"level":"warn","message":"⚠️  No events received for 480.04s. Connection may be dead.","timestamp":"2025-11-13 13:08:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:08:10"}
+{"level":"warn","message":"⚠️  No events received for 540.04s. Connection may be dead.","timestamp":"2025-11-13 13:09:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:09:10"}
+{"body":{"email":"user1@test.com","password":"adminpass"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 13:09:23","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /api/v1/auth/login - ⚠️ 404 (2ms)","timestamp":"2025-11-13 13:09:23"}
+{"level":"warn","message":"⚠️  No events received for 600.04s. Connection may be dead.","timestamp":"2025-11-13 13:10:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:10:10"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 13:10:10"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 13:10:10"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 13:10:10"}
+{"level":"warn","message":"⚠️  No events received for 660.041s. Connection may be dead.","timestamp":"2025-11-13 13:11:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:11:10"}
+{"level":"warn","message":"⚠️  No events received for 720.04s. Connection may be dead.","timestamp":"2025-11-13 13:12:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:12:10"}
+{"level":"warn","message":"⚠️  No events received for 780.041s. Connection may be dead.","timestamp":"2025-11-13 13:13:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:13:10"}
+{"level":"warn","message":"⚠️  No events received for 840.041s. Connection may be dead.","timestamp":"2025-11-13 13:14:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:14:10"}
+{"level":"warn","message":"⚠️  No events received for 900.041s. Connection may be dead.","timestamp":"2025-11-13 13:15:10"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:15:10"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 13:15:10"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 13:15:10"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 13:15:10"}
+{"level":"info","message":"SIGINT received, shutting down gracefully...","timestamp":"2025-11-13 13:15:12"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 13:31:44"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 13:31:44"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 13:31:44"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 13:31:44"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 13:31:45"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 13:31:45"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Connected to Solana: http://127.0.0.1:8899","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 13:31:47"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 13:31:47"}
+{"level":"warn","message":"⚠️  No events received for 300.03s. Connection may be dead.","timestamp":"2025-11-13 13:36:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:36:47"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 13:36:47"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 13:36:47"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 13:36:47"}
+{"level":"warn","message":"⚠️  No events received for 360.031s. Connection may be dead.","timestamp":"2025-11-13 13:37:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:37:47"}
+{"level":"warn","message":"⚠️  No events received for 420.031s. Connection may be dead.","timestamp":"2025-11-13 13:38:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:38:47"}
+{"level":"warn","message":"⚠️  No events received for 480.031s. Connection may be dead.","timestamp":"2025-11-13 13:39:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:39:47"}
+{"level":"warn","message":"⚠️  No events received for 540.032s. Connection may be dead.","timestamp":"2025-11-13 13:40:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:40:47"}
+{"level":"warn","message":"⚠️  No events received for 600.032s. Connection may be dead.","timestamp":"2025-11-13 13:41:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:41:47"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 13:41:47"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 13:41:47"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 13:41:47"}
+{"level":"warn","message":"⚠️  No events received for 660.032s. Connection may be dead.","timestamp":"2025-11-13 13:42:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:42:47"}
+{"level":"warn","message":"⚠️  No events received for 720.032s. Connection may be dead.","timestamp":"2025-11-13 13:43:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:43:47"}
+{"level":"warn","message":"⚠️  No events received for 780.032s. Connection may be dead.","timestamp":"2025-11-13 13:44:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:44:47"}
+{"level":"warn","message":"⚠️  No events received for 840.032s. Connection may be dead.","timestamp":"2025-11-13 13:45:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:45:47"}
+{"level":"warn","message":"⚠️  No events received for 900.031s. Connection may be dead.","timestamp":"2025-11-13 13:46:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:46:47"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 13:46:47"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 13:46:47"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 13:46:47"}
+{"level":"warn","message":"⚠️  No events received for 960.032s. Connection may be dead.","timestamp":"2025-11-13 13:47:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:47:47"}
+{"level":"warn","message":"⚠️  No events received for 1020.032s. Connection may be dead.","timestamp":"2025-11-13 13:48:47"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:48:47"}

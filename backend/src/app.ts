@@ -20,7 +20,7 @@ import groupDealRoutes from './routes/group-deals';
 import auctionRoutes from './routes/auctions';
 import merchantDashboardRoutes from './routes/merchant-dashboard';
 import socialRoutes from './routes/social';
-import commentRoutes from './routes/comments';
+//import commentRoutes from './routes/comments';
 import externalDealRoutes from './routes/external-deals';
 import listingRoutes from './routes/listings';
 
@@ -31,7 +31,7 @@ export function createApp(): Application {
   app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Wallet-Address');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Wallet-Address, X-Request-Timestamp');
     if (req.method === 'OPTIONS') {
       res.sendStatus(200);
       return;
@@ -125,7 +125,7 @@ export function createApp(): Application {
     app.use('/api/v1/auctions', auctionRoutes);
     app.use('/api/v1/merchant-dashboard', merchantDashboardRoutes);
     app.use('/api/v1/social', socialRoutes);
-    app.use('/api/v1', commentRoutes);
+    //app.use('/api/v1', commentRoutes);
     app.use('/api/v1/external-deals', externalDealRoutes);
     app.use('/api/v1/listings', listingRoutes);
     logger.info('✅ All routes registered successfully');

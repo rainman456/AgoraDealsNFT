@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { promotionController } from '../controllers/promotion';
+import { commentController } from '../controllers/comment';
 
 const router = Router();
 
@@ -11,6 +12,12 @@ router.get('/', promotionController.list.bind(promotionController));
 
 // GET /api/v1/promotions/:promotionId
 router.get('/:promotionId', promotionController.getDetails.bind(promotionController));
+
+// GET /api/v1/promotions/:promotionId/comments - List comments for a promotion
+router.get('/:promotionId/comments', commentController.list);
+
+// POST /api/v1/promotions/:promotionId/comments - Create a comment
+router.post('/:promotionId/comments', commentController.create);
 
 // POST /api/v1/promotions/rate
 router.post('/rate', promotionController.rate.bind(promotionController));

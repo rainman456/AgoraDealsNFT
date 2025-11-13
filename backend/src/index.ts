@@ -3,18 +3,28 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createApp } from './app';
 import { getDatabaseConfig } from './config/database';
-import { getSolanaConfig } from './config/solana';
+// DO NOT import getSolanaConfig here - it will run before dotenv is loaded!
+// import { getSolanaConfig } from './config/solana';
 import { logger } from './utils/logger';
-import { BlockchainEventListenerService } from './services/blockchain-event-listener.service';
-import { EventHandlersService } from './services/event-handlers.service';
-import { BlockchainSyncService } from './services/blockchain-sync.service';
+// DO NOT import blockchain services here - they depend on solana config
+// import { BlockchainEventListenerService } from './services/blockchain-event-listener.service';
+// import { EventHandlersService } from './services/event-handlers.service';
+// import { BlockchainSyncService } from './services/blockchain-sync.service';
 
 // Get directory name in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load environment variables from backend directory
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+const envPath = path.resolve(__dirname, '../.env');
+console.log('Loading .env from:', envPath);
+dotenv.config({ path: envPath });
+
+// Verify env was loaded
+console.log('✓ dotenv.config() executed');
+console.log('WALLET_PRIVATE_KEY present:', !!process.env.WALLET_PRIVATE_KEY);
+console.log('ANCHOR_WALLET:', process.env.ANCHOR_WALLET);
+console.log('PROGRAM_ID:', process.env.PROGRAM_ID);
 
 const PORT = process.env.API_PORT || 3001;
 
@@ -51,6 +61,8 @@ async function startServer() {
     // Initialize Solana connection
     logger.info('Initializing Solana connection...');
     try {
+      // Lazy import to ensure dotenv has loaded first
+      const { getSolanaConfig } = await import('./config/solana');
       const solanaConfig = getSolanaConfig();
       
       // Verify Solana connection is actually working
@@ -103,11 +115,11 @@ async function startServer() {
   }
 }
 
-/**
- * Setup blockchain event handlers
- */
 async function setupBlockchainEventHandlers() {
   try {
+    // Lazy import to ensure dotenv has loaded
+    const { BlockchainEventListenerService } = await import('./services/blockchain-event-listener.service');
+    const { EventHandlersService } = await import('./services/event-handlers.service');
     const blockchainEventListener = BlockchainEventListenerService.getInstance();
     const eventHandlers = EventHandlersService.getInstance();
 
@@ -193,19 +205,22 @@ async function setupBlockchainEventHandlers() {
  * Start blockchain reconciliation cron job
  */
 function startReconciliationJob() {
-  const blockchainSync = BlockchainSyncService.getInstance();
+  // Lazy import to ensure dotenv has loaded
+  import('./services/blockchain-sync.service').then(({ BlockchainSyncService }) => {
+    const blockchainSync = BlockchainSyncService.getInstance();
   
-  // Run every 5 minutes
-  setInterval(async () => {
-    logger.info('Running blockchain reconciliation...');
-    try {
-      await blockchainSync.reconcileRecentPromotions();
-    } catch (error) {
-      logger.error('Reconciliation job failed:', error);
-    }
-  }, 5 * 60 * 1000); // 5 minutes
+    // Run every 5 minutes
+    setInterval(async () => {
+      logger.info('Running blockchain reconciliation...');
+      try {
+        await blockchainSync.reconcileRecentPromotions();
+      } catch (error) {
+        logger.error('Reconciliation job failed:', error);
+      }
+    }, 5 * 60 * 1000); // 5 minutes
 
-  logger.info('✅ Reconciliation job scheduled (every 5 minutes)');
+    logger.info('✅ Reconciliation job scheduled (every 5 minutes)');
+  });
 }
 
 startServer();
