@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import {
   mockAuthAPI,
   mockDealsAPI,
@@ -8,6 +8,7 @@ import {
   mockGroupDealsAPI,
   mockSocialAPI,
 } from './mockApi';
+import { handleError, AppError } from './error-handler';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1';
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true';
@@ -17,6 +18,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // 30 second timeout
 });
 
 // Request interceptor to add wallet address header
@@ -26,21 +28,40 @@ api.interceptors.request.use(
     if (walletAddress) {
       config.headers['X-Wallet-Address'] = walletAddress;
     }
+    // Add request timestamp for debugging
+    config.headers['X-Request-Timestamp'] = new Date().toISOString();
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(handleError(error))
 );
 
 // Response interceptor for error handling
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
+  (response) => {
+    // Add response logging for debugging
+    console.debug(`✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`);
+    return response;
+  },
+  (error: AxiosError) => {
+    const appError = handleError(error);
+    
+    // Log error for debugging
+    console.error(`❌ ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${error.response?.status || 'Network Error'}`);
+    console.error('Error details:', appError);
+    
+    // Handle 401 - Auto logout and redirect
+    if (appError.status === 401) {
       localStorage.removeItem('walletAddress');
       localStorage.removeItem('user');
-      window.location.href = '/';
+      localStorage.removeItem('merchant');
+      localStorage.removeItem('authToken');
+      // Only redirect if not already on login page
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+        window.location.href = '/login';
+      }
     }
-    return Promise.reject(error);
+    
+    return Promise.reject(appError);
   }
 );
 
@@ -212,17 +233,44 @@ export interface GroupDeal {
 }
 
 export interface Auction {
-  id: string;
+  _id?: string;
+  id?: string;
   onChainAddress: string;
-  coupon: Coupon | string;
-  seller: string;
+  couponAddress?: string;
+  coupon?: Coupon | string;
+  sellerAddress: string;
+  seller?: string | User; // Can be string or User object
+  merchantAddress?: string;
+  title: string;
+  description?: string;
+  category?: string;
   startingPrice: number;
-  reservePrice?: number;
   currentBid: number;
-  highestBidder: string | null;
+  reservePrice?: number;
+  buyNowPrice?: number;
+  highestBidder?: string | null;
+  bids?: Array<{
+    bidder: string;
+    amount: number;
+    timestamp: string;
+  }>;
+  totalBids?: number;
   status: 'active' | 'completed' | 'cancelled';
-  endsAt: string;
-  createdAt: string;
+  isActive?: boolean;
+  isSettled?: boolean;
+  finalPrice?: number;
+  endTime: string;
+  endsAt?: string; // Legacy compatibility
+  startTime?: string;
+  extendOnBid?: boolean;
+  extensionTime?: number;
+  couponMetadata?: {
+    discountPercentage?: number;
+    expiryTimestamp?: string;
+    merchantName?: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Badge {
@@ -242,13 +290,22 @@ export interface Badge {
 }
 
 export interface Stake {
-  id: string;
+  _id?: string;
+  id?: string;
+  address?: string;
+  user: string;
   coupon: string;
-  staker: string;
+  nftMint?: string;
+  amountStaked?: number;
   stakedAt: string;
-  unlocksAt: string;
-  estimatedRewards: number;
-  status: 'active' | 'completed';
+  unlockAt?: string;
+  unlocksAt?: string; // Legacy compatibility
+  durationDays?: string | number;
+  rewardsEarned?: number | string;
+  estimatedRewards?: number; // Legacy compatibility
+  isActive?: boolean;
+  claimedAt?: string | null;
+  status?: 'active' | 'completed';
 }
 
 export interface Comment {
@@ -301,15 +358,34 @@ export type NFT = Coupon;
 // AUTHENTICATION API
 // ============================================================================
 
-const realAuthAPI = {
-  registerUser: async (data: { username: string; email: string }) => {
+interface IAuthAPI {
+  registerUser: (data: { username: string; email: string; password: string }) => Promise<{ success: boolean; data: { user: User } }>;
+  registerMerchant: (data: any) => Promise<{ success: boolean; data: { merchant: Merchant } }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; data: any }>;
+  getUserByWallet: (walletAddress: string) => Promise<{ success: boolean; data: User }>;
+  getMerchantByWallet: (walletAddress: string) => Promise<{ success: boolean; data: Merchant }>;
+  connectWallet: (signature: string, message: string) => Promise<any>;
+  loginEmail: (email: string, password: string) => Promise<any>;
+  logout: () => Promise<{ success: boolean }>;
+  getCurrentUser: () => Promise<User>;
+}
+
+const realAuthAPI: IAuthAPI = {
+  registerUser: async (data: { username: string; email: string; password: string }) => {
     const { data: response } = await api.post('/auth/register/user', data);
-    return response;
+    // Backend returns data object with user info directly
+    return {
+      success: response.success,
+      data: {
+        user: response.data?.user || response.data || response
+      }
+    };
   },
 
   registerMerchant: async (data: {
     name: string;
     email: string;
+    password: string;
     category: string;
     description?: string;
     location?: {
@@ -322,7 +398,22 @@ const realAuthAPI = {
     };
   }) => {
     const { data: response } = await api.post('/auth/register/merchant', data);
-    return response;
+    // Backend returns data object with merchant info directly
+    return {
+      success: response.success,
+      data: {
+        merchant: response.data?.merchant || response.data || response
+      }
+    };
+  },
+
+  login: async (email: string, password: string): Promise<{ success: boolean; data: any }> => {
+    const { data } = await api.post('/auth/login', { email, password });
+    // Store wallet address from response
+    if (data.success && data.data?.walletAddress) {
+      localStorage.setItem('walletAddress', data.data.walletAddress);
+    }
+    return data;
   },
 
   getUserByWallet: async (walletAddress: string): Promise<{ success: boolean; data: User }> => {
@@ -337,29 +428,35 @@ const realAuthAPI = {
 
   // Legacy methods for compatibility
   connectWallet: async (signature: string, message: string) => {
-    const { data } = await api.post('/auth/wallet', { signature, message });
-    return data;
+    // No wallet endpoint on backend, use registerUser instead
+    throw new Error('Use registerUser or registerMerchant instead');
   },
 
   loginEmail: async (email: string, password: string) => {
-    const { data } = await api.post('/auth/login', { email, password });
-    return data;
+    // Deprecated: Use login() instead
+    return realAuthAPI.login(email, password);
   },
 
   logout: async () => {
-    const { data } = await api.post('/auth/logout');
+    // No logout endpoint needed - just clear local storage
     localStorage.removeItem('walletAddress');
     localStorage.removeItem('user');
-    return data;
+    localStorage.removeItem('merchant');
+    return { success: true };
   },
 
   getCurrentUser: async (): Promise<User> => {
-    const { data } = await api.get('/auth/me');
-    return data;
+    // Get from localStorage or fetch from wallet endpoint
+    const walletAddress = localStorage.getItem('walletAddress');
+    if (!walletAddress) {
+      throw new Error('No wallet connected');
+    }
+    const response = await realAuthAPI.getUserByWallet(walletAddress);
+    return response.data;
   },
 };
 
-export const authAPI = USE_MOCK_API ? mockAuthAPI : realAuthAPI;
+export const authAPI: IAuthAPI = USE_MOCK_API ? mockAuthAPI : realAuthAPI;
 
 // ============================================================================
 // PROMOTIONS API
@@ -465,8 +562,6 @@ const realPromotionsAPI = {
     return realPromotionsAPI.listPromotions({ latitude: lat, longitude: lng, radius });
   },
 };
-
-export const promotionsAPI = realPromotionsAPI;
 
 // ============================================================================
 // COUPONS API
@@ -592,6 +687,8 @@ const realMarketplaceAPI = {
     return realMarketplaceAPI.buyCoupon(walletAddress, listingId);
   },
 };
+
+export const promotionsAPI = realPromotionsAPI;
 
 export const marketplaceAPI = USE_MOCK_API ? mockMarketplaceAPI : realMarketplaceAPI;
 
@@ -811,32 +908,50 @@ export const auctionsAPI = {
   createAuction: async (data: {
     walletAddress: string;
     couponId: string;
+    title: string;
+    description?: string;
+    category?: string;
     startingPrice: number;
     reservePrice?: number;
-    duration: number;
+    buyNowPrice?: number;
+    durationDays: number;
+    extendOnBid?: boolean;
+    extensionTime?: number;
   }) => {
-    const { data: response } = await api.post('/auctions/create', data);
+    const { data: response } = await api.post('/auctions', data);
     return response;
   },
 
-  placeBid: async (auctionId: string, walletAddress: string, bidAmount: number) => {
-    const { data } = await api.post(`/auctions/${auctionId}/bid`, { walletAddress, bidAmount });
+  placeBid: async (auctionId: string, walletAddress: string, amount: number) => {
+    const { data } = await api.post(`/auctions/${auctionId}/bid`, { walletAddress, amount });
     return data;
   },
 
-  settleAuction: async (auctionId: string) => {
-    const { data } = await api.post(`/auctions/${auctionId}/settle`);
+  settleAuction: async (auctionId: string, walletAddress: string) => {
+    const { data } = await api.post(`/auctions/${auctionId}/settle`, { walletAddress });
     return data;
   },
 
   listAuctions: async (params?: { status?: 'active' | 'completed' | 'cancelled'; page?: number; limit?: number }) => {
     const { data } = await api.get('/auctions', { params });
-    return data;
+    // Transform response to match useListData expectations
+    if (data.success && data.data) {
+      return {
+        items: data.data.auctions || [],
+        total: data.pagination?.total || 0,
+      };
+    }
+    return { items: [], total: 0 };
   },
 
   getAuctionById: async (auctionId: string) => {
     const { data } = await api.get(`/auctions/${auctionId}`);
     return data;
+  },
+
+  // Alias for getAuctionById
+  getAuction: async (auctionId: string) => {
+    return auctionsAPI.getAuctionById(auctionId);
   },
 };
 
@@ -876,18 +991,18 @@ export const badgesAPI = {
 // ============================================================================
 
 export const stakingAPI = {
-  stakeCoupon: async (walletAddress: string, couponId: string, duration: number) => {
-    const { data } = await api.post('/staking/stake', { walletAddress, couponId, duration });
+  stakeCoupon: async (walletAddress: string, couponId: string, durationDays: number) => {
+    const { data } = await api.post('/staking/stake', { walletAddress, couponId, durationDays });
     return data;
   },
 
-  claimRewards: async (walletAddress: string, stakeId: string) => {
-    const { data } = await api.post('/staking/claim', { walletAddress, stakeId });
+  claimRewards: async (walletAddress: string, stakeAccountAddress: string) => {
+    const { data } = await api.post('/staking/claim', { walletAddress, stakeAccountAddress });
     return data;
   },
 
-  getUserStakes: async (userAddress: string) => {
-    const { data } = await api.get(`/staking/user/${userAddress}`);
+  getUserStakes: async (userAddress: string, params?: { page?: number; limit?: number }) => {
+    const { data } = await api.get(`/staking/user/${userAddress}`, { params });
     return data;
   },
 
@@ -1099,10 +1214,11 @@ export const merchantAPI = {
       imageUrl: dealData.imageUrl,
     });
   },
-  getMerchantDeals: async () => {
-    const walletAddress = localStorage.getItem('walletAddress');
-    if (!walletAddress) throw new Error('Merchant not authenticated');
-    return (USE_MOCK_API ? mockDealsAPI : realPromotionsAPI).listPromotions({ /* merchant filter would go here */ });
+  getMerchantDeals: async (merchantAddress?: string) => {
+    const address = merchantAddress || localStorage.getItem('walletAddress');
+    if (!address) throw new Error('Merchant not authenticated');
+    const { data } = await api.get(`/merchant-dashboard/${address}/deals`);
+    return data;
   },
   getDealAnalytics: async (dealId: string) => {
     return (USE_MOCK_API ? mockDealsAPI : realPromotionsAPI).getPromotionById(dealId);
@@ -1111,5 +1227,12 @@ export const merchantAPI = {
     const walletAddress = localStorage.getItem('walletAddress');
     if (!walletAddress) throw new Error('Merchant not authenticated');
     return (USE_MOCK_API ? mockDealsAPI : realPromotionsAPI).deletePromotion(dealId, walletAddress);
+  },
+  completeOnboarding: async (data: any) => {
+    const walletAddress = localStorage.getItem('walletAddress');
+    if (!walletAddress) throw new Error('Merchant not authenticated');
+    // For now, just update local storage; in production this would update backend
+    localStorage.setItem('merchantProfile', JSON.stringify(data));
+    return { success: true, data };
   },
 };

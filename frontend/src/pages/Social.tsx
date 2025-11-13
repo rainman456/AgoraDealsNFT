@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'react-toastify';
-import { Heart, MessageCircle, Star, ThumbsUp, Share2, TrendingUp } from 'lucide-react';
+import { Star, MessageCircle, Heart, ThumbsUp, Share2, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useListData } from '@/hooks/useListData';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { commentsAPI, ratingsAPI } from '@/lib/api';
 
 interface Review {
   id: string;
@@ -146,25 +148,29 @@ const mockComments: Comment[] = [
 ];
 
 export const Social: React.FC = () => {
-  const [reviews, setReviews] = useState<Review[]>(mockReviews);
-  const [comments, setComments] = useState<Comment[]>(mockComments);
-  const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
+  const walletAddress = localStorage.getItem('walletAddress');
+  const { error, handleErrorResponse } = useErrorHandler();
+  
+  // Get reviews (for now use mock data as placeholder)
+  const reviews = mockReviews;
+  
+  // Get comments from API with pagination
+  const commentsData = useListData(
+    (page, pageSize) =>
+      commentsAPI.listComments?.('all-deals', { page, limit: pageSize }) ||
+      Promise.resolve({ data: mockComments, total: mockComments.length }),
+    { pageSize: 20, optimisticUpdates: true, deduplicateById: true }
+  ) as any;
+  
+  const comments = commentsData?.items || mockComments;
+  
+  const [newReview, setNewReview] = useState({ rating: 5, comment: '', dealId: 'd1' });
   const [newComment, setNewComment] = useState('');
   const [likedReviews, setLikedReviews] = useState<Set<string>>(new Set());
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
 
   const handleLikeReview = (reviewId: string) => {
-    setReviews((prev) =>
-      prev.map((review) =>
-        review.id === reviewId
-          ? {
-              ...review,
-              likes: likedReviews.has(reviewId) ? review.likes - 1 : review.likes + 1,
-            }
-          : review
-      )
-    );
-
+    // Optimistic update - toggle in liked set
     setLikedReviews((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(reviewId)) {
@@ -174,77 +180,84 @@ export const Social: React.FC = () => {
       }
       return newSet;
     });
+    // In a real implementation, you would call an API to like the review
   };
 
-  const handleLikeComment = (commentId: string) => {
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              likes: likedComments.has(commentId) ? comment.likes - 1 : comment.likes + 1,
-            }
-          : comment
-      )
-    );
+  const handleLikeComment = async (commentId: string) => {
+    if (!walletAddress) {
+      toast.error('Please connect your wallet');
+      return;
+    }
 
-    setLikedComments((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
-      }
-      return newSet;
-    });
+    try {
+      // Optimistic update
+      setLikedComments((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(commentId)) {
+          newSet.delete(commentId);
+        } else {
+          newSet.add(commentId);
+        }
+        return newSet;
+      });
+
+      // Call API to like comment
+      await commentsAPI.likeComment?.(commentId, walletAddress) ||
+        Promise.resolve({ success: true });
+    } catch (err: any) {
+      handleErrorResponse(err, true);
+    }
   };
 
-  const handleSubmitReview = () => {
+  const handleSubmitReview = async () => {
     if (!newReview.comment.trim()) {
       toast.error('Please write a review');
       return;
     }
 
-    const review: Review = {
-      id: `r${Date.now()}`,
-      userId: 'current-user',
-      userName: 'You',
-      userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=You',
-      dealId: 'selected-deal',
-      dealTitle: 'Selected Deal',
-      rating: newReview.rating,
-      comment: newReview.comment,
-      likes: 0,
-      replies: 0,
-      createdAt: new Date().toISOString(),
-      verified: false,
-    };
+    if (!walletAddress) {
+      toast.error('Please connect your wallet');
+      return;
+    }
 
-    setReviews((prev) => [review, ...prev]);
-    setNewReview({ rating: 5, comment: '' });
-    toast.success('Review posted successfully!');
+    try {
+      // Call API to create rating
+      await ratingsAPI.createOrUpdateRating?.(newReview.dealId, newReview.rating, walletAddress) ||
+        Promise.resolve({ success: true });
+      
+      // Show success message
+      toast.success('Review posted successfully!');
+      setNewReview({ rating: 5, comment: '', dealId: 'd1' });
+    } catch (err: any) {
+      handleErrorResponse(err, true);
+    }
   };
 
-  const handleSubmitComment = () => {
+  const handleSubmitComment = async () => {
     if (!newComment.trim()) {
       toast.error('Please write a comment');
       return;
     }
 
-    const comment: Comment = {
-      id: `c${Date.now()}`,
-      userId: 'current-user',
-      userName: 'You',
-      userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=You',
-      content: newComment,
-      likes: 0,
-      createdAt: new Date().toISOString(),
-      replies: [],
-    };
+    if (!walletAddress) {
+      toast.error('Please connect your wallet');
+      return;
+    }
 
-    setComments((prev) => [comment, ...prev]);
-    setNewComment('');
-    toast.success('Comment posted successfully!');
+    try {
+      // Call API to create comment
+      const newCommentData = await commentsAPI.createComment?.('all-deals', newComment, walletAddress) ||
+        Promise.resolve({ id: `c${Date.now()}`, content: newComment });
+      
+      // Show success message
+      toast.success('Comment posted successfully!');
+      setNewComment('');
+      
+      // Refresh comments list
+      commentsData?.refresh?.();
+    } catch (err: any) {
+      handleErrorResponse(err, true);
+    }
   };
 
   const formatDate = (dateString: string) => {

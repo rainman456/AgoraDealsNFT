@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { authAPI } from '@/lib/api';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'react-toastify';
-import { Mail, Lock, User, ShoppingBag } from 'lucide-react';
+import { Mail, Lock, User, ShoppingBag, AlertCircle } from 'lucide-react';
 
 export const SignUp: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const { error, getFieldErrorMessage, hasFieldError, handleErrorResponse, clearError } = useErrorHandler();
   
   // User signup state
   const [userForm, setUserForm] = useState({
@@ -32,37 +33,34 @@ export const SignUp: React.FC = () => {
 
   const handleUserSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearError();
 
-    setIsLoading(true);
+    // Validation
+    if (!userForm.name || !userForm.email || !userForm.password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (userForm.password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
     try {
-      // Instant signup - no artificial delays
-      
-      const mockUser = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: userForm.name,
+      setIsLoading(true);
+      const response = await authAPI.registerUser({
+        username: userForm.name,
         email: userForm.email,
-        role: 'user' as const,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userForm.name}`,
-        reputation: 0,
-        reputationTier: 'Bronze' as const,
-        badges: [],
-        totalSpent: 0,
-        dealsRedeemed: 0,
-        stakingBalance: 0,
-        stakingRewards: 0,
-      };
-
-      // Store mock user and token
-      localStorage.setItem('authToken', 'mock-token');
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      
-      // Use login with email/password instead
-      await login(userForm.email, userForm.password);
-      toast.success('Account created successfully!');
-      navigate('/onboarding');
-    } catch (error) {
-      console.error('Signup failed:', error);
-      toast.error('Failed to create account');
+        password: userForm.password,
+      });
+      if (response.success && response.data?.user) {
+        localStorage.setItem('walletAddress', response.data.user.walletAddress);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        toast.success('Account created successfully!');
+        navigate('/');
+      }
+    } catch (error: any) {
+      handleErrorResponse(error, true);
     } finally {
       setIsLoading(false);
     }
@@ -70,30 +68,37 @@ export const SignUp: React.FC = () => {
 
   const handleMerchantSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearError();
 
-    setIsLoading(true);
+    // Validation
+    if (!merchantForm.businessName || !merchantForm.email || !merchantForm.password || !merchantForm.businessType) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    if (merchantForm.password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
     try {
-      // Instant signup - no artificial delays
-      
-      const mockMerchant = {
-        id: Math.random().toString(36).substr(2, 9),
+      setIsLoading(true);
+      const response = await authAPI.registerMerchant({
         name: merchantForm.businessName,
         email: merchantForm.email,
-        role: 'merchant' as const,
-        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${merchantForm.businessName}`,
-      };
-
-      // Store mock merchant and token
-      localStorage.setItem('authToken', 'mock-token');
-      localStorage.setItem('user', JSON.stringify(mockMerchant));
-      
-      // Use login with email/password instead
-      await login(merchantForm.email, merchantForm.password);
-      toast.success('Merchant account created successfully!');
-      navigate('/merchant/onboarding');
-    } catch (error) {
-      console.error('Signup failed:', error);
-      toast.error('Failed to create merchant account');
+        password: merchantForm.password,
+        category: merchantForm.businessType,
+        description: merchantForm.description || undefined,
+      });
+      if (response.success && response.data?.merchant) {
+        const walletAddress = response.data.merchant.walletAddress || '0x' + Math.random().toString(36).substring(7);
+        localStorage.setItem('walletAddress', walletAddress);
+        localStorage.setItem('merchant', JSON.stringify(response.data.merchant));
+        toast.success('Merchant account created successfully!');
+        navigate('/merchant');
+      }
+    } catch (error: any) {
+      handleErrorResponse(error, true);
     } finally {
       setIsLoading(false);
     }

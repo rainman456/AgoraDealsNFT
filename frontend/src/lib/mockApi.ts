@@ -89,6 +89,35 @@ export const mockAuthAPI = {
     return { token, user };
   },
   
+  login: async (email: string, password: string): Promise<{ success: boolean; data: any }> => {
+    await delay();
+    const token = 'mock-jwt-token-' + Date.now();
+    
+    // Check if email matches a merchant or user
+    let user = mockUsers.find(u => u.email === email);
+    let type = 'user';
+    
+    // If no exact match, determine role from email pattern
+    if (!user) {
+      // Check if it's a merchant email pattern
+      const isMerchantEmail = email.includes('merchant') || email.includes('business') || email.includes('store');
+      type = isMerchantEmail ? 'merchant' : 'user';
+      user = mockUsers.find(u => u.role === type);
+      
+      // Fallback to first user if still not found
+      if (!user) {
+        user = mockUsers[0];
+      }
+    } else {
+      type = user.role === 'merchant' ? 'merchant' : 'user';
+    }
+    
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('walletAddress', user.walletAddress);
+    return { success: true, data: { ...user, type, walletAddress: user.walletAddress } };
+  },
+  
   logout: async () => {
     await delay();
     localStorage.removeItem('authToken');

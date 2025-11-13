@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'react-toastify';
 import { TrendingUp, DollarSign, Clock, Lock, Unlock, Zap, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useListData } from '@/hooks/useListData';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { stakingAPI, Stake } from '@/lib/api';
 
 interface StakingPool {
   id: string;
@@ -112,20 +115,56 @@ const mockUserStakes: UserStake[] = [
 ];
 
 export const Staking: React.FC = () => {
-  const [userStakes, setUserStakes] = useState<UserStake[]>(mockUserStakes);
   const [selectedPool, setSelectedPool] = useState<StakingPool | null>(null);
   const [stakeAmount, setStakeAmount] = useState('');
   const [isStaking, setIsStaking] = useState(false);
+  const [stakingPool, setStakingPool] = useState<any>(null);
+  const { error, handleErrorResponse } = useErrorHandler();
+  const walletAddress = localStorage.getItem('walletAddress');
 
-  const totalStaked = userStakes
-    .filter(s => s.status === 'active')
-    .reduce((sum, stake) => sum + stake.amount, 0);
+  // Fetch user stakes
+  const stakes = useListData(
+    (page, pageSize) =>
+      stakingAPI.getUserStakes?.(walletAddress || '', { page, limit: pageSize }) ||
+      Promise.resolve({ data: { stakes: mockUserStakes, pagination: { page, limit: pageSize, total: mockUserStakes.length, pages: 1 } } }),
+    {
+      pageSize: 20,
+      optimisticUpdates: true,
+      deduplicateById: true,
+    }
+  ) as any;
 
-  const totalEarned = userStakes.reduce((sum, stake) => sum + stake.earnedRewards, 0);
+  // Fetch staking pool info on component mount
+  useEffect(() => {
+    const fetchStakingPool = async () => {
+      try {
+        const poolData = await stakingAPI.getStakingPool?.();
+        setStakingPool(poolData?.data || null);
+      } catch (err: any) {
+        handleErrorResponse(err, false);
+      }
+    };
+    fetchStakingPool();
+  }, []);
+
+  // Fetch user stakes on mount
+  useEffect(() => {
+    if (walletAddress) {
+      stakes.fetch();
+    }
+  }, [walletAddress]);
+
+  const activeStakes = stakes.items?.filter((s: any) => {
+    const unlockDate = new Date(s.unlockAt || s.unlocksAt || '');
+    return s.isActive !== false && new Date() < unlockDate;
+  }) || [];
+
+  const totalStaked = activeStakes.reduce((sum: number, stake: any) => sum + (stake.amountStaked || 0), 0);
+  const totalEarned = (stakes.items || []).reduce((sum: number, stake: any) => sum + (stake.rewardsEarned || stake.estimatedRewards || 0), 0);
 
   const handleStake = async () => {
-    if (!selectedPool || !stakeAmount) {
-      toast.error('Please select a pool and enter an amount');
+    if (!selectedPool || !stakeAmount || !walletAddress) {
+      toast.error('Please select a pool, enter an amount, and connect your wallet');
       return;
     }
 
@@ -142,67 +181,52 @@ export const Staking: React.FC = () => {
 
     setIsStaking(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Derive durationDays from pool's lockPeriod
+      const durationDays = selectedPool.lockPeriod;
+      const couponId = selectedPool.id; // Using pool ID as coupon ID for staking
 
-      const newStake: UserStake = {
-        id: `s${Date.now()}`,
-        poolId: selectedPool.id,
-        poolName: selectedPool.name,
-        amount,
-        stakedAt: new Date().toISOString(),
-        unlocksAt: new Date(Date.now() + selectedPool.lockPeriod * 24 * 60 * 60 * 1000).toISOString(),
-        earnedRewards: 0,
-        apy: selectedPool.apy,
-        status: 'active',
-      };
-
-      setUserStakes([...userStakes, newStake]);
+      await stakingAPI.stakeCoupon?.(walletAddress, couponId, durationDays);
+      toast.success('Tokens staked successfully!');
       setStakeAmount('');
       setSelectedPool(null);
-      toast.success('Tokens staked successfully!');
-    } catch (error) {
-      toast.error('Failed to stake tokens');
+      // Refresh stakes list
+      stakes.fetch();
+    } catch (err: any) {
+      handleErrorResponse(err, true);
     } finally {
       setIsStaking(false);
     }
   };
 
+  const handleClaimRewards = async (stakeId: string) => {
+    if (!walletAddress) {
+      toast.error('Wallet not connected');
+      return;
+    }
+
+    try {
+      const stakeAccountAddress = stakeId; // Using stake ID as account address
+      await stakingAPI.claimRewards?.(walletAddress, stakeAccountAddress);
+      toast.success('Rewards claimed successfully!');
+      stakes.fetch();
+    } catch (err: any) {
+      handleErrorResponse(err, true);
+    }
+  };
+
   const handleUnstake = async (stakeId: string) => {
-    const stake = userStakes.find(s => s.id === stakeId);
+    const stake = activeStakes.find((s: any) => s._id === stakeId || s.address === stakeId);
     if (!stake) return;
 
     const now = new Date();
-    const unlockDate = new Date(stake.unlocksAt);
+    const unlockDate = new Date(stake.unlockAt || stake.unlocksAt || '');
 
     if (now < unlockDate) {
       toast.error('Stake is still locked. Early withdrawal will incur penalties.');
       return;
     }
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setUserStakes(userStakes.map(s =>
-        s.id === stakeId ? { ...s, status: 'withdrawn' as const } : s
-      ));
-      toast.success(`Unstaked ${stake.amount} DEAL + ${stake.earnedRewards.toFixed(2)} rewards`);
-    } catch (error) {
-      toast.error('Failed to unstake tokens');
-    }
-  };
-
-  const handleClaimRewards = async (stakeId: string) => {
-    const stake = userStakes.find(s => s.id === stakeId);
-    if (!stake || stake.earnedRewards === 0) return;
-
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success(`Claimed ${stake.earnedRewards.toFixed(2)} DEAL tokens!`);
-      setUserStakes(userStakes.map(s =>
-        s.id === stakeId ? { ...s, earnedRewards: 0 } : s
-      ));
-    } catch (error) {
-      toast.error('Failed to claim rewards');
-    }
+    toast.info('Unstaking functionality coming soon');
   };
 
   const formatDate = (dateString: string) => {
@@ -277,7 +301,7 @@ export const Staking: React.FC = () => {
                   <Award className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{userStakes.filter(s => s.status === 'active').length}</p>
+                  <p className="text-2xl font-bold">{activeStakes.length}</p>
                   <p className="text-sm text-gray-600">Active Stakes</p>
                 </div>
               </div>
@@ -403,7 +427,7 @@ export const Staking: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="mystakes" className="space-y-6">
-            {userStakes.filter(s => s.status === 'active').length === 0 ? (
+            {activeStakes.length === 0 ? (
               <Card>
                 <CardContent className="py-12 text-center">
                   <p className="text-gray-500 mb-4">You don't have any active stakes</p>
@@ -414,9 +438,7 @@ export const Staking: React.FC = () => {
               </Card>
             ) : (
               <div className="space-y-4">
-                {userStakes
-                  .filter(s => s.status === 'active')
-                  .map((stake, index) => (
+                {activeStakes.map((stake: any, index: number) => (
                     <motion.div
                       key={stake.id}
                       initial={{ opacity: 0, y: 20 }}

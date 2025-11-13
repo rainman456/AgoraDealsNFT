@@ -84,7 +84,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const registerUser = async (username: string, email: string) => {
     try {
-      const response = await authAPI.registerUser({ username, email });
+      const response = await authAPI.registerUser({
+        username, email,
+        password: ''
+      });
       if (response.success) {
         const userData = response.data.user;
         setUser(userData);
@@ -178,20 +181,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await authAPI.loginEmail(email, password);
-      if (response.token) {
-        localStorage.setItem('authToken', response.token);
-      }
-      if (response.user) {
-        setUser(response.user);
-        setWalletAddress(response.user.walletAddress);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        localStorage.setItem('walletAddress', response.user.walletAddress);
+      const response = await authAPI.login(email, password);
+      
+      if (response.success && response.data) {
+        // Store user or merchant based on type
+        if (response.data.type === 'merchant') {
+          setMerchant(response.data as any);
+          localStorage.setItem('merchant', JSON.stringify(response.data));
+          localStorage.setItem('merchantEmail', response.data.email);
+        } else {
+          setUser(response.data as any);
+          localStorage.setItem('user', JSON.stringify(response.data));
+        }
+        
+        setWalletAddress(response.data.walletAddress);
+        localStorage.setItem('walletAddress', response.data.walletAddress);
         toast.success('Welcome back!');
-        return response.user;
+        return response.data as any;
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Login failed');
+      console.error('Login error:', error);
+      toast.error(error.message || 'Login failed');
       throw error;
     }
   };

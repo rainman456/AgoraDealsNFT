@@ -22,9 +22,12 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 export const Navbar: React.FC = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, merchant, isAuthenticated, isMerchant, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Get the current account (user or merchant)
+  const currentAccount = merchant || user;
 
   const handleLogout = async () => {
     await logout();
@@ -40,7 +43,7 @@ export const Navbar: React.FC = () => {
     { to: '/social', label: 'Social' },
     { to: '/staking', label: 'Staking' },
     ...(isAuthenticated ? [{ to: '/profile', label: 'Profile' }] : []),
-    ...(user?.role === 'merchant' ? [{ to: '/merchant', label: 'Dashboard' }] : []),
+    ...(isMerchant ? [{ to: '/merchant', label: 'Dashboard' }] : []),
   ];
 
   return (
@@ -86,42 +89,42 @@ export const Navbar: React.FC = () => {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center gap-2">
                       <Avatar className="w-8 h-8">
-                        <AvatarImage src={user?.avatar} />
+                        <AvatarImage src={currentAccount && 'avatar' in currentAccount ? currentAccount.avatar : undefined} />
                         <AvatarFallback>
-                          {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+                          {currentAccount?.name?.[0]?.toUpperCase() || currentAccount?.email?.[0]?.toUpperCase() || 'U'}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col items-start">
-                        <span className="font-medium">{user?.name || user?.email || 'User'}</span>
-                        {user?.reputationTier && (
-                          <span className="text-xs text-muted-foreground">{user.reputationTier} Tier</span>
+                        <span className="font-medium">{currentAccount?.name || currentAccount?.email || 'Account'}</span>
+                        {!isMerchant && 'reputationTier' in (currentAccount || {}) && (currentAccount as any).reputationTier && (
+                          <span className="text-xs text-muted-foreground">{(currentAccount as any).reputationTier} Tier</span>
                         )}
                       </div>
-                      {user?.reputation !== undefined && (
+                      {!isMerchant && 'reputation' in (currentAccount || {}) && (currentAccount as any).reputation !== undefined && (
                         <Badge variant="secondary" className="ml-1">
                           <Award className="w-3 h-3 mr-1" />
-                          {user.reputation}
+                          {(currentAccount as any).reputation}
                         </Badge>
                       )}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-64">
                     <div className="px-2 py-2 border-b border-border">
-                      <p className="text-sm font-medium">{user?.name || user?.email}</p>
+                      <p className="text-sm font-medium">{currentAccount?.name || currentAccount?.email}</p>
                       <p className="text-xs text-muted-foreground">
-                        {user?.role === 'merchant' ? 'Merchant Account' : 'User Account'}
+                        {isMerchant ? 'Merchant Account' : 'User Account'}
                       </p>
-                      {user?.reputationTier && user?.role === 'user' && (
+                      {!isMerchant && 'reputationTier' in (currentAccount || {}) && (currentAccount as any).reputationTier && (
                         <div className="flex items-center gap-2 mt-2">
                           <Badge variant="outline" className="text-xs">
                             <Award className="w-3 h-3 mr-1" />
-                            {user.reputationTier}
+                            {(currentAccount as any).reputationTier}
                           </Badge>
-                          <span className="text-xs text-muted-foreground">{user.reputation} pts</span>
+                          <span className="text-xs text-muted-foreground">{(currentAccount as any).reputation} pts</span>
                         </div>
                       )}
                     </div>
-                    {user?.role === 'user' && (
+                    {!isMerchant && (
                       <DropdownMenuItem onClick={() => navigate('/account')}>
                         <LayoutGrid className="w-4 h-4 mr-2" />
                         My Account
@@ -131,7 +134,7 @@ export const Navbar: React.FC = () => {
                       <User className="w-4 h-4 mr-2" />
                       Profile
                     </DropdownMenuItem>
-                    {user?.role === 'merchant' && (
+                    {isMerchant && (
                       <DropdownMenuItem onClick={() => navigate('/merchant')}>
                         <LayoutGrid className="w-4 h-4 mr-2" />
                         Merchant Dashboard
@@ -218,7 +221,7 @@ export const Navbar: React.FC = () => {
                   >
                     Profile
                   </Link>
-                  {user?.role === 'merchant' && (
+                  {isMerchant && (
                     <Link
                       to="/merchant"
                       className="block py-3 text-foreground hover:text-primary transition-colors font-medium text-lg"

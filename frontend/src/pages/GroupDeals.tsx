@@ -110,7 +110,16 @@ export const GroupDeals: React.FC = () => {
               const activeDiscount = getActiveDiscount(groupDeal);
               const nextTier = getNextTier(groupDeal);
               const progress = (groupDeal.currentParticipants / (groupDeal.requiredParticipants || groupDeal.targetParticipants)) * 100;
-              const expiresIn = formatDistanceToNow(new Date(groupDeal.expiresAt), { addSuffix: true });
+              
+              let expiresIn = 'expires soon';
+              try {
+                const expiresDate = new Date(groupDeal.expiresAt);
+                if (!isNaN(expiresDate.getTime())) {
+                  expiresIn = formatDistanceToNow(expiresDate, { addSuffix: true });
+                }
+              } catch (e) {
+                // Invalid date, use fallback
+              }
 
               return (
                 <motion.div

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { NFTCard } from '@/components/NFTCard';
 import { RedemptionTicket } from '@/components/RedemptionTicket';
 import { nftAPI, marketplaceAPI, NFT } from '@/lib/api';
+import { useListData } from '@/hooks/useListData';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,11 +24,10 @@ import { SavingsCalculator } from '@/components/SavingsCalculator';
 import { RedemptionSuccessScreen } from '@/components/RedemptionSuccessScreen';
 
 export const Account: React.FC = () => {
-  const [deals, setDeals] = useState<NFT[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
+  const { error, handleErrorResponse } = useErrorHandler();
   const [filterTab, setFilterTab] = useState<'all' | 'active' | 'redeemed' | 'expired'>('all');
   const [advancedMode, setAdvancedMode] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   
   // Ticket Dialog
   const [ticketDialogOpen, setTicketDialogOpen] = useState(false);
@@ -53,24 +54,16 @@ export const Account: React.FC = () => {
     tierProgress: 0,
   });
 
-  useEffect(() => {
-    loadDeals();
-  }, []);
-
-  const loadDeals = async () => {
-    try {
-      setIsLoading(true);
+  // Use list data hook for better state management
+  const deals = useListData<NFT>(
+    async (page, pageSize) => {
       const data = await nftAPI.getUserNFTs();
-      setDeals(data);
-    } catch (error) {
-      console.error('Failed to load deals:', error);
-      toast.error('Failed to load your deals');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      return { items: data, total: data.length };
+    },
+    { pageSize: 100, optimisticUpdates: true }
+  );
 
-  const filteredDeals = deals.filter((deal) => {
+  const filteredDeals = deals.items.filter((deal) => {
     const now = new Date();
     const expiresAt = deal.deal?.expiresAt ? new Date(deal.deal.expiresAt) : new Date();
     const isExpired = expiresAt < now;
@@ -88,7 +81,7 @@ export const Account: React.FC = () => {
   });
 
   const handleViewTicket = (dealId: string) => {
-    const deal = deals.find(d => d.id === dealId);
+    const deal = deals.items.find(d => d.id === dealId);
     if (!deal) return;
     setTicketDeal(deal);
     setTicketDialogOpen(true);
@@ -108,7 +101,7 @@ export const Account: React.FC = () => {
       await nftAPI.redeemNFT(dealId);
       
       // Get deal details for success screen
-      const deal = deals.find(d => d.id === dealId);
+      const deal = deals.items.find(d => d.id === dealId);
       if (deal) {
         const originalPrice = deal.deal?.originalPrice || 100;
         const discount = deal.deal?.discount || deal.deal?.discountPercentage || 0;
@@ -124,16 +117,17 @@ export const Account: React.FC = () => {
         setShowRedemptionSuccess(true);
       }
       
-      loadDeals();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to redeem deal');
+      await deals.refresh();
+      toast.success('Deal redeemed successfully!');
+    } catch (err: any) {
+      handleErrorResponse(err, true);
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleTransferClick = (dealId: string) => {
-    const deal = deals.find(d => d.id === dealId);
+    const deal = deals.items.find(d => d.id === dealId);
     if (!deal) return;
     setSelectedDeal(deal);
     setTransferDialogOpen(true);
@@ -144,20 +138,21 @@ export const Account: React.FC = () => {
     
     try {
       setActionLoading(true);
+      deals.removeItem(selectedDeal.id, true); // optimistic update
       await nftAPI.transferNFT(selectedDeal.id, transferEmail);
       toast.success('Deal sent successfully!');
       setTransferDialogOpen(false);
       setTransferEmail('');
-      loadDeals();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to send deal');
+    } catch (err: any) {
+      deals.removeItem(selectedDeal.id, false); // revert optimistic update
+      handleErrorResponse(err, true);
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleListClick = (dealId: string) => {
-    const deal = deals.find(d => d.id === dealId);
+    const deal = deals.items.find(d => d.id === dealId);
     if (!deal) return;
     setSelectedDeal(deal);
     setListDialogOpen(true);
@@ -168,29 +163,32 @@ export const Account: React.FC = () => {
     
     try {
       setActionLoading(true);
+      const originalItem = deals.items.find(d => d.id === selectedDeal.id);
+      deals.updateItem(selectedDeal.id, { ...originalItem, isListed: true }, true); // optimistic
       await marketplaceAPI.listNFT(selectedDeal.id, parseFloat(listPrice));
       toast.success('Deal listed for sale successfully!');
       setListDialogOpen(false);
       setListPrice('');
-      loadDeals();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to list deal');
+    } catch (err: any) {
+      deals.updateItem(selectedDeal.id, selectedDeal, false); // revert optimistic
+      handleErrorResponse(err, true);
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleUnlist = async (dealId: string) => {
-    const deal = deals.find(d => d.id === dealId);
+    const deal = deals.items.find(d => d.id === dealId);
     if (!deal) return;
     
     try {
       setActionLoading(true);
+      deals.updateItem(dealId, { ...deal, isListed: false }, true); // optimistic
       await marketplaceAPI.unlistNFT(deal.id);
       toast.success('Deal unlisted successfully!');
-      loadDeals();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to unlist deal');
+    } catch (err: any) {
+      deals.updateItem(dealId, deal, false); // revert optimistic
+      handleErrorResponse(err, true);
     } finally {
       setActionLoading(false);
     }
@@ -202,7 +200,7 @@ export const Account: React.FC = () => {
 
   const getFilteredCount = (filter: typeof filterTab) => {
     const now = new Date();
-    return deals.filter((deal) => {
+    return deals.items.filter((deal) => {
       const expiresAt = deal.deal?.expiresAt ? new Date(deal.deal.expiresAt) : new Date();
       const isExpired = expiresAt < now;
       
@@ -231,7 +229,7 @@ export const Account: React.FC = () => {
           <div>
             <h1 className="font-sans font-bold text-3xl md:text-4xl mb-2">My Deals</h1>
             <p className="text-muted-foreground">
-              Manage your deals - redeem, gift, or list them for sale
+              Manage your deals - redeem, gift, or list them for sale ({deals.items.length} total)
             </p>
           </div>
           
@@ -266,7 +264,7 @@ export const Account: React.FC = () => {
         <Tabs value={filterTab} onValueChange={(v) => setFilterTab(v as typeof filterTab)} className="w-full">
           <TabsList className="mb-8 grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
             <TabsTrigger value="all">
-              All ({deals.length})
+              All ({deals.items.length})
             </TabsTrigger>
             <TabsTrigger value="active">
               Active ({getFilteredCount('active')})
@@ -280,7 +278,7 @@ export const Account: React.FC = () => {
           </TabsList>
 
           <TabsContent value="all">
-            {isLoading ? (
+            {deals.isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="space-y-4">
@@ -317,7 +315,7 @@ export const Account: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="active">
-            {isLoading ? (
+            {deals.isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="space-y-4">

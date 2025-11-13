@@ -6,113 +6,124 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'react-toastify';
-import { Clock, Users, TrendingUp, DollarSign, Zap } from 'lucide-react';
+import { Clock, Users, TrendingUp, DollarSign, Zap, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { auctionsAPI } from '@/lib/api';
+import { SkeletonCard } from '@/components/SkeletonCard';
 
 interface Auction {
   id: string;
+  _id?: string;
   title: string;
   description: string;
   imageUrl: string;
   currentBid: number;
+  highestBid?: number;
+  startingPrice?: number;
   minBid: number;
   bidIncrement: number;
   currency: string;
   endsAt: string;
+  endTime?: string;
   totalBids: number;
+  bidCount?: number;
   category: string;
   merchant: {
     id: string;
     name: string;
     logo: string;
   };
-  status: 'active' | 'ending-soon' | 'ended';
+  seller?: {
+    walletAddress: string;
+    username?: string;
+  };
+  coupon?: {
+    id: string;
+    promotion: {
+      title: string;
+      description: string;
+      category: string;
+      imageUrl?: string;
+    };
+  };
+  status: 'active' | 'ending-soon' | 'ended' | 'completed' | 'cancelled';
 }
 
-const mockAuctions: Auction[] = [
-  {
-    id: '1',
-    title: 'Exclusive VIP Concert Tickets - Front Row',
-    description: 'Premium front row seats for the biggest concert of the year. Includes backstage pass and meet & greet.',
-    imageUrl: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80',
-    currentBid: 850,
-    minBid: 500,
-    bidIncrement: 50,
-    currency: 'USD',
-    endsAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-    totalBids: 23,
-    category: 'experiences',
-    merchant: {
-      id: 'm1',
-      name: 'LiveEvents Pro',
-      logo: 'https://api.dicebear.com/7.x/initials/svg?seed=LE',
-    },
-    status: 'ending-soon',
-  },
-  {
-    id: '2',
-    title: 'Luxury Weekend Getaway - 5-Star Resort',
-    description: '3 nights at an exclusive beachfront resort with all-inclusive amenities, spa access, and private butler service.',
-    imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80',
-    currentBid: 1200,
-    minBid: 800,
-    bidIncrement: 100,
-    currency: 'USD',
-    endsAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-    totalBids: 45,
-    category: 'hotels',
-    merchant: {
-      id: 'm2',
-      name: 'Paradise Resorts',
-      logo: 'https://api.dicebear.com/7.x/initials/svg?seed=PR',
-    },
-    status: 'active',
-  },
-  {
-    id: '3',
-    title: 'Private Chef Experience for 6 People',
-    description: 'Michelin-starred chef will prepare a 7-course tasting menu in your home with wine pairings.',
-    imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
-    currentBid: 650,
-    minBid: 400,
-    bidIncrement: 25,
-    currency: 'USD',
-    endsAt: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(),
-    totalBids: 18,
-    category: 'restaurants',
-    merchant: {
-      id: 'm3',
-      name: 'Gourmet Experiences',
-      logo: 'https://api.dicebear.com/7.x/initials/svg?seed=GE',
-    },
-    status: 'active',
-  },
-  {
-    id: '4',
-    title: 'Limited Edition Designer Handbag',
-    description: 'Rare limited edition luxury handbag from exclusive collection. Only 100 made worldwide.',
-    imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80',
-    currentBid: 2400,
-    minBid: 2000,
-    bidIncrement: 100,
-    currency: 'USD',
-    endsAt: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
-    totalBids: 67,
-    category: 'shopping',
-    merchant: {
-      id: 'm4',
-      name: 'Luxury Fashion House',
-      logo: 'https://api.dicebear.com/7.x/initials/svg?seed=LF',
-    },
-    status: 'active',
-  },
-];
-
 export const Auctions: React.FC = () => {
-  const [auctions, setAuctions] = useState<Auction[]>(mockAuctions);
+  const [auctions, setAuctions] = useState<Auction[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [bidAmounts, setBidAmounts] = useState<Record<string, number>>({});
   const [timeRemaining, setTimeRemaining] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPlacingBid, setIsPlacingBid] = useState<Record<string, boolean>>({});
+
+  // Load auctions from API
+  useEffect(() => {
+    loadAuctions();
+  }, []);
+
+  const loadAuctions = async () => {
+    try {
+      setIsLoading(true);
+      const response = await auctionsAPI.listAuctions({ status: 'active' });
+
+      // Transform backend data to match frontend interface
+      const transformedAuctions = (response.items || []).map((auction: any) => {
+        const auctionId = auction._id || auction.id;
+        const title = auction.coupon?.promotion?.title || auction.title || 'Untitled Auction';
+        const description = auction.coupon?.promotion?.description || auction.description || '';
+        const category = auction.coupon?.promotion?.category || auction.category || 'general';
+        const imageUrl = auction.coupon?.promotion?.imageUrl || auction.imageUrl || 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80';
+
+        return {
+          id: auctionId,
+          _id: auctionId,
+          title,
+          description,
+          imageUrl,
+          currentBid: auction.highestBid || auction.startingPrice || auction.currentBid || 0,
+          minBid: auction.startingPrice || auction.minBid || 0,
+          bidIncrement: auction.bidIncrement || 10,
+          currency: 'USD',
+          endsAt: auction.endTime || auction.endsAt || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          totalBids: auction.bidCount || auction.totalBids || 0,
+          category,
+          merchant: auction.merchant || auction.seller ? {
+            id: auction.merchant?.id || auction.seller?.walletAddress || 'unknown',
+            name: auction.merchant?.name || auction.seller?.username || 'Unknown Seller',
+            logo: auction.merchant?.logo || `https://api.dicebear.com/7.x/initials/svg?seed=${auction.seller?.username || 'U'}`,
+          } : {
+            id: 'unknown',
+            name: 'Unknown Seller',
+            logo: 'https://api.dicebear.com/7.x/initials/svg?seed=U',
+          },
+          status: determineAuctionStatus(auction.endTime || auction.endsAt, auction.status),
+          seller: auction.seller,
+          coupon: auction.coupon,
+        };
+      });
+
+      setAuctions(transformedAuctions);
+    } catch (error: any) {
+      console.error('Failed to load auctions:', error);
+      toast.error(error.response?.data?.message || 'Failed to load auctions');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const determineAuctionStatus = (endTime: string, backendStatus?: string): 'active' | 'ending-soon' | 'ended' => {
+    if (backendStatus === 'completed' || backendStatus === 'cancelled') {
+      return 'ended';
+    }
+    const now = new Date().getTime();
+    const end = new Date(endTime).getTime();
+    const distance = end - now;
+
+    if (distance < 0) return 'ended';
+    if (distance < 2 * 60 * 60 * 1000) return 'ending-soon'; // Less than 2 hours
+    return 'active';
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -137,9 +148,15 @@ export const Auctions: React.FC = () => {
     return () => clearInterval(timer);
   }, [auctions]);
 
-  const handlePlaceBid = (auctionId: string) => {
+  const handlePlaceBid = async (auctionId: string) => {
     const auction = auctions.find((a) => a.id === auctionId);
     const bidAmount = bidAmounts[auctionId];
+    const walletAddress = localStorage.getItem('walletAddress');
+
+    if (!walletAddress) {
+      toast.error('Please connect your wallet to place a bid');
+      return;
+    }
 
     if (!auction || !bidAmount) {
       toast.error('Please enter a bid amount');
@@ -151,17 +168,22 @@ export const Auctions: React.FC = () => {
       return;
     }
 
-    // Update auction with new bid
-    setAuctions((prev) =>
-      prev.map((a) =>
-        a.id === auctionId
-          ? { ...a, currentBid: bidAmount, totalBids: a.totalBids + 1 }
-          : a
-      )
-    );
+    try {
+      setIsPlacingBid((prev) => ({ ...prev, [auctionId]: true }));
 
-    toast.success('Bid placed successfully!');
-    setBidAmounts((prev) => ({ ...prev, [auctionId]: 0 }));
+      await auctionsAPI.placeBid(auctionId, walletAddress, bidAmount);
+
+      toast.success('Bid placed successfully!');
+      setBidAmounts((prev) => ({ ...prev, [auctionId]: 0 }));
+
+      // Reload auctions to get updated data
+      await loadAuctions();
+    } catch (error: any) {
+      console.error('Failed to place bid:', error);
+      toast.error(error.response?.data?.message || 'Failed to place bid');
+    } finally {
+      setIsPlacingBid((prev) => ({ ...prev, [auctionId]: false }));
+    }
   };
 
   const filteredAuctions = selectedCategory === 'all'

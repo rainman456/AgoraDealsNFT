@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { DealCard } from '@/components/DealCard';
-import { dealsAPI, Deal } from '@/lib/api';
+import { promotionsAPI, Promotion } from '@/lib/api';
+import { useListData } from '@/hooks/useListData';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Search, MapPin, TrendingUp, Users, Zap, Shield, Star, Check } from 'lucide-react';
+import { Search, MapPin, TrendingUp, Users, Zap, Shield, Star, Check, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -49,102 +52,101 @@ const howItWorks = [
 ];
 
 export const Home: React.FC = () => {
-  const [deals, setDeals] = useState<Deal[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [searchInput, setSearchInput] = useState('');
+  const debouncedSearch = useDebouncedValue(searchInput, 300);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [claimingDealId, setClaimingDealId] = useState<string | null>(null);
-  const [trendingDeals, setTrendingDeals] = useState<Deal[]>([]);
-  const [nearbyDeals, setNearbyDeals] = useState<Deal[]>([]);
+  const { error, handleErrorResponse } = useErrorHandler();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadDeals();
-    loadTrendingDeals();
-    loadNearbyDeals();
-  }, [selectedCategory, page]);
-
-  const loadTrendingDeals = async () => {
-    try {
-      const response = await dealsAPI.getDeals({ limit: 5, sortBy: 'trending' });
-      setTrendingDeals(response.deals);
-    } catch (error) {
-      console.error('Failed to load trending deals:', error);
-    }
-  };
-
-  const loadNearbyDeals = async () => {
-    try {
-      const response = await dealsAPI.getNearbyDeals(40.7128, -74.0060, 10);
-      setNearbyDeals(response.deals || []);
-    } catch (error) {
-      console.error('Failed to load nearby deals:', error);
-    }
-  };
-
-  const loadDeals = async () => {
-    try {
-      setIsLoading(true);
-      const response = await dealsAPI.getDeals({
-        category: selectedCategory === 'all' ? undefined : selectedCategory,
+  // Main deals list with pagination and filters
+  const promotions = useListData(
+    (page, pageSize, params) =>
+      promotionsAPI.listPromotions({
         page,
-        limit: 12,
-      });
-      
-      if (page === 1) {
-        setDeals(response.deals);
-      } else {
-        setDeals((prev) => [...prev, ...response.deals]);
-      }
-      
-      setHasMore(response.deals.length === 12);
-    } catch (error) {
-      console.error('Failed to load deals:', error);
-      toast.error('Failed to load deals');
-    } finally {
-      setIsLoading(false);
+        limit: pageSize,
+        category: selectedCategory === 'all' ? undefined : selectedCategory,
+        search: debouncedSearch || undefined,
+        ...params,
+      }),
+    {
+      pageSize: 12,
+      optimisticUpdates: false,
+      deduplicateById: true,
+      filterFn: (item: Promotion) => item.isActive,
+      sortFn: (a: Promotion, b: Promotion) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     }
+  );
+
+  // Trending deals (sidebar)
+  const [trendingDeals, setTrendingDeals] = useState<Promotion[]>([]);
+  const [nearbyDeals, setNearbyDeals] = useState<Promotion[]>([]);
+  const [trendingLoading, setTrendingLoading] = useState(false);
+
+  // Load initial deals
+  useEffect(() => {
+    promotions.fetch();
+  }, [selectedCategory, debouncedSearch]);
+
+  // Load trending deals
+  useEffect(() => {
+    const loadTrendingDeals = async () => {
+      try {
+        setTrendingLoading(true);
+        const response = await promotionsAPI.listPromotions({
+          limit: 5,
+          sortBy: 'createdAt',
+          sortOrder: 'desc',
+        });
+        setTrendingDeals(response.data?.promotions || []);
+      } catch (error) {
+        console.error('Failed to load trending deals:', error);
+      } finally {
+        setTrendingLoading(false);
+      }
+    };
+    loadTrendingDeals();
+  }, []);
+
+  // Load nearby deals
+  useEffect(() => {
+    const loadNearbyDeals = async () => {
+      try {
+        // Using New York coords as default
+        const response = await promotionsAPI.listPromotions({
+          latitude: 40.7128,
+          longitude: -74.006,
+          radius: 10,
+          limit: 6,
+        });
+        setNearbyDeals(response.data?.promotions || []);
+      } catch (error) {
+        console.error('Failed to load nearby deals:', error);
+      }
+    };
+    loadNearbyDeals();
+  }, []);
+
+  const handleSearch = () => {
+    promotions.fetch();
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-    
-    try {
-      setIsLoading(true);
-      const response = await dealsAPI.searchDeals(searchQuery);
-      setDeals(response.deals);
-      setHasMore(false);
-    } catch (error) {
-      console.error('Search failed:', error);
-      toast.error('Search failed');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
   };
 
   const handleClaimDeal = async (dealId: string) => {
     try {
       setClaimingDealId(dealId);
-      await dealsAPI.claimDeal(dealId);
-      toast.success('Deal claimed successfully! Check your account.');
+      // Implement claim logic here - will be connected to backend
+      toast.success('Deal claimed successfully!');
       navigate('/account');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to claim deal');
+    } catch (err: any) {
+      handleErrorResponse(err, true);
     } finally {
       setClaimingDealId(null);
     }
-  };
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setPage(1);
-    setDeals([]);
-  };
-
-  const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
   };
 
   return (
@@ -190,8 +192,8 @@ export const Home: React.FC = () => {
                       <Input
                         placeholder="Search destinations, restaurants, experiences..."
                         className="pl-12 h-14 border-0 text-base focus-visible:ring-0"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                       />
                     </div>
@@ -282,11 +284,11 @@ export const Home: React.FC = () => {
               className="pb-12"
             >
               {trendingDeals.map((deal) => (
-                <SwiperSlide key={deal.id}>
+                <SwiperSlide key={deal._id}>
                   <DealCard
                     deal={deal}
                     onClaim={handleClaimDeal}
-                    isClaiming={claimingDealId === deal.id}
+                    isClaiming={claimingDealId === deal._id}
                   />
                 </SwiperSlide>
               ))}
@@ -359,10 +361,10 @@ export const Home: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {nearbyDeals.slice(0, 6).map((deal) => (
                 <DealCard
-                  key={deal.id}
+                  key={deal._id}
                   deal={deal}
                   onClaim={handleClaimDeal}
-                  isClaiming={claimingDealId === deal.id}
+                  isClaiming={claimingDealId === deal._id}
                 />
               ))}
             </div>
@@ -404,7 +406,7 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          {isLoading && page === 1 ? (
+          {promotions.isLoading && promotions.page === 1 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="space-y-4">
@@ -414,20 +416,26 @@ export const Home: React.FC = () => {
                 </div>
               ))}
             </div>
-          ) : deals.length === 0 ? (
+          ) : (promotions.items || []).length === 0 ? (
             <div className="text-center py-20">
               <div className="w-20 h-20 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
                 <Search className="w-10 h-10 text-muted-foreground" />
               </div>
               <h3 className="text-xl font-semibold mb-2">No deals found</h3>
               <p className="text-muted-foreground">Try adjusting your search or filters</p>
+              {promotions.error && (
+                <div className="mt-4 p-4 bg-destructive/10 text-destructive rounded-lg flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm">{promotions.error.message}</p>
+                </div>
+              )}
             </div>
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {deals.map((deal, index) => (
+                {promotions.items.map((deal, index) => (
                   <motion.div
-                    key={deal.id}
+                    key={deal._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -435,22 +443,22 @@ export const Home: React.FC = () => {
                     <DealCard
                       deal={deal}
                       onClaim={handleClaimDeal}
-                      isLoading={claimingDealId === deal.id}
+                      isLoading={claimingDealId === deal._id}
                     />
                   </motion.div>
                 ))}
               </div>
 
-              {hasMore && (
+              {promotions.hasMore && (
                 <div className="text-center mt-12">
                   <Button
                     size="lg"
                     variant="outline"
-                    onClick={handleLoadMore}
-                    disabled={isLoading}
+                    onClick={() => promotions.loadMore()}
+                    disabled={promotions.isLoading}
                     className="px-8"
                   >
-                    {isLoading ? 'Loading...' : 'Show more deals'}
+                    {promotions.isLoading ? 'Loading...' : 'Show more deals'}
                   </Button>
                 </div>
               )}

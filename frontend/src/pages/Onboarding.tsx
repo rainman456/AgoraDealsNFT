@@ -126,7 +126,7 @@ export const Onboarding: React.FC = () => {
 
                   <div className="p-8 text-center">
                     <h1 className="text-4xl font-heading font-bold mb-4">
-                      Welcome to DealChain
+                      Welcome to AgoraDeals
                     </h1>
                     <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                       Your deals, your assets, your savings

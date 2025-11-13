@@ -1,38 +1,63 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { authAPI } from '@/lib/api';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'react-toastify';
-import { Mail, Lock, User, ShoppingBag } from 'lucide-react';
+import { Mail, Lock, User, ShoppingBag, AlertCircle } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const { error, getFieldErrorMessage, hasFieldError, handleErrorResponse, clearError } = useErrorHandler();
   
   // Email login state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleEmailLogin = async (e: React.FormEvent, role?: 'user' | 'merchant') => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearError();
+    
+    // Basic validation
+    if (!email || !password) {
+      toast.error('Please enter both email and password');
+      return;
+    }
     
     try {
       setIsLoading(true);
-      const response = await login(email, password);
+      console.log('🔐 Login attempt with:', { email, passwordLength: password.length });
+      console.log('📡 API Base URL:', import.meta.env.VITE_API_BASE_URL);
+      console.log('🔄 Using Mock API:', import.meta.env.VITE_USE_MOCK_API === 'true');
       
-      // Navigate based on user role
-      if (response?.role === 'merchant') {
-        navigate('/merchant');
+      const response = await authAPI.login(email, password);
+      console.log('✅ Login response:', response);
+      
+      if (response.success && response.data) {
+        toast.success('Login successful!');
+        // Store wallet address from response
+        if (response.data.walletAddress) {
+          localStorage.setItem('walletAddress', response.data.walletAddress);
+        }
+        // Navigate based on type
+        if (response.data.type === 'merchant') {
+          localStorage.setItem('merchant', JSON.stringify(response.data));
+          navigate('/merchant');
+        } else {
+          localStorage.setItem('user', JSON.stringify(response.data));
+          navigate('/');
+        }
       } else {
-        navigate('/');
+        toast.error('Login failed. Please try again.');
       }
-    } catch (error) {
-      // Error handled in AuthContext
+    } catch (error: any) {
+      console.error('❌ Login error:', error);
+      handleErrorResponse(error, true);
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +108,7 @@ export const Login: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={(e) => handleEmailLogin(e, 'user')} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="user-email">Email</Label>
                     <div className="relative">
@@ -139,7 +164,7 @@ export const Login: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={(e) => handleEmailLogin(e, 'merchant')} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="merchant-email">Email</Label>
                     <div className="relative">

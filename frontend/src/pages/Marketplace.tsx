@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { marketplaceAPI, MarketplaceListing } from '@/lib/api';
+import { useListData } from '@/hooks/useListData';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,8 +25,7 @@ import { motion } from 'framer-motion';
 import { staggerContainer, staggerItem } from '@/lib/animations';
 
 export const Marketplace: React.FC = () => {
-  const [listings, setListings] = useState<MarketplaceListing[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { error, handleErrorResponse } = useErrorHandler();
   const [buyingId, setBuyingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'buy' | 'sell' | 'auctions'>('buy');
   
@@ -33,43 +34,46 @@ export const Marketplace: React.FC = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    loadListings();
-  }, [category]);
-
-  const loadListings = async () => {
-    try {
-      setIsLoading(true);
+  // Use list data hook for listings
+  const listings = useListData<MarketplaceListing>(
+    async (page, pageSize) => {
       const response = await marketplaceAPI.getListings({
         category: category === 'all' ? undefined : category,
         minPrice: priceRange[0],
         maxPrice: priceRange[1],
-        limit: 20,
+        limit: pageSize,
       });
-      setListings(response.listings);
-    } catch (error) {
-      console.error('Failed to load listings:', error);
-      toast.error('Failed to load marketplace listings');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      return { items: response.listings || [], total: response.total || 0 };
+    },
+    { pageSize: 20, optimisticUpdates: true }
+  );
+
+  useEffect(() => {
+    listings.fetch();
+  }, [category, priceRange]);
 
   const handleBuy = async (listingId: string) => {
     try {
       setBuyingId(listingId);
+      const listing = listings.items.find(l => l.id === listingId);
+      if (listing) {
+        listings.removeItem(listingId, true); // optimistic remove from display
+      }
       await marketplaceAPI.buyNFT(listingId);
       toast.success('Deal purchased successfully! Check your account.');
-      loadListings();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to purchase deal');
+    } catch (err: any) {
+      const listing = listings.items.find(l => l.id === listingId);
+      if (listing) {
+        listings.removeItem(listingId, false); // revert optimistic
+      }
+      handleErrorResponse(err, true);
     } finally {
       setBuyingId(null);
     }
   };
 
   const applyFilters = () => {
-    loadListings();
+    listings.fetch();
     setShowFilters(false);
   };
 
@@ -148,7 +152,7 @@ export const Marketplace: React.FC = () => {
         {/* Content based on active tab */}
         {activeTab === 'buy' && (
           <>
-        {isLoading ? (
+        {listings.isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="space-y-4">
@@ -158,13 +162,13 @@ export const Marketplace: React.FC = () => {
               </div>
             ))}
           </div>
-        ) : listings.length === 0 ? (
+        ) : listings.items.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-muted-foreground text-lg">No listings available</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {listings.map((listing) => (
+            {listings.items.map((listing) => (
               <Card key={listing.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-48 overflow-hidden">
                   <img

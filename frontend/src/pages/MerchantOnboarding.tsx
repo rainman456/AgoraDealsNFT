@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'react-toastify';
 import { Check, Upload, MapPin, Globe, Mail, Phone } from 'lucide-react';
 import { MerchantOnboardingFlow } from '@/components/MerchantOnboardingFlow';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { merchantAPI } from '@/lib/api';
 
 interface OnboardingData {
   businessName: string;
@@ -27,6 +29,7 @@ interface OnboardingData {
 
 export const MerchantOnboarding: React.FC = () => {
   const navigate = useNavigate();
+  const { error, handleErrorResponse } = useErrorHandler();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<OnboardingData>({
@@ -114,13 +117,24 @@ export const MerchantOnboarding: React.FC = () => {
     try {
       setIsSubmitting(true);
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call backend API to complete onboarding
+      await merchantAPI.completeOnboarding({
+        businessName: formData.businessName,
+        businessType: formData.businessType,
+        description: formData.description,
+        email: formData.email,
+        phone: formData.phone,
+        website: formData.website,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode,
+      });
 
       toast.success('Welcome to DealChain! Your merchant account is ready.');
       navigate('/merchant');
-    } catch (error) {
-      toast.error('Failed to complete onboarding. Please try again.');
+    } catch (err: any) {
+      handleErrorResponse(err, true);
     } finally {
       setIsSubmitting(false);
     }

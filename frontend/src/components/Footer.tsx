@@ -9,11 +9,11 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-heading font-bold text-xl">D</span>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-blue-600 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-white font-heading font-bold text-2xl">A</span>
               </div>
-              <span className="font-heading font-bold text-xl">DealChain</span>
+              <span className="font-heading font-bold text-2xl bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent">AgoraDeals</span>
             </div>
             <p className="text-muted-foreground mb-4 max-w-md">
               The next evolution of deal discovery. Turn discounts into digital assets, 
@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="mailto:hello@dealchain.com"
+                href="mailto:hello@agoradeals.com"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Mail className="w-5 h-5" />
@@ -102,7 +102,7 @@ export const Footer: React.FC = () => {
 
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} DealChain. All rights reserved.
+            © {new Date().getFullYear()} AgoraDeals. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm">
             <a href="#" className="text-muted-foreground hover:text-primary transition-colors">

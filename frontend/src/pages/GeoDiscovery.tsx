@@ -59,10 +59,22 @@ export const GeoDiscovery: React.FC = () => {
     try {
       setIsLoading(true);
       const data = await dealsAPI.getNearbyDeals(lat, lng, radius);
-      setDeals(data.deals);
+      // Ensure deals is always an array
+      let dealsArray: Deal[] = [];
+      if (Array.isArray(data)) {
+        dealsArray = data;
+      } else if (Array.isArray(data?.deals)) {
+        dealsArray = data.deals;
+      } else if (Array.isArray(data?.data)) {
+        dealsArray = data.data;
+      } else if (Array.isArray(data?.items)) {
+        dealsArray = data.items;
+      }
+      setDeals(dealsArray);
     } catch (error) {
       console.error('Failed to load nearby deals:', error);
       toast.error('Failed to load nearby deals');
+      setDeals([]);
     } finally {
       setIsLoading(false);
     }
@@ -168,7 +180,7 @@ export const GeoDiscovery: React.FC = () => {
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-muted-foreground">Finding nearby deals...</p>
           </div>
-        ) : deals.length === 0 ? (
+        ) : !deals || deals.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
               <Search className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-20" />
