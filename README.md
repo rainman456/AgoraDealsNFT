@@ -91,11 +91,11 @@ We've nailed the core loop and then some:
 
 ### Tech Breakdown
 - **Contracts**: Rust via Anchor.
-- **Front End**: Next.js 14 with the App Router.
+- **Front End**: React.js 14 with the React Router.
 - **Data Layer**: MongoDB for user profiles and indexing.
 - **Wallets**: Plug-and-play with Phantom, Backpack, or Solflare.
 - **Storage**: Local files for now, wired for S3.
-- **APIs**: Clean REST routes handled in Next.js.
+- **APIs**: Clean REST routes handled in React.js.
 
 ## Tackling the Tough Web3 Bits
 
@@ -233,7 +233,7 @@ Full rundown in **[DEMO.md](./DEMO.md)**.
 - Polling for updates (WebSockets next)
 
 ### Frontend
-- Next.js 14 App Router
+- React.js 14 
 - Tailwind + shadcn for styling
 - Context and SWR for state
 - Wallet Adapter for seamless connects
