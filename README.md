@@ -24,7 +24,7 @@ Our stack keeps things lean and scalable:
 ```
 ┌─────────────┐      ┌─────────────┐      ┌──────────────┐      ┌─────────────┐
 │   Frontend  │ ───► │   Backend   │ ───► │   Solana     │      │  External   │
-│  (Next.js)  │ ◄─── │  (Node.js)  │ ◄─── │  Smart       │      │  APIs       │
+│  (React.js)  │ ◄─── │  (Node.js)  │ ◄─── │  Smart       │      │  APIs       │
 │             │      │   + MongoDB │      │  Contracts   │      │  (Deals)    │
 └─────────────┘      └─────────────┘      └──────────────┘      └─────────────┘
 ```
