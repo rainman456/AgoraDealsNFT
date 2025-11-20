@@ -16,6 +16,31 @@ export class SolanaService {
     return this.config.program;
   }
 
+
+
+
+
+  private async safelyFetchAccount<T>(
+  fetchFn: () => Promise<T>,
+  accountName: string,
+  accountAddress: string
+): Promise<T | null> {
+  try {
+    return await fetchFn();
+  } catch (error: any) {
+    if (error.message?.includes('Account does not exist')) {
+      logger.warn(`${accountName} not found: ${accountAddress}`);
+      return null;
+    }
+    logger.error(`Error fetching ${accountName}:`, error);
+    throw error;
+  }
+}
+
+
+
+
+
   /**
    * Initialize the marketplace
    */
@@ -122,135 +147,268 @@ export class SolanaService {
    * Mint a coupon NFT
    */
   async mintCoupon(
-    promotionPDA: PublicKey,
-    recipientPubkey: PublicKey,
-    merchantAuthority: PublicKey,
-    couponId: number,
-    merchantKeypair?: Keypair
-  ) {
-    try {
-      const promotion = await this.config.program.account.promotion.fetch(promotionPDA);
-      const [merchantPDA] = this.config.getMerchantPDA(merchantAuthority);
-      const [marketplacePDA] = this.config.getMarketplacePDA();
-      const [couponPDA] = this.config.getCouponPDA(promotionPDA, promotion.currentSupply);
-      const [userStatsPDA] = this.config.getUserStatsPDA(recipientPubkey);
+  promotionPDA: PublicKey,
+  recipientPubkey: PublicKey,
+  merchantAuthority: PublicKey,
+  couponId: number,
+  merchantKeypair?: Keypair
+) {
+  try {
+    // Fetch promotion with error handling
+    const promotion = await this.safelyFetchAccount(
+      () => this.config.program.account.promotion.fetch(promotionPDA),
+      'Promotion',
+      promotionPDA.toString()
+    );
 
-      // Generate new mint keypair
-      const nftMint = Keypair.generate();
-
-      // Get associated token account
-      const tokenAccount = await getAssociatedTokenAddress(
-        nftMint.publicKey,
-        recipientPubkey
-      );
-
-      // Derive metadata PDA
-      const [metadataPDA] = PublicKey.findProgramAddressSync(
-        [
-          Buffer.from('metadata'),
-          METADATA_PROGRAM_ID.toBuffer(),
-          nftMint.publicKey.toBuffer(),
-        ],
-        METADATA_PROGRAM_ID
-      );
-
-      // Derive master edition PDA
-      const [masterEditionPDA] = PublicKey.findProgramAddressSync(
-        [
-          Buffer.from('metadata'),
-          METADATA_PROGRAM_ID.toBuffer(),
-          nftMint.publicKey.toBuffer(),
-          Buffer.from('edition'),
-        ],
-        METADATA_PROGRAM_ID
-      );
-
-      const payer = merchantKeypair?.publicKey || this.config.wallet.publicKey;
-      const signers = merchantKeypair ? [nftMint, merchantKeypair] : [nftMint];
-
-      const tx = await this.config.program.methods
-        .mintCoupon(new BN(couponId))
-        .accounts({
-          coupon: couponPDA,
-          nftMint: nftMint.publicKey,
-          tokenAccount: tokenAccount,
-          metadata: metadataPDA,
-          masterEdition: masterEditionPDA,
-          promotion: promotionPDA,
-          merchant: merchantPDA,
-          marketplace: marketplacePDA,
-          recipient: recipientPubkey,
-          userStats: userStatsPDA,
-          payer: payer,
-          authority: merchantAuthority,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-          tokenMetadataProgram: METADATA_PROGRAM_ID,
-          sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
-          systemProgram: SystemProgram.programId,
-          rent: SYSVAR_RENT_PUBKEY,
-        } as any)
-        .signers(signers)
-        .rpc();
-
-      logger.info(`Coupon minted: ${tx}`);
-      return {
-        signature: tx,
-        coupon: couponPDA.toString(),
-        mint: nftMint.publicKey.toString(),
-      };
-    } catch (error) {
-      logger.error('Failed to mint coupon:', error);
-      throw error;
+    if (!promotion) {
+      throw new Error(`Promotion not found: ${promotionPDA.toString()}`);
     }
+
+    // Check if promotion is still active
+    if (!promotion.isActive) {
+      throw new Error('Promotion is not active');
+    }
+
+    // Check if supply is available
+    if (promotion.currentSupply >= promotion.maxSupply) {
+      throw new Error('Promotion supply exhausted');
+    }
+
+    // Check expiry
+    const now = Math.floor(Date.now() / 1000);
+    if (promotion.expiryTimestamp.toNumber() < now) {
+      throw new Error('Promotion has expired');
+    }
+
+    const [merchantPDA] = this.config.getMerchantPDA(merchantAuthority);
+    const [marketplacePDA] = this.config.getMarketplacePDA();
+    const [couponPDA] = this.config.getCouponPDA(promotionPDA, promotion.currentSupply);
+    const [userStatsPDA] = this.config.getUserStatsPDA(recipientPubkey);
+
+    // Generate new mint keypair
+    const nftMint = Keypair.generate();
+
+    // Get associated token account
+    const tokenAccount = await getAssociatedTokenAddress(
+      nftMint.publicKey,
+      recipientPubkey,
+      false, // allowOwnerOffCurve
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    );
+
+    // Derive metadata PDA
+    const [metadataPDA] = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from('metadata'),
+        METADATA_PROGRAM_ID.toBuffer(),
+        nftMint.publicKey.toBuffer(),
+      ],
+      METADATA_PROGRAM_ID
+    );
+
+    // Derive master edition PDA
+    const [masterEditionPDA] = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from('metadata'),
+        METADATA_PROGRAM_ID.toBuffer(),
+        nftMint.publicKey.toBuffer(),
+        Buffer.from('edition'),
+      ],
+      METADATA_PROGRAM_ID
+    );
+
+    const payer = merchantKeypair?.publicKey || this.config.wallet.publicKey;
+    const signers = merchantKeypair ? [nftMint, merchantKeypair] : [nftMint];
+
+    logger.info('Minting coupon NFT...', {
+      promotion: promotionPDA.toString(),
+      coupon: couponPDA.toString(),
+      mint: nftMint.publicKey.toString(),
+      recipient: recipientPubkey.toString(),
+    });
+
+    const tx = await this.config.program.methods
+      .mintCoupon(new BN(couponId))
+      .accounts({
+        coupon: couponPDA,
+        nftMint: nftMint.publicKey,
+        tokenAccount: tokenAccount,
+        metadata: metadataPDA,
+        masterEdition: masterEditionPDA,
+        promotion: promotionPDA,
+        merchant: merchantPDA,
+        marketplace: marketplacePDA,
+        recipient: recipientPubkey,
+        userStats: userStatsPDA,
+        payer: payer,
+        authority: merchantAuthority,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        tokenMetadataProgram: METADATA_PROGRAM_ID,
+        sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
+        systemProgram: SystemProgram.programId,
+        rent: SYSVAR_RENT_PUBKEY,
+      } as any)
+      .signers(signers)
+      .rpc({ commitment: 'confirmed', skipPreflight: false });
+
+    logger.info(`Coupon minted: ${tx}`);
+    
+    // Wait for confirmation
+    await this.config.connection.confirmTransaction(tx, 'confirmed');
+
+    return {
+      signature: tx,
+      coupon: couponPDA.toString(),
+      mint: nftMint.publicKey.toString(),
+    };
+  } catch (error: any) {
+    logger.error('Failed to mint coupon:', error);
+    
+    // Parse program errors
+    if (error.logs) {
+      logger.error('Program logs:', error.logs);
+    }
+    
+    throw error;
   }
+}
 
   /**
    * Redeem a coupon
    */
   async redeemCoupon(
-    couponPDA: PublicKey,
-    userPubkey: PublicKey,
-    merchantAuthority: PublicKey,
-    merchantKeypair?: Keypair
-  ) {
+  couponPDA: PublicKey,
+  userPubkey: PublicKey,
+  merchantAuthority: PublicKey,
+  merchantKeypair?: Keypair
+) {
+  try {
+    // Fetch and validate coupon
+    const coupon = await this.safelyFetchAccount(
+      () => this.config.program.account.coupon.fetch(couponPDA),
+      'Coupon',
+      couponPDA.toString()
+    );
+
+    if (!coupon) {
+      throw new Error(`Coupon not found: ${couponPDA.toString()}`);
+    }
+
+    // Validate redemption
+    if (coupon.isRedeemed) {
+      throw new Error('Coupon already redeemed');
+    }
+
+    if (coupon.owner.toString() !== userPubkey.toString()) {
+      throw new Error('User is not the coupon owner');
+    }
+
+    const now = Math.floor(Date.now() / 1000);
+    if (coupon.expiryTimestamp.toNumber() < now) {
+      throw new Error('Coupon has expired');
+    }
+
+    const [merchantPDA] = this.config.getMerchantPDA(merchantAuthority);
+    const [userStatsPDA] = this.config.getUserStatsPDA(userPubkey);
+
+    if (!coupon.mint) {
+      throw new Error('Coupon does not have an associated NFT mint');
+    }
+
+    const nftMint = coupon.mint;
+    const tokenAccount = await getAssociatedTokenAddress(
+      nftMint,
+      userPubkey,
+      false,
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    );
+
+    // Verify token account exists and has token
+    const tokenAccountInfo = await this.config.connection.getAccountInfo(tokenAccount);
+    if (!tokenAccountInfo) {
+      throw new Error('Token account not found');
+    }
+
+    logger.info('Redeeming coupon...', {
+      coupon: couponPDA.toString(),
+      user: userPubkey.toString(),
+      merchant: merchantAuthority.toString(),
+    });
+
+    const txBuilder = this.config.program.methods
+      .redeemCoupon()
+      .accounts({
+        coupon: couponPDA,
+        nftMint: nftMint,
+        tokenAccount: tokenAccount,
+        merchant: merchantPDA,
+        userStats: userStatsPDA,
+        user: userPubkey,
+        merchantAuthority: merchantAuthority,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      } as any);
+
+    const tx = merchantKeypair
+      ? await txBuilder.signers([merchantKeypair]).rpc({ commitment: 'confirmed' })
+      : await txBuilder.rpc({ commitment: 'confirmed' });
+
+    logger.info(`Coupon redeemed: ${tx}`);
+    
+    // Wait for confirmation
+    await this.config.connection.confirmTransaction(tx, 'confirmed');
+
+    return { signature: tx };
+  } catch (error: any) {
+    logger.error('Failed to redeem coupon:', error);
+    if (error.logs) {
+      logger.error('Program logs:', error.logs);
+    }
+    throw error;
+  }
+}
+
+// FIX: Add retry logic for RPC calls
+private async withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  delayMs = 1000
+): Promise<T> {
+  let lastError: Error | undefined;
+  
+  for (let i = 0; i < maxRetries; i++) {
     try {
-      const coupon = await this.config.program.account.coupon.fetch(couponPDA);
-      const [merchantPDA] = this.config.getMerchantPDA(merchantAuthority);
-      const [userStatsPDA] = this.config.getUserStatsPDA(userPubkey);
-
-      if (!coupon.mint) {
-        throw new Error('Coupon does not have an associated NFT mint');
+      return await operation();
+    } catch (error: any) {
+      lastError = error;
+      
+      // Don't retry on program errors
+      if (error.message?.includes('custom program error') || 
+          error.message?.includes('already redeemed') ||
+          error.message?.includes('expired')) {
+        throw error;
       }
-
-      const nftMint = coupon.mint;
-      const tokenAccount = await getAssociatedTokenAddress(nftMint, userPubkey);
-
-      const txBuilder = this.config.program.methods
-        .redeemCoupon()
-        .accounts({
-          coupon: couponPDA,
-          nftMint: nftMint,
-          tokenAccount: tokenAccount,
-          merchant: merchantPDA,
-          userStats: userStatsPDA,
-          user: userPubkey,
-          merchantAuthority: merchantAuthority,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-        } as any);
-
-      const tx = merchantKeypair
-        ? await txBuilder.signers([merchantKeypair]).rpc()
-        : await txBuilder.rpc();
-
-      logger.info(`Coupon redeemed: ${tx}`);
-      return { signature: tx };
-    } catch (error) {
-      logger.error('Failed to redeem coupon:', error);
-      throw error;
+      
+      if (i < maxRetries - 1) {
+        logger.warn(`Operation failed, retrying (${i + 1}/${maxRetries})...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs * (i + 1)));
+      }
     }
   }
+  
+  throw lastError || new Error('Operation failed after retries');
+}
+
+
+async getAllPromotions() {
+  return await this.withRetry(() => 
+    this.config.program.account.promotion.all()
+  );
+}
 
   /**
    * List coupon for sale
@@ -1266,9 +1424,9 @@ export class SolanaService {
   /**
    * Fetch all promotions
    */
-  async getAllPromotions() {
-    return await this.config.program.account.promotion.all();
-  }
+  // async getAllPromotions() {
+  //   return await this.config.program.account.promotion.all();
+  // }
 
   /**
    * Fetch all coupons for a user

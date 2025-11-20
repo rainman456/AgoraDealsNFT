@@ -52,118 +52,166 @@ export class EventHandlersService {
     }
   }
 
+
+private async safeUpdate<T>(
+  model: any,
+  filter: any,
+  update: any,
+  operationName: string
+): Promise<void> {
+  try {
+    const result = await model.updateOne(filter, update);
+    if (result.matchedCount === 0) {
+      logger.warn(`${operationName}: No document matched filter`, filter);
+    }
+  } catch (error) {
+    logger.error(`${operationName} failed:`, error);
+    throw error;
+  }
+}
+
+
+
   /**
    * Handle PromotionCreated event
    */
   public async handlePromotionCreated(event: any): Promise<void> {
-    const { signature, data } = event;
+  const { signature, data } = event;
 
-    if (this.isProcessed(signature)) {
-      logger.debug(`Event already processed: ${signature}`);
+  if (this.isProcessed(signature)) {
+    logger.debug(`Event already processed: ${signature}`);
+    return;
+  }
+
+  try {
+    const { promotion, merchant, discount_percentage, max_supply, expiry_timestamp, price, category, description } = data;
+
+    // Check if promotion already exists
+    const existing = await Promotion.findOne({ onChainAddress: promotion.toString() });
+    if (existing) {
+      logger.debug(`Promotion already exists: ${promotion.toString()}`);
+      this.markProcessed(signature);
       return;
     }
 
-    try {
-      const { promotion, merchant, discount_percentage, max_supply, expiry_timestamp, price } = data;
-
-      // Check if promotion already exists
-      const existing = await Promotion.findOne({ onChainAddress: promotion.toString() });
-      if (existing) {
-        logger.debug(`Promotion already exists: ${promotion.toString()}`);
-        this.markProcessed(signature);
-        return;
-      }
-
-      // Get merchant from database
-      const merchantDoc = await Merchant.findOne({ onChainAddress: merchant.toString() });
-      if (!merchantDoc) {
-        logger.warn(`Merchant not found for promotion: ${merchant.toString()}`);
-        return;
-      }
-
-      // Create promotion in database
-      await Promotion.create({
-        onChainAddress: promotion.toString(),
-        merchant: merchant.toString(),
-        merchantId: merchantDoc._id,
-        title: 'Promotion', // Will be updated via API
-        description: '',
-        category: merchantDoc.category || 'general',
-        discountPercentage: discount_percentage,
-        maxSupply: max_supply,
-        currentSupply: 0,
-        price: price.toString(),
-        expiryTimestamp: new Date(expiry_timestamp * 1000),
-        isActive: true,
-        transactionSignature: signature,
-        createdAt: new Date(),
-      });
-
-      logger.info(`✅ Promotion created in DB: ${promotion.toString()}`);
-      this.markProcessed(signature);
-    } catch (error) {
-      logger.error('Error handling PromotionCreated event:', error);
-      throw error; // Will trigger retry
+    // Get merchant from database
+    const merchantDoc = await Merchant.findOne({ 
+      $or: [
+        { onChainAddress: merchant.toString() },
+        { authority: merchant.toString() },
+        { walletAddress: merchant.toString() }
+      ]
+    });
+    
+    if (!merchantDoc) {
+      logger.warn(`Merchant not found for promotion: ${merchant.toString()}`);
+      // Create placeholder merchant for now
+      // return; // Don't return, let it proceed with defaults
     }
+
+    // Create promotion in database
+    await Promotion.create({
+      onChainAddress: promotion.toString(),
+      merchant: merchant.toString(),
+      title: description || 'New Promotion',
+      description: description || '',
+      category: category || merchantDoc?.category || 'general',
+      discountPercentage: discount_percentage,
+      maxSupply: max_supply,
+      currentSupply: 0,
+      price: price ? Number(price.toString()) : 0,
+      expiryTimestamp: new Date(expiry_timestamp * 1000),
+      isActive: true,
+      imageUrl: '',
+      stats: {
+        totalMinted: 0,
+        totalRedeemed: 0,
+        averageRating: 0,
+        totalRatings: 0,
+        totalComments: 0,
+      },
+    });
+
+    // Update merchant's promotion count if merchant exists
+    if (merchantDoc) {
+      await Merchant.updateOne(
+        { _id: merchantDoc._id },
+        { $inc: { totalCouponsCreated: 1 } }
+      );
+    }
+
+    logger.info(`✅ Promotion created in DB: ${promotion.toString()}`);
+    this.markProcessed(signature);
+  } catch (error) {
+    logger.error('Error handling PromotionCreated event:', error);
+    throw error;
   }
+}
 
   /**
    * Handle CouponMinted event
    */
   public async handleCouponMinted(event: any): Promise<void> {
-    const { signature, data } = event;
+  const { signature, data } = event;
 
-    if (this.isProcessed(signature)) {
+  if (this.isProcessed(signature)) {
+    return;
+  }
+
+  try {
+    const { coupon, nft_mint, promotion, recipient, merchant, discount_percentage, expiry_timestamp } = data;
+
+    // Check if coupon already exists
+    const existing = await Coupon.findOne({ onChainAddress: coupon.toString() });
+    if (existing) {
+      logger.warn(`Coupon already exists: ${coupon.toString()}`);
+      this.markProcessed(signature);
       return;
     }
 
-    try {
-      const { coupon, nft_mint, promotion, recipient, merchant, discount_percentage } = data;
+    // Get promotion
+    const promotionDoc = await Promotion.findOne({ onChainAddress: promotion.toString() });
+    if (!promotionDoc) {
+      logger.warn(`Promotion not found for coupon: ${promotion.toString()}`);
+      // Don't return - we'll create the coupon anyway
+    }
 
-      // Check if coupon already exists
-      const existing = await Coupon.findOne({ onChainAddress: coupon.toString() });
-      if (existing) {
-        this.markProcessed(signature);
-        return;
-      }
+    // Create coupon in database
+    await Coupon.create({
+      onChainAddress: coupon.toString(),
+      couponId: 0, // Will be updated
+      nftMint: nft_mint.toString(),
+      promotion: promotion.toString(),
+      owner: recipient.toString(),
+      merchant: merchant.toString(),
+      discountPercentage: discount_percentage || promotionDoc?.discountPercentage || 0,
+      expiryTimestamp: expiry_timestamp 
+        ? new Date(expiry_timestamp * 1000) 
+        : promotionDoc?.expiryTimestamp || new Date(),
+      isRedeemed: false,
+      isListed: false,
+      transferHistory: [],
+    });
 
-      // Get promotion
-      const promotionDoc = await Promotion.findOne({ onChainAddress: promotion.toString() });
-      if (!promotionDoc) {
-        logger.warn(`Promotion not found for coupon: ${promotion.toString()}`);
-        return;
-      }
-
-      // Create coupon in database
-      await Coupon.create({
-        onChainAddress: coupon.toString(),
-        nftMint: nft_mint.toString(),
-        promotion: promotion.toString(),
-        owner: recipient.toString(),
-        merchant: merchant.toString(),
-        discountPercentage: discount_percentage,
-        expiryTimestamp: promotionDoc.expiryTimestamp,
-        isRedeemed: false,
-        isListed: false,
-        transferHistory: [],
-        transactionSignature: signature,
-      });
-
-      // Update promotion supply
-      await Promotion.updateOne(
+    // Update promotion supply
+    if (promotionDoc) {
+      await this.safeUpdate(
+        Promotion,
         { onChainAddress: promotion.toString() },
         {
           $inc: { currentSupply: 1, 'stats.totalMinted': 1 },
-        }
+        },
+        'Promotion supply update'
       );
-
-      logger.info(`✅ Coupon minted in DB: ${coupon.toString()}`);
-      this.markProcessed(signature);
-    } catch (error) {
-      logger.error('Error handling CouponMinted event:', error);
-      throw error;
     }
+
+    logger.info(`✅ Coupon minted in DB: ${coupon.toString()}`);
+    this.markProcessed(signature);
+  } catch (error) {
+    logger.error('Error handling CouponMinted event:', error);
+    throw error;
   }
+}
 
   /**
    * Handle CouponTransferred event
@@ -205,42 +253,72 @@ export class EventHandlersService {
    * Handle CouponRedeemed event
    */
   public async handleCouponRedeemed(event: any): Promise<void> {
-    const { signature, data } = event;
+  const { signature, data } = event;
 
-    if (this.isProcessed(signature)) {
+  if (this.isProcessed(signature)) {
+    return;
+  }
+
+  try {
+    const { coupon, user, merchant, timestamp } = data;
+
+    // Check if coupon exists
+    const couponDoc = await Coupon.findOne({ onChainAddress: coupon.toString() });
+    if (!couponDoc) {
+      logger.warn(`Coupon not found: ${coupon.toString()}`);
       return;
     }
 
-    try {
-      const { coupon, redemption_code, timestamp } = data;
-
-      await Coupon.updateOne(
-        { onChainAddress: coupon.toString() },
-        {
-          $set: {
-            isRedeemed: true,
-            redeemedAt: new Date(timestamp * 1000),
-            redemptionCode: redemption_code,
-          },
-        }
-      );
-
-      // Update promotion stats
-      const couponDoc = await Coupon.findOne({ onChainAddress: coupon.toString() });
-      if (couponDoc) {
-        await Promotion.updateOne(
-          { onChainAddress: couponDoc.promotion },
-          { $inc: { 'stats.totalRedeemed': 1 } }
-        );
-      }
-
-      logger.info(`✅ Coupon redeemed: ${coupon.toString()}`);
+    // Check if already redeemed
+    if (couponDoc.isRedeemed) {
+      logger.warn(`Coupon already redeemed: ${coupon.toString()}`);
       this.markProcessed(signature);
-    } catch (error) {
-      logger.error('Error handling CouponRedeemed event:', error);
-      throw error;
+      return;
     }
+
+    // Generate redemption code
+    const redemptionCode = `RDM-${Date.now()}-${signature.slice(0, 8)}`;
+
+    await Coupon.updateOne(
+      { onChainAddress: coupon.toString() },
+      {
+        $set: {
+          isRedeemed: true,
+          redeemedAt: new Date(timestamp * 1000),
+          redemptionCode: redemptionCode,
+        },
+      }
+    );
+
+    // Update promotion stats
+    await this.safeUpdate(
+      Promotion,
+      { onChainAddress: couponDoc.promotion },
+      { $inc: { 'stats.totalRedeemed': 1 } },
+      'Promotion redemption stats'
+    );
+
+    // Update merchant stats
+    await this.safeUpdate(
+      Merchant,
+      { 
+        $or: [
+          { onChainAddress: merchant.toString() },
+          { authority: merchant.toString() },
+          { walletAddress: merchant.toString() }
+        ]
+      },
+      { $inc: { totalCouponsRedeemed: 1 } },
+      'Merchant redemption stats'
+    );
+
+    logger.info(`✅ Coupon redeemed: ${coupon.toString()}`);
+    this.markProcessed(signature);
+  } catch (error) {
+    logger.error('Error handling CouponRedeemed event:', error);
+    throw error;
   }
+}
 
   /**
    * Handle CouponListed event
@@ -557,39 +635,46 @@ export class EventHandlersService {
    * Handle GroupDealJoined event
    */
   public async handleGroupDealJoined(event: any): Promise<void> {
-    const { signature, data } = event;
+  const { signature, data } = event;
 
-    if (this.isProcessed(signature)) {
+  if (this.isProcessed(signature)) {
+    return;
+  }
+
+  try {
+    const { group_deal, participant, quantity, amount_paid, timestamp } = data;
+
+    const result = await GroupDeal.updateOne(
+      { onChainAddress: group_deal.toString() },
+      {
+        $inc: { 
+          currentParticipants: 1, 
+          totalRevenue: parseFloat(amount_paid.toString()) / 1e9 // Convert lamports to SOL
+        },
+        $push: {
+          participants: {
+            userAddress: participant.toString(),
+            joinedAt: new Date(timestamp * 1000),
+            quantity: quantity,
+            paidAmount: parseFloat(amount_paid.toString()) / 1e9,
+            txSignature: signature,
+          },
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      logger.warn(`Group deal not found: ${group_deal.toString()}`);
       return;
     }
 
-    try {
-      const { group_deal, participant, quantity, amount_paid, timestamp } = data;
-
-      await GroupDeal.updateOne(
-        { onChainAddress: group_deal.toString() },
-        {
-          $inc: { currentParticipants: 1, totalRevenue: parseFloat(amount_paid.toString()) },
-          $push: {
-            participants: {
-              userAddress: participant.toString(),
-              joinedAt: new Date(timestamp * 1000),
-              quantity: quantity,
-              paidAmount: parseFloat(amount_paid.toString()),
-              txSignature: signature,
-            },
-          },
-        }
-      );
-
-      logger.info(`✅ User joined group deal: ${group_deal.toString()}`);
-      this.markProcessed(signature);
-    } catch (error) {
-      logger.error('Error handling GroupDealJoined event:', error);
-      throw error;
-    }
+    logger.info(`✅ User joined group deal: ${group_deal.toString()}`);
+    this.markProcessed(signature);
+  } catch (error) {
+    logger.error('Error handling GroupDealJoined event:', error);
+    throw error;
   }
-
+}
   /**
    * Handle GroupDealFinalized event
    */

@@ -8,6 +8,83 @@ import { logger } from '../utils/logger';
 const router = Router();
 
 /**
+ * Login endpoint - works for both users and merchants
+ * POST /api/auth/login
+ */
+router.post('/login', async (req, res): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(400).json({
+        success: false,
+        error: 'Email and password are required',
+      });
+      return;
+    }
+
+    // Try to find user first
+    let user = await User.findOne({ email });
+    if (user) {
+      // In a real app, you'd verify the password hash here
+      // For now, we'll accept any password for demo purposes
+      res.json({
+        success: true,
+        data: {
+          type: 'user',
+          userId: user._id,
+          walletAddress: user.walletAddress,
+          username: user.username,
+          email: user.email,
+          tier: user.tier,
+          totalPurchases: user.totalPurchases,
+          totalRedemptions: user.totalRedemptions,
+          reputationScore: user.reputationScore,
+          badgesEarned: user.badgesEarned,
+        },
+      });
+      return;
+    }
+
+    // Try to find merchant
+    let merchant = await Merchant.findOne({ email });
+    if (merchant) {
+      // In a real app, you'd verify the password hash here
+      res.json({
+        success: true,
+        data: {
+          type: 'merchant',
+          merchantId: merchant._id,
+          walletAddress: merchant.walletAddress || merchant.onChainAddress,
+          email: merchant.email,
+          name: merchant.name,
+          category: merchant.category,
+          description: merchant.description,
+          location: merchant.location,
+          totalCouponsCreated: merchant.totalCouponsCreated,
+          totalCouponsRedeemed: merchant.totalCouponsRedeemed,
+          averageRating: merchant.averageRating,
+          isActive: merchant.isActive,
+        },
+      });
+      return;
+    }
+
+    // Neither user nor merchant found
+    res.status(401).json({
+      success: false,
+      error: 'Invalid email or password',
+    });
+  } catch (error: any) {
+    logger.error('Login failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Login failed',
+    });
+  }
+});
+
+/**
  * Register a new user
  * POST /api/auth/register/user
  */
@@ -40,11 +117,13 @@ router.post('/register/user', async (req, res) => {
     res.status(201).json({
       success: true,
       data: {
-        userId: user._id,
-        walletAddress: user.walletAddress,
-        username: user.username,
-        email: user.email,
-        tier: user.tier,
+        user: {
+          userId: user._id,
+          walletAddress: user.walletAddress,
+          username: user.username,
+          email: user.email,
+          tier: user.tier,
+        }
       },
     });
   } catch (error: any) {
@@ -82,9 +161,16 @@ router.post('/register/merchant', async (req, res): Promise<void> => {
       return;
     }
 
-    // Create merchant in database (simplified - no blockchain)
+    // Generate wallet for merchant
+    const walletData = walletService.createWalletData();
+
+    // Create merchant in database
     const merchant = new Merchant({
       email,
+      walletAddress: walletData.publicKey,
+      encryptedPrivateKey: walletData.encryptedPrivateKey,
+      iv: walletData.iv,
+      authTag: walletData.authTag,
       name,
       category,
       description,
@@ -96,10 +182,13 @@ router.post('/register/merchant', async (req, res): Promise<void> => {
     res.status(201).json({
       success: true,
       data: {
-        merchantId: merchant._id,
-        email: merchant.email,
-        name: merchant.name,
-        category: merchant.category,
+        merchant: {
+          merchantId: merchant._id,
+          email: merchant.email,
+          walletAddress: merchant.walletAddress,
+          name: merchant.name,
+          category: merchant.category,
+        }
       },
     });
   } catch (error: any) {

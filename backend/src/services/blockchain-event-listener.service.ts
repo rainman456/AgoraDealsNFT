@@ -148,60 +148,62 @@ export class BlockchainEventListenerService extends EventEmitter {
   }
 
   private async handleLogs(logs: Logs, context: Context): Promise<void> {
-    try {
-      this.lastEventTimestamp = Date.now();
-      const { signature, err } = logs;
+  try {
+    this.lastEventTimestamp = Date.now();
+    const { signature, err } = logs;
 
-      if (err) {
-        logger.debug(`Skipping failed transaction: ${signature}`);
-        return;
-      }
-
-      if (this.processedTransactions.has(signature)) {
-        logger.debug(`Skipping duplicate transaction: ${signature}`);
-        return;
-      }
-
-      let events: any[] = [];
-      try {
-        const events: any[] = Array.from(this.eventParser.parseLogs(logs.logs));
-      } catch (parseError) {
-        logger.error('Error parsing events from logs:', parseError, {
-          signature,
-          slot: context.slot,
-          logs: logs.logs.slice(0, 5),
-        });
-        
-        this.emit('parse-error', {
-          signature,
-          slot: context.slot,
-          error: parseError,
-        });
-        
-        return;
-      }
-
-      if (events.length > 0) {
-        this.processedTransactions.add(signature);
-        
-        if (this.processedTransactions.size > 10000) {
-          const firstKey = this.processedTransactions.keys().next().value;
-          this.processedTransactions.delete(firstKey);
-        }
-      }
-
-      for (const event of events) {
-        await this.processEvent(event, signature, context.slot);
-      }
-      
-      if (context.slot > this.lastProcessedSlot) {
-        await this.saveLastProcessedSlot(context.slot);
-      }
-    } catch (error) {
-      logger.error('Error handling logs:', error);
-      this.trackError(error as Error);
+    if (err) {
+      logger.debug(`Skipping failed transaction: ${signature}`);
+      return;
     }
+
+    if (this.processedTransactions.has(signature)) {
+      logger.debug(`Skipping duplicate transaction: ${signature}`);
+      return;
+    }
+
+    // FIX: Properly parse events
+    let events: any[] = [];
+    try {
+      events = Array.from(this.eventParser.parseLogs(logs.logs));
+    } catch (parseError) {
+      logger.error('Error parsing events from logs:', parseError, {
+        signature,
+        slot: context.slot,
+        logs: logs.logs.slice(0, 5),
+      });
+      
+      this.emit('parse-error', {
+        signature,
+        slot: context.slot,
+        error: parseError,
+      });
+      
+      return; // Don't throw, just skip this transaction
+    }
+
+    if (events.length > 0) {
+      this.processedTransactions.add(signature);
+      
+      // Limit Set size to prevent memory issues
+      if (this.processedTransactions.size > 10000) {
+        const firstKey = Array.from(this.processedTransactions)[0];
+        this.processedTransactions.delete(firstKey);
+      }
+    }
+
+    for (const event of events) {
+      await this.processEvent(event, signature, context.slot);
+    }
+    
+    if (context.slot > this.lastProcessedSlot) {
+      await this.saveLastProcessedSlot(context.slot);
+    }
+  } catch (error) {
+    logger.error('Error handling logs:', error);
+    this.trackError(error as Error);
   }
+}
 
   private async processEvent(event: any, signature: string, slot: number): Promise<void> {
     try {
@@ -335,59 +337,74 @@ export class BlockchainEventListenerService extends EventEmitter {
   }
 
   public async backfillEvents(fromSlot: number, toSlot?: number): Promise<void> {
-    try {
-      const endSlot = toSlot || await this.connection.getSlot('finalized');
-      logger.info(`Starting backfill from slot ${fromSlot} to ${endSlot}`);
+  try {
+    const endSlot = toSlot || await this.connection.getSlot('finalized');
+    logger.info(`Starting backfill from slot ${fromSlot} to ${endSlot}`);
 
-      let currentSlot = fromSlot;
-      const batchSize = 100;
+    let currentSlot = fromSlot;
+    const batchSize = 100;
 
-      while (currentSlot <= endSlot) {
-        const maxSlot = Math.min(currentSlot + batchSize, endSlot);
-        
-        logger.info(`Backfilling slots ${currentSlot} to ${maxSlot}`);
+    while (currentSlot <= endSlot) {
+      const maxSlot = Math.min(currentSlot + batchSize, endSlot);
+      
+      logger.info(`Backfilling slots ${currentSlot} to ${maxSlot}`);
 
-        // Request signatures starting from minContextSlot, then filter client-side by slot <= maxSlot
-const signatureInfos = await this.connection.getSignaturesForAddress(
-  this.programId,
-  { minContextSlot: currentSlot }, // avoid using maxContextSlot which may not exist in types
-  'finalized'
-);
+      // FIX: Get signatures with proper options
+      const signatureInfos = await this.connection.getSignaturesForAddress(
+        this.programId,
+        { 
+          limit: 1000,
+          before: undefined,
+          until: undefined,
+        },
+        'finalized'
+      );
 
-// Filter by slot range
-const signatures = signatureInfos.filter(sig => sig.slot !== undefined && sig.slot >= currentSlot && sig.slot <= maxSlot);
+      // Filter by slot range client-side
+      const signatures = signatureInfos.filter(sig => 
+        sig.slot !== null && 
+        sig.slot >= currentSlot && 
+        sig.slot <= maxSlot
+      );
 
+      for (const sigInfo of signatures) {
+        try {
+          const tx = await this.connection.getTransaction(sigInfo.signature, {
+            maxSupportedTransactionVersion: 0,
+            commitment: 'finalized',
+          });
 
-        for (const sigInfo of signatures) {
-          try {
-            const tx = await this.connection.getTransaction(sigInfo.signature, {
-              maxSupportedTransactionVersion: 0,
-            });
-
-            if (tx && tx.meta && !tx.meta.err) {
-              const logs = tx.meta.logMessages || [];
-              const events = this.eventParser.parseLogs(logs);
+          if (tx && tx.meta && !tx.meta.err) {
+            const logs = tx.meta.logMessages || [];
+            
+            try {
+              const events = Array.from(this.eventParser.parseLogs(logs));
 
               for (const event of events) {
                 await this.processEvent(event, sigInfo.signature, sigInfo.slot!);
               }
+            } catch (parseError) {
+              logger.warn(`Failed to parse events for ${sigInfo.signature}:`, parseError);
             }
-          } catch (error) {
-            logger.error(`Error processing transaction ${sigInfo.signature}:`, error);
           }
+        } catch (error) {
+          logger.error(`Error processing transaction ${sigInfo.signature}:`, error);
         }
-
-        currentSlot = maxSlot + 1;
-        await this.saveLastProcessedSlot(maxSlot);
+        
+        // Rate limiting
         await new Promise(resolve => setTimeout(resolve, 100));
       }
 
-      logger.info(`✅ Backfill complete: processed ${endSlot - fromSlot} slots`);
-    } catch (error) {
-      logger.error('Backfill failed:', error);
-      throw error;
+      currentSlot = maxSlot + 1;
+      await this.saveLastProcessedSlot(maxSlot);
     }
+
+    logger.info(`✅ Backfill complete: processed ${endSlot - fromSlot} slots`);
+  } catch (error) {
+    logger.error('Backfill failed:', error);
+    throw error;
   }
+}
 
   public setupGracefulShutdown(): void {
     const shutdown = async (signal: string) => {

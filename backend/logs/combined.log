@@ -7867,3 +7867,236 @@
 {"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:47:47"}
 {"level":"warn","message":"⚠️  No events received for 1020.032s. Connection may be dead.","timestamp":"2025-11-13 13:48:47"}
 {"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 13:48:47"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 15:23:50"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 15:23:50"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 15:23:50"}
+{"level":"info","message":"Connecting to database...","timestamp":"2025-11-13 15:23:50"}
+{"level":"info","message":"MongoDB connected successfully","timestamp":"2025-11-13 15:23:51"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-11-13 15:23:51"}
+{"level":"info","message":"Database readyState after connect: 1 (1=connected)","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Database name: test","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Database host: ac-dlupdg5-shard-00-00.ksskilh.mongodb.net","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"✅ Database fully connected and ready","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Initializing Solana connection...","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Connected to Solana: http://127.0.0.1:8899","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Solana version: 2.3.13","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Program ID: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Starting blockchain event listener for program: 9P3wW4XQH7DntMqfEiLqS6SNztihxfenNUSqECh3WTf3","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"✅ Event listener started with subscription ID: 0","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"✅ Blockchain event listener started","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Registering API routes...","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"Registering promotions route...","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"✅ All routes registered successfully","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"🚀 Server running on port 3001","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"📡 Environment: development","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"🔗 Solana Network: localnet","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"💾 MongoDB: mongodb+srv://michae....mongodb.net/?appName=Cluster0","timestamp":"2025-11-13 15:23:53"}
+{"level":"info","message":"✅ Reconciliation job scheduled (every 5 minutes)","timestamp":"2025-11-13 15:23:53"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:25:34","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:25:34"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (45ms)","timestamp":"2025-11-13 15:25:34"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 15:26:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:26:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 15:26:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:26:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:26:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:26:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (37ms)","timestamp":"2025-11-13 15:26:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (41ms)","timestamp":"2025-11-13 15:26:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (38ms)","timestamp":"2025-11-13 15:26:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 15:26:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:26:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:26:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:26:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 15:26:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:26:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 15:26:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 15:26:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 15:26:29"}
+{"body":{"email":"user@example.com","password":"adminpass"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 15:26:59","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /login - ⚠️ 401 (23ms)","timestamp":"2025-11-13 15:26:59"}
+{"body":{"email":"user1@test.com","password":"adminpass"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 15:27:50","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /login - ✅ 200 (15ms)","timestamp":"2025-11-13 15:27:50"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 15:27:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:27:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 15:27:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:27:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:27:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:27:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (26ms)","timestamp":"2025-11-13 15:27:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 15:27:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (22ms)","timestamp":"2025-11-13 15:27:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:27:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:27:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 15:27:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:27:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 15:27:52","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:27:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 15:27:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (27ms)","timestamp":"2025-11-13 15:27:52"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 15:27:52"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 15:28:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:28:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 15:28:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:28:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:28:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:28:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (28ms)","timestamp":"2025-11-13 15:28:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (24ms)","timestamp":"2025-11-13 15:28:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (23ms)","timestamp":"2025-11-13 15:28:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"5","sortBy":"createdAt","sortOrder":"desc"},"timestamp":"2025-11-13 15:28:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:28:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (31ms)","timestamp":"2025-11-13 15:28:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"limit":"12","page":"1"},"timestamp":"2025-11-13 15:28:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:28:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","limit":"6","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:28:28","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:28:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (37ms)","timestamp":"2025-11-13 15:28:28"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (43ms)","timestamp":"2025-11-13 15:28:28"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:28:46","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:28:46"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 15:28:46"}
+{"ip":"::1","level":"info","message":"📥 Incoming Request: GET /api/v1/promotions","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{"latitude":"40.7128","longitude":"-74.006","radius":"10"},"timestamp":"2025-11-13 15:28:46","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"Promotions middleware: GET /","timestamp":"2025-11-13 15:28:46"}
+{"level":"info","message":"📤 Response: GET / - ✅ 200 (25ms)","timestamp":"2025-11-13 15:28:46"}
+{"level":"warn","message":"⚠️  No events received for 300.071s. Connection may be dead.","timestamp":"2025-11-13 15:28:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:28:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 15:28:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 15:28:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 15:28:53"}
+{"body":{"email":"contact@pizzaparadise.com","password":"dvdfvfrfbef"},"ip":"::1","level":"info","message":"📥 Incoming Request: POST /api/v1/auth/login","origin":"https://fictional-zebra-v5jwjx9g54jf6pvx-5173.app.github.dev","query":{},"timestamp":"2025-11-13 15:29:45","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+{"level":"info","message":"📤 Response: POST /login - ✅ 200 (23ms)","timestamp":"2025-11-13 15:29:45"}
+{"level":"warn","message":"⚠️  No events received for 360.071s. Connection may be dead.","timestamp":"2025-11-13 15:29:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:29:53"}
+{"level":"warn","message":"⚠️  No events received for 420.071s. Connection may be dead.","timestamp":"2025-11-13 15:30:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:30:53"}
+{"level":"warn","message":"⚠️  No events received for 480.071s. Connection may be dead.","timestamp":"2025-11-13 15:31:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:31:53"}
+{"level":"warn","message":"⚠️  No events received for 540.072s. Connection may be dead.","timestamp":"2025-11-13 15:32:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:32:53"}
+{"level":"warn","message":"⚠️  No events received for 600.071s. Connection may be dead.","timestamp":"2025-11-13 15:33:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:33:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 15:33:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 15:33:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 15:33:53"}
+{"level":"warn","message":"⚠️  No events received for 660.071s. Connection may be dead.","timestamp":"2025-11-13 15:34:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:34:53"}
+{"level":"warn","message":"⚠️  No events received for 720.071s. Connection may be dead.","timestamp":"2025-11-13 15:35:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:35:53"}
+{"level":"warn","message":"⚠️  No events received for 780.071s. Connection may be dead.","timestamp":"2025-11-13 15:36:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:36:53"}
+{"level":"warn","message":"⚠️  No events received for 840.071s. Connection may be dead.","timestamp":"2025-11-13 15:37:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:37:53"}
+{"level":"warn","message":"⚠️  No events received for 900.071s. Connection may be dead.","timestamp":"2025-11-13 15:38:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:38:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 15:38:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 15:38:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 15:38:53"}
+{"level":"warn","message":"⚠️  No events received for 960.072s. Connection may be dead.","timestamp":"2025-11-13 15:39:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:39:53"}
+{"level":"warn","message":"⚠️  No events received for 1020.071s. Connection may be dead.","timestamp":"2025-11-13 15:40:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:40:53"}
+{"level":"warn","message":"⚠️  No events received for 1080.072s. Connection may be dead.","timestamp":"2025-11-13 15:41:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:41:53"}
+{"level":"warn","message":"⚠️  No events received for 1140.072s. Connection may be dead.","timestamp":"2025-11-13 15:42:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:42:53"}
+{"level":"warn","message":"⚠️  No events received for 1200.072s. Connection may be dead.","timestamp":"2025-11-13 15:43:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:43:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 15:43:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 15:43:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 15:43:53"}
+{"level":"warn","message":"⚠️  No events received for 1260.072s. Connection may be dead.","timestamp":"2025-11-13 15:44:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:44:53"}
+{"level":"warn","message":"⚠️  No events received for 1320.073s. Connection may be dead.","timestamp":"2025-11-13 15:45:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:45:53"}
+{"level":"warn","message":"⚠️  No events received for 1380.072s. Connection may be dead.","timestamp":"2025-11-13 15:46:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:46:53"}
+{"level":"warn","message":"⚠️  No events received for 1440.072s. Connection may be dead.","timestamp":"2025-11-13 15:47:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:47:53"}
+{"level":"warn","message":"⚠️  No events received for 1500.072s. Connection may be dead.","timestamp":"2025-11-13 15:48:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:48:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 15:48:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 15:48:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 15:48:53"}
+{"level":"warn","message":"⚠️  No events received for 1560.073s. Connection may be dead.","timestamp":"2025-11-13 15:49:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:49:53"}
+{"level":"warn","message":"⚠️  No events received for 1620.073s. Connection may be dead.","timestamp":"2025-11-13 15:50:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:50:53"}
+{"level":"warn","message":"⚠️  No events received for 1680.074s. Connection may be dead.","timestamp":"2025-11-13 15:51:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:51:53"}
+{"level":"warn","message":"⚠️  No events received for 1740.074s. Connection may be dead.","timestamp":"2025-11-13 15:52:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:52:53"}
+{"level":"warn","message":"⚠️  No events received for 1800.074s. Connection may be dead.","timestamp":"2025-11-13 15:53:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:53:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 15:53:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 15:53:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 15:53:53"}
+{"level":"warn","message":"⚠️  No events received for 1860.075s. Connection may be dead.","timestamp":"2025-11-13 15:54:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:54:53"}
+{"level":"warn","message":"⚠️  No events received for 1920.074s. Connection may be dead.","timestamp":"2025-11-13 15:55:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:55:53"}
+{"level":"warn","message":"⚠️  No events received for 1980.074s. Connection may be dead.","timestamp":"2025-11-13 15:56:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:56:53"}
+{"level":"warn","message":"⚠️  No events received for 2040.074s. Connection may be dead.","timestamp":"2025-11-13 15:57:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:57:53"}
+{"level":"warn","message":"⚠️  No events received for 2100.074s. Connection may be dead.","timestamp":"2025-11-13 15:58:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:58:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 15:58:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 15:58:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 15:58:53"}
+{"level":"warn","message":"⚠️  No events received for 2160.075s. Connection may be dead.","timestamp":"2025-11-13 15:59:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 15:59:53"}
+{"level":"warn","message":"⚠️  No events received for 2220.074s. Connection may be dead.","timestamp":"2025-11-13 16:00:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:00:53"}
+{"level":"warn","message":"⚠️  No events received for 2280.074s. Connection may be dead.","timestamp":"2025-11-13 16:01:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:01:53"}
+{"level":"warn","message":"⚠️  No events received for 2340.074s. Connection may be dead.","timestamp":"2025-11-13 16:02:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:02:53"}
+{"level":"warn","message":"⚠️  No events received for 2400.074s. Connection may be dead.","timestamp":"2025-11-13 16:03:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:03:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 16:03:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 16:03:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 16:03:53"}
+{"level":"warn","message":"⚠️  No events received for 2460.074s. Connection may be dead.","timestamp":"2025-11-13 16:04:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:04:53"}
+{"level":"warn","message":"⚠️  No events received for 2520.075s. Connection may be dead.","timestamp":"2025-11-13 16:05:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:05:53"}
+{"level":"warn","message":"⚠️  No events received for 2580.074s. Connection may be dead.","timestamp":"2025-11-13 16:06:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:06:53"}
+{"level":"warn","message":"⚠️  No events received for 2640.074s. Connection may be dead.","timestamp":"2025-11-13 16:07:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:07:53"}
+{"level":"warn","message":"⚠️  No events received for 2700.075s. Connection may be dead.","timestamp":"2025-11-13 16:08:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:08:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 16:08:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 16:08:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 16:08:53"}
+{"level":"warn","message":"⚠️  No events received for 2760.074s. Connection may be dead.","timestamp":"2025-11-13 16:09:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:09:53"}
+{"level":"warn","message":"⚠️  No events received for 2820.074s. Connection may be dead.","timestamp":"2025-11-13 16:10:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:10:53"}
+{"level":"warn","message":"⚠️  No events received for 2880.074s. Connection may be dead.","timestamp":"2025-11-13 16:11:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:11:53"}
+{"level":"warn","message":"⚠️  No events received for 2940.074s. Connection may be dead.","timestamp":"2025-11-13 16:12:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:12:53"}
+{"level":"warn","message":"⚠️  No events received for 3000.074s. Connection may be dead.","timestamp":"2025-11-13 16:13:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:13:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 16:13:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 16:13:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 16:13:53"}
+{"level":"warn","message":"⚠️  No events received for 3060.074s. Connection may be dead.","timestamp":"2025-11-13 16:14:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:14:53"}
+{"level":"warn","message":"⚠️  No events received for 3120.074s. Connection may be dead.","timestamp":"2025-11-13 16:15:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:15:53"}
+{"level":"warn","message":"⚠️  No events received for 3180.074s. Connection may be dead.","timestamp":"2025-11-13 16:16:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:16:53"}
+{"level":"warn","message":"⚠️  No events received for 3240.074s. Connection may be dead.","timestamp":"2025-11-13 16:17:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:17:53"}
+{"level":"warn","message":"⚠️  No events received for 3300.074s. Connection may be dead.","timestamp":"2025-11-13 16:18:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:18:53"}
+{"level":"info","message":"Running blockchain reconciliation...","timestamp":"2025-11-13 16:18:53"}
+{"level":"info","message":"Reconciling 0 recent promotions...","timestamp":"2025-11-13 16:18:53"}
+{"level":"info","message":"✅ Reconciliation complete","timestamp":"2025-11-13 16:18:53"}
+{"level":"warn","message":"⚠️  No events received for 3360.074s. Connection may be dead.","timestamp":"2025-11-13 16:19:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:19:53"}
+{"level":"warn","message":"⚠️  No events received for 3420.074s. Connection may be dead.","timestamp":"2025-11-13 16:20:53"}
+{"level":"info","message":"Connection test passed - RPC endpoint is responsive","timestamp":"2025-11-13 16:20:53"}

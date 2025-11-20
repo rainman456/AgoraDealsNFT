@@ -34,82 +34,178 @@ export class BlockchainSyncService {
    * Sync a single promotion from blockchain to database
    */
   public async syncPromotion(promotionAddress: string): Promise<void> {
+  try {
+    const promotionPubkey = new PublicKey(promotionAddress);
+    
+    // Fetch from blockchain with retry
+    let onChainData: any;
     try {
-      const promotionPubkey = new PublicKey(promotionAddress);
-      const onChainData = await this.program.account.promotion.fetch(promotionPubkey);
-
-      const dbPromotion = await Promotion.findOne({ onChainAddress: promotionAddress });
-
-      if (!dbPromotion) {
-        logger.warn(`Promotion not found in DB: ${promotionAddress}`);
-        return;
-      }
-
-      // Check for discrepancies
-      const discrepancies: string[] = [];
-
-      if (dbPromotion.currentSupply !== onChainData.currentSupply) {
-        discrepancies.push(
-          `currentSupply: DB=${dbPromotion.currentSupply}, Chain=${onChainData.currentSupply}`
-        );
-      }
-
-      if (dbPromotion.isActive !== onChainData.isActive) {
-        discrepancies.push(
-          `isActive: DB=${dbPromotion.isActive}, Chain=${onChainData.isActive}`
-        );
-      }
-
-      if (discrepancies.length > 0) {
-        logger.warn(`Discrepancies found for promotion ${promotionAddress}:`, discrepancies);
-
-        // Update DB to match blockchain (blockchain is source of truth)
+      onChainData = await this.program.account.promotion.fetch(promotionPubkey);
+    } catch (error: any) {
+      if (error.message?.includes('Account does not exist')) {
+        logger.warn(`Promotion ${promotionAddress} no longer exists on chain - marking as orphaned`);
+        
         await Promotion.updateOne(
           { onChainAddress: promotionAddress },
           {
             $set: {
-              currentSupply: onChainData.currentSupply,
-              isActive: onChainData.isActive,
-              lastSyncedAt: new Date(),
+              isActive: false,
+              // Add orphaned fields if they exist in your schema
             },
           }
         );
-
-        logger.info(`✅ Synced promotion ${promotionAddress} from blockchain`);
+        return;
       }
-    } catch (error) {
-      logger.error(`Error syncing promotion ${promotionAddress}:`, error);
       throw error;
     }
+
+    const dbPromotion = await Promotion.findOne({ onChainAddress: promotionAddress });
+
+    if (!dbPromotion) {
+      logger.warn(`Promotion not found in DB: ${promotionAddress} - creating from chain data`);
+      
+      // Create from blockchain data
+      await Promotion.create({
+        onChainAddress: promotionAddress,
+        merchant: onChainData.merchant.toString(),
+        title: 'Synced Promotion',
+        description: '',
+        category: 'general',
+        discountPercentage: onChainData.discountPercentage,
+        maxSupply: onChainData.maxSupply,
+        currentSupply: onChainData.currentSupply,
+        price: onChainData.price ? Number(onChainData.price.toString()) : 0,
+        expiryTimestamp: new Date(onChainData.expiryTimestamp.toNumber() * 1000),
+        isActive: onChainData.isActive,
+        imageUrl: '',
+        stats: {
+          totalMinted: onChainData.currentSupply,
+          totalRedeemed: 0,
+          averageRating: 0,
+          totalRatings: 0,
+          totalComments: 0,
+        },
+      });
+      
+      logger.info(`✅ Created promotion from chain data: ${promotionAddress}`);
+      return;
+    }
+
+    // Check for discrepancies
+    const discrepancies: string[] = [];
+
+    if (dbPromotion.currentSupply !== onChainData.currentSupply) {
+      discrepancies.push(
+        `currentSupply: DB=${dbPromotion.currentSupply}, Chain=${onChainData.currentSupply}`
+      );
+    }
+
+    if (dbPromotion.isActive !== onChainData.isActive) {
+      discrepancies.push(
+        `isActive: DB=${dbPromotion.isActive}, Chain=${onChainData.isActive}`
+      );
+    }
+
+    if (discrepancies.length > 0) {
+      logger.warn(`Discrepancies found for promotion ${promotionAddress}:`, discrepancies);
+
+      // Update DB to match blockchain (blockchain is source of truth)
+      await Promotion.updateOne(
+        { onChainAddress: promotionAddress },
+        {
+          $set: {
+            currentSupply: onChainData.currentSupply,
+            isActive: onChainData.isActive,
+            'stats.totalMinted': onChainData.currentSupply,
+          },
+        }
+      );
+
+      logger.info(`✅ Synced promotion ${promotionAddress} from blockchain`);
+    } else {
+      logger.debug(`Promotion ${promotionAddress} is in sync`);
+    }
+  } catch (error) {
+    logger.error(`Error syncing promotion ${promotionAddress}:`, error);
+    throw error;
   }
+}
+
+
+
+public async syncPromotionsBatch(addresses: string[]): Promise<void> {
+  logger.info(`Starting batch sync for ${addresses.length} promotions`);
+  
+  const batchSize = 10;
+  for (let i = 0; i < addresses.length; i += batchSize) {
+    const batch = addresses.slice(i, i + batchSize);
+    
+    await Promise.all(
+      batch.map(address => 
+        this.syncPromotion(address).catch(error => {
+          logger.error(`Failed to sync promotion ${address}:`, error);
+        })
+      )
+    );
+    
+    // Rate limiting between batches
+    if (i + batchSize < addresses.length) {
+
+ await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  
+  logger.info('✅ Batch sync complete');
+}
+
 
   /**
    * Wait for transaction finality before marking DB records as confirmed
    */
   public async waitForFinality(signature: string, maxWaitSeconds = 60): Promise<boolean> {
-    const startTime = Date.now();
-    
-    while ((Date.now() - startTime) / 1000 < maxWaitSeconds) {
+  const startTime = Date.now();
+  let lastStatus: string = 'unknown';
+  
+  while ((Date.now() - startTime) / 1000 < maxWaitSeconds) {
+    try {
       const status = await this.connection.getSignatureStatus(signature, {
         searchTransactionHistory: true,
       });
 
-      if (status?.value?.confirmationStatus === 'finalized') {
+      if (!status || !status.value) {
+        logger.debug(`No status found for ${signature}, waiting...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        continue;
+      }
+
+      const currentStatus = status.value.confirmationStatus || 'unknown';
+      
+      if (currentStatus !== lastStatus) {
+        logger.info(`Transaction ${signature} status: ${currentStatus}`);
+        lastStatus = currentStatus;
+      }
+
+      if (currentStatus === 'finalized') {
         logger.info(`✅ Transaction finalized: ${signature}`);
         return true;
       }
 
-      if (status?.value?.err) {
+      if (status.value.err) {
         logger.error(`❌ Transaction failed: ${signature}`, status.value.err);
         return false;
       }
 
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Poll every 2s
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    } catch (error) {
+      logger.error(`Error checking finality for ${signature}:`, error);
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
-
-    logger.warn(`⏱️ Finality timeout for ${signature}`);
-    return false;
   }
+
+  logger.warn(`⏱️ Finality timeout for ${signature} after ${maxWaitSeconds}s`);
+  return false;
+}
+
 
   /**
    * Verify transaction finality (legacy method - use waitForFinality instead)
